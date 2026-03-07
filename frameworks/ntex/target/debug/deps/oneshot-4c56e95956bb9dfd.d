@@ -1,0 +1,13 @@
+/home/diogo/Desktop/Socket/HttpArena/frameworks/ntex/target/debug/deps/oneshot-4c56e95956bb9dfd.d: /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/lib.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/atomic.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/channel.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/sender.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/receiver.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/states.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/thread.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/waker.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/errors.rs
+
+/home/diogo/Desktop/Socket/HttpArena/frameworks/ntex/target/debug/deps/liboneshot-4c56e95956bb9dfd.rmeta: /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/lib.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/atomic.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/channel.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/sender.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/receiver.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/states.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/thread.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/waker.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/errors.rs
+
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/lib.rs:
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/atomic.rs:
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/channel.rs:
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/sender.rs:
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/receiver.rs:
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/states.rs:
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/thread.rs:
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/waker.rs:
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/oneshot-0.2.1/src/errors.rs:

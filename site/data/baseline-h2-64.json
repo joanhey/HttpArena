@@ -15,6 +15,51 @@
 }
 ,
 {
+  "framework": "h2o",
+  "language": "C",
+  "rps": 15197660,
+  "avg_latency": "228us",
+  "p99_latency": "228us",
+  "cpu": "1057.3%",
+  "memory": "32.4MiB",
+  "connections": 64,
+  "threads": 12,
+  "duration": "5s",
+  "pipeline": 1,
+  "reconnects": 0
+}
+,
+{
+  "framework": "hyper",
+  "language": "Rust",
+  "rps": 6284455,
+  "avg_latency": "921us",
+  "p99_latency": "921us",
+  "cpu": "2129.6%",
+  "memory": "45.9MiB",
+  "connections": 64,
+  "threads": 12,
+  "duration": "5s",
+  "pipeline": 1,
+  "reconnects": 0
+}
+,
+{
+  "framework": "ntex",
+  "language": "Rust",
+  "rps": 2242000,
+  "avg_latency": "1.52ms",
+  "p99_latency": "1.52ms",
+  "cpu": "734.9%",
+  "memory": "139.8MiB",
+  "connections": 64,
+  "threads": 12,
+  "duration": "5s",
+  "pipeline": 1,
+  "reconnects": 0
+}
+,
+{
   "framework": "quarkus-jvm",
   "language": "Java",
   "rps": 4939180,

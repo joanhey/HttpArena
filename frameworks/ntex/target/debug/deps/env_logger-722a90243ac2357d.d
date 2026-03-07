@@ -1,0 +1,10 @@
+/home/diogo/Desktop/Socket/HttpArena/frameworks/ntex/target/debug/deps/env_logger-722a90243ac2357d.d: /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/env_logger-0.11.9/src/lib.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/env_logger-0.11.9/src/logger.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/env_logger-0.11.9/src/writer/mod.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/env_logger-0.11.9/src/writer/buffer.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/env_logger-0.11.9/src/writer/target.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/env_logger-0.11.9/src/fmt/mod.rs
+
+/home/diogo/Desktop/Socket/HttpArena/frameworks/ntex/target/debug/deps/libenv_logger-722a90243ac2357d.rmeta: /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/env_logger-0.11.9/src/lib.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/env_logger-0.11.9/src/logger.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/env_logger-0.11.9/src/writer/mod.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/env_logger-0.11.9/src/writer/buffer.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/env_logger-0.11.9/src/writer/target.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/env_logger-0.11.9/src/fmt/mod.rs
+
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/env_logger-0.11.9/src/lib.rs:
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/env_logger-0.11.9/src/logger.rs:
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/env_logger-0.11.9/src/writer/mod.rs:
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/env_logger-0.11.9/src/writer/buffer.rs:
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/env_logger-0.11.9/src/writer/target.rs:
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/env_logger-0.11.9/src/fmt/mod.rs:

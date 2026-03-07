@@ -1,0 +1,11 @@
+/home/diogo/Desktop/Socket/HttpArena/frameworks/ntex/target/debug/deps/ntex_router-c46b31e385e7181a.d: /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-router-1.0.0/src/lib.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-router-1.0.0/src/de.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-router-1.0.0/src/path.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-router-1.0.0/src/resource.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-router-1.0.0/src/router.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-router-1.0.0/src/tree.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-router-1.0.0/src/quoter.rs
+
+/home/diogo/Desktop/Socket/HttpArena/frameworks/ntex/target/debug/deps/libntex_router-c46b31e385e7181a.rmeta: /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-router-1.0.0/src/lib.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-router-1.0.0/src/de.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-router-1.0.0/src/path.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-router-1.0.0/src/resource.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-router-1.0.0/src/router.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-router-1.0.0/src/tree.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-router-1.0.0/src/quoter.rs
+
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-router-1.0.0/src/lib.rs:
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-router-1.0.0/src/de.rs:
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-router-1.0.0/src/path.rs:
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-router-1.0.0/src/resource.rs:
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-router-1.0.0/src/router.rs:
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-router-1.0.0/src/tree.rs:
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-router-1.0.0/src/quoter.rs:

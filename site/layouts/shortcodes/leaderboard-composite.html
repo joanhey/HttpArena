@@ -40,19 +40,31 @@ html.dark .composite-disclaimer { color: #fff !important; background: rgba(234,1
     <a href="{{ "docs/scoring/composite-score" | relURL }}" style="color:#3b82f6; text-decoration:none; font-weight:500;"> Learn more &rarr;</a>
   </div>
 
+  <div class="lb-filters composite-profiles-wrap" style="margin:0.75rem 0 0 0; padding:0.75rem 1rem; background:rgba(0,0,0,0.04); border-radius:8px; border:1px solid rgba(0,0,0,0.08);">
+    <span class="lb-filters-label">Tests</span>
+    <span class="lb-filters-hint">(Toggle)</span>
+    <div class="composite-profile-filter active" data-profile="all">All</div>
+    {{ range $profiles }}
+    <div class="composite-profile-filter cp-{{ .proto }} active" data-profile="{{ .id }}">{{ .label }} <span style="font-size:0.65rem; color:#94a3b8;">({{ .sublabel }})</span></div>
+    {{ end }}
+  </div>
+  <style>
+  .composite-profile-filter { padding:0.3rem 0.75rem; font-size:0.8rem; font-weight:500; color:#94a3b8; cursor:pointer; border-radius:6px; border:1.5px solid #e2e8f0; background:transparent; transition:all 0.15s ease; user-select:none; }
+  .composite-profile-filter:hover { color:#475569; border-color:#cbd5e1; transform:translateY(-1px); box-shadow:0 2px 4px rgba(0,0,0,0.08); }
+  .composite-profile-filter[data-profile="all"].active { color:#8b5cf6; border-color:#8b5cf6; background:rgba(139,92,246,0.06); font-weight:600; }
+  .composite-profile-filter.active.cp-h1 { color:#3b82f6; border-color:#3b82f6; background:rgba(59,130,246,0.06); font-weight:600; }
+  .composite-profile-filter.active.cp-h2 { color:#d97706; border-color:#d97706; background:rgba(217,119,6,0.06); font-weight:600; }
+  .composite-profile-filter.cp-h1:hover { background:rgba(59,130,246,0.06); }
+  .composite-profile-filter.cp-h2:hover { background:rgba(217,119,6,0.06); }
+  html.dark .composite-profiles-wrap { background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.10); }
+  html.dark .composite-profile-filter { color:#64748b; border-color:#334155; }
+  html.dark .composite-profile-filter:hover { color:#94a3b8; border-color:#475569; }
+  html.dark .composite-profile-filter[data-profile="all"].active { color:#a78bfa; border-color:#8b5cf6; background:rgba(139,92,246,0.12); }
+  html.dark .composite-profile-filter.active.cp-h1 { color:#60a5fa; border-color:#3b82f6; background:rgba(59,130,246,0.12); }
+  html.dark .composite-profile-filter.active.cp-h2 { color:#fbbf24; border-color:#d97706; background:rgba(217,119,6,0.12); }
+  </style>
+
   <div id="composite-table" class="lb" style="margin-top:1rem;">
-    <div class="lb-row lb-header" style="grid-template-columns: 2.5rem 10rem 4rem 4.5rem 4rem 3.5rem 1fr repeat({{ len $profiles }}, 7.5rem);">
-      <div title="Rank by composite score">#</div>
-      <div>Framework</div>
-      <div>Lang</div>
-      <div title="HTTP server engine">Engine</div>
-      <div>Type</div>
-      <div style="font-weight:700; padding-left:0.5rem;" title="Composite score: geometric mean of normalized profile scores">Score</div>
-      <div></div>
-      {{ range $profiles }}
-      <div style="text-align:right; font-size:0.7rem; line-height:1.2;{{ if eq .proto "h1" }} background:rgba(59,130,246,0.08); margin:-0.5rem -0.25rem; padding:0.5rem 0.25rem; border-radius:4px;{{ else if eq .proto "h2" }} background:rgba(234,179,8,0.12); margin:-0.5rem -0.25rem; padding:0.5rem 0.25rem; border-radius:4px;{{ end }}" title="{{ .label }} ({{ .sublabel }}) profile score (0-100)">{{ .label }}<br><span style="color:#94a3b8; font-size:0.6rem;">({{ .sublabel }})</span></div>
-      {{ end }}
-    </div>
   </div>
 </div>
 
@@ -63,19 +75,35 @@ var profiles = compositeProfiles;
 var meta = compositeMeta;
 var medals = ['\u{1F947}', '\u{1F948}', '\u{1F949}'];
 var barClasses = ['lb-bar-1', 'lb-bar-2', 'lb-bar-3', 'lb-bar-4', 'lb-bar-5'];
-var profileIds = profiles.map(function(p) { return p.id; });
+
+// Language color scheme
+var langColors = {
+  'C':    { accent: '#e53e3e', bg: 'rgba(229,62,62,0.06)',  pill: '#e53e3e', pillBg: 'rgba(229,62,62,0.10)', border: 'rgba(229,62,62,0.4)' },
+  'C#':   { accent: '#7c3aed', bg: 'rgba(124,58,237,0.06)', pill: '#7c3aed', pillBg: 'rgba(124,58,237,0.10)', border: 'rgba(124,58,237,0.4)' },
+  'Go':   { accent: '#0891b2', bg: 'rgba(8,145,178,0.06)',  pill: '#0891b2', pillBg: 'rgba(8,145,178,0.10)', border: 'rgba(8,145,178,0.4)' },
+  'Java': { accent: '#d97706', bg: 'rgba(217,119,6,0.06)',  pill: '#d97706', pillBg: 'rgba(217,119,6,0.10)', border: 'rgba(217,119,6,0.4)' },
+  'Rust': { accent: '#b45309', bg: 'rgba(180,83,9,0.06)',   pill: '#b45309', pillBg: 'rgba(180,83,9,0.10)', border: 'rgba(180,83,9,0.4)' }
+};
+var langColorsDark = {
+  'C':    { accent: '#fc8181', bg: 'rgba(229,62,62,0.08)',  pill: '#fc8181', pillBg: 'rgba(229,62,62,0.15)', border: 'rgba(229,62,62,0.4)' },
+  'C#':   { accent: '#a78bfa', bg: 'rgba(124,58,237,0.08)', pill: '#a78bfa', pillBg: 'rgba(124,58,237,0.15)', border: 'rgba(124,58,237,0.4)' },
+  'Go':   { accent: '#22d3ee', bg: 'rgba(8,145,178,0.08)',  pill: '#22d3ee', pillBg: 'rgba(8,145,178,0.15)', border: 'rgba(8,145,178,0.4)' },
+  'Java': { accent: '#fbbf24', bg: 'rgba(217,119,6,0.08)',  pill: '#fbbf24', pillBg: 'rgba(217,119,6,0.15)', border: 'rgba(217,119,6,0.4)' },
+  'Rust': { accent: '#f59e0b', bg: 'rgba(180,83,9,0.08)',   pill: '#f59e0b', pillBg: 'rgba(180,83,9,0.15)', border: 'rgba(180,83,9,0.4)' }
+};
+function isDark() { return document.documentElement.classList.contains('dark'); }
+function getLangColor(lang) {
+  var scheme = isDark() ? langColorsDark : langColors;
+  return scheme[lang] || { accent: '#94a3b8', bg: 'transparent', pill: '#94a3b8', pillBg: 'rgba(148,163,184,0.10)', border: 'rgba(148,163,184,0.3)' };
+}
+var allProfileIds = profiles.map(function(p) { return p.id; });
 var profileLabels = {};
 var profileProtos = {};
 profiles.forEach(function(p) { profileLabels[p.id] = p.label; profileProtos[p.id] = p.proto; });
-var profileCount = profileIds.length;
 
-// Step 1: For each profile, compute average RPS per framework across connection counts
-// Exclude stripped frameworks from normalization (max) and composite ranking
-var avgByProfile = {}; // profileId -> {framework: avgRps}
-var maxByProfile = {};  // profileId -> maxAvgRps (realistic only)
-profileIds.forEach(function(pid) { avgByProfile[pid] = {}; maxByProfile[pid] = 0; });
-
-// Accumulate sum and count per framework per profile
+// Precompute average RPS per framework per profile (static, doesn't change with filters)
+var avgByProfile = {};
+allProfileIds.forEach(function(pid) { avgByProfile[pid] = {}; });
 var sums = {};
 var counts = {};
 entries.forEach(function(e) {
@@ -85,143 +113,212 @@ entries.forEach(function(e) {
 });
 Object.keys(sums).forEach(function(key) {
   var parts = key.split('|');
-  var pid = parts[0], fw = parts[1];
-  avgByProfile[pid][fw] = sums[key] / counts[key];
-});
-profileIds.forEach(function(pid) {
-  Object.keys(avgByProfile[pid]).forEach(function(fw) {
-    var fmeta = meta[fw] || {};
-    if ((fmeta.type || 'realistic') === 'stripped') return;
-    var r = avgByProfile[pid][fw];
-    if (r > maxByProfile[pid]) maxByProfile[pid] = r;
-  });
+  avgByProfile[parts[0]][parts[1]] = sums[key] / counts[key];
 });
 
-// Step 2: Collect all frameworks
-var allFw = {};
-entries.forEach(function(e) { allFw[e.framework] = true; });
-
-// Step 3: Compute per-profile scores and composite
-// Missing profiles score 0. Composite = geometric_mean(non-zero scores) * (participated / total)
 var fwLang = {};
 entries.forEach(function(e) { if (e.language) fwLang[e.framework] = e.language; });
 
-var results = [];
-Object.keys(allFw).forEach(function(fw) {
-  var fmeta = meta[fw] || {};
-  if ((fmeta.type || 'realistic') === 'stripped') return;
-  var scores = [];
-  var participated = 0;
-  profileIds.forEach(function(pid) {
-    if (avgByProfile[pid][fw]) {
-      var ratio = avgByProfile[pid][fw] / maxByProfile[pid];
-      scores.push(ratio * 100);
-      participated++;
-    } else {
-      scores.push(0);
-    }
+var allFw = {};
+entries.forEach(function(e) { allFw[e.framework] = true; });
+
+function getActiveProfiles() {
+  var active = [];
+  document.querySelectorAll('.composite-profile-filter[data-profile]:not([data-profile="all"]).active').forEach(function(el) {
+    active.push(el.dataset.profile);
   });
-  var composite;
-  if (participated === 0) {
-    composite = 0;
-  } else {
-    var logSum = 0;
-    scores.forEach(function(s) { if (s > 0) logSum += Math.log(s); });
-    composite = Math.exp(logSum / participated) * (participated / profileCount);
-  }
-  results.push({ framework: fw, language: fwLang[fw] || '', scores: scores, composite: composite, participated: participated });
-});
-results.sort(function(a, b) { return b.composite - a.composite; });
+  return active;
+}
 
-// Step 4: Render
-var table = document.getElementById('composite-table');
-var maxComposite = results.length > 0 ? results[0].composite : 1;
+function renderComposite() {
+  var activeIds = getActiveProfiles();
+  var activeCount = activeIds.length;
+  if (activeCount === 0) activeIds = allProfileIds.slice();
+  activeCount = activeIds.length;
 
-results.forEach(function(r, idx) {
-  var fmeta = meta[r.framework] || {};
-  var ftype = fmeta.type || 'realistic';
-  var row = document.createElement('div');
-  row.className = 'lb-row';
-  row.dataset.name = r.framework;
-  row.dataset.lang = r.language;
-  row.dataset.type = ftype;
-  row.style.gridTemplateColumns = '2.5rem 10rem 4rem 4.5rem 4rem 3.5rem 1fr repeat(' + profileCount + ', 7.5rem)';
-  row.style.cursor = 'pointer';
-
-  var rank = idx < 3 ? medals[idx] : String(idx + 1);
-  var pct = maxComposite > 0 ? (r.composite / maxComposite * 100) : 0;
-  var barClass = barClasses[Math.min(idx, barClasses.length - 1)];
-
-  var profileCells = '';
-  r.scores.forEach(function(s, i) {
-    var pid = profileIds[i];
-    var isH2 = profileProtos[pid] === 'h2';
-    var bgStyle = isH2 ? ' background:rgba(234,179,8,0.12); margin:-0.5rem -0.25rem; padding:0.5rem 0.25rem; border-radius:4px;' : ' background:rgba(59,130,246,0.08); margin:-0.5rem -0.25rem; padding:0.5rem 0.25rem; border-radius:4px;';
-    if (s === 0) {
-      profileCells += '<div class="lb-stat" style="text-align:right; color:#cbd5e1;' + bgStyle + '">—</div>';
-    } else {
-      var rps = avgByProfile[pid][r.framework];
-      var rpsStr = rps >= 1000000 ? (rps / 1000000).toFixed(1) + 'M' : rps >= 1000 ? (rps / 1000).toFixed(0) + 'K' : Math.round(rps);
-      var color = s >= 80 ? '#16a34a' : s >= 50 ? '#ca8a04' : '#dc2626';
-      profileCells += '<div class="lb-stat" style="text-align:right; color:' + color + '; font-weight:500;' + bgStyle + '">' + s.toFixed(1) + ' <span style="font-size:0.6rem; color:#94a3b8; font-weight:400;">(' + rpsStr + ')</span></div>';
-    }
+  // Compute max per active profile (realistic only)
+  var maxByProfile = {};
+  activeIds.forEach(function(pid) {
+    maxByProfile[pid] = 0;
+    Object.keys(avgByProfile[pid] || {}).forEach(function(fw) {
+      var fmeta = meta[fw] || {};
+      if ((fmeta.type || 'realistic') === 'stripped') return;
+      if (avgByProfile[pid][fw] > maxByProfile[pid]) maxByProfile[pid] = avgByProfile[pid][fw];
+    });
   });
 
-  row.innerHTML =
-    '<div class="lb-rank">' + rank + '</div>' +
-    '<div class="lb-name">' + r.framework + '</div>' +
-    '<div class="lb-lang">' + r.language + '</div>' +
-    '<div class="lb-lang">' + (fmeta.engine || '—') + '</div>' +
-    '<div><span class="lb-pill lb-pill-' + ftype + '">' + ftype + '</span></div>' +
-    '<div class="lb-rps" style="font-weight:700; text-align:left; padding-left:0.5rem;">' + r.composite.toFixed(1) + '</div>' +
-    '<div class="lb-bar-cell"><div class="lb-bar ' + barClass + '" style="width:' + pct.toFixed(1) + '%;"></div></div>' +
-    profileCells;
-
-  row.addEventListener('click', function() {
-    var profileDetails = '';
-    r.scores.forEach(function(s, i) {
-      var pid = profileIds[i];
-      var rps = avgByProfile[pid][r.framework];
-      if (s === 0) {
-        profileDetails +=
-          '<div>' +
-            '<div class="lb-popup-stat-label">' + profileLabels[pid] + '</div>' +
-            '<div class="lb-popup-stat-value" style="color:#94a3b8;">— <span style="font-size:0.7rem;">(not participating)</span></div>' +
-          '</div>';
+  // Compute scores
+  var results = [];
+  Object.keys(allFw).forEach(function(fw) {
+    var fmeta = meta[fw] || {};
+    if ((fmeta.type || 'realistic') === 'stripped') return;
+    var scores = [];
+    var participated = 0;
+    activeIds.forEach(function(pid) {
+      if (avgByProfile[pid] && avgByProfile[pid][fw]) {
+        var ratio = avgByProfile[pid][fw] / maxByProfile[pid];
+        scores.push(ratio * 100);
+        participated++;
       } else {
-        profileDetails +=
-          '<div>' +
-            '<div class="lb-popup-stat-label">' + profileLabels[pid] + '</div>' +
-            '<div class="lb-popup-stat-value">' + s.toFixed(1) + ' <span style="font-size:0.7rem; color:#94a3b8;">(' + Number(rps).toLocaleString() + ' req/s)</span></div>' +
-          '</div>';
+        scores.push(0);
       }
     });
-    var repoHtml = fmeta.repo ? '<a class="lb-popup-link" href="' + fmeta.repo + '" target="_blank" rel="noreferrer">View source &rarr;</a>' : '';
-    var benchHtml = '<a class="lb-popup-link" href="https://github.com/MDA2AV/HttpArena/tree/main/frameworks/' + encodeURIComponent(r.framework) + '" target="_blank" rel="noreferrer">Benchmark implementation &rarr;</a>';
-    var overlay = document.createElement('div');
-    overlay.className = 'lb-overlay';
-    overlay.innerHTML =
-      '<div class="lb-popup">' +
-        '<button class="lb-popup-close" aria-label="Close">&times;</button>' +
-        '<div class="lb-popup-name">' + r.framework + '</div>' +
-        '<div class="lb-popup-lang">' + r.language + '</div>' +
-        '<div class="lb-popup-desc">' + (fmeta.description || '') + '</div>' +
-        '<div class="lb-popup-stats">' +
-          '<div><div class="lb-popup-stat-label">Composite Score</div><div class="lb-popup-stat-value" style="font-size:1.5rem; font-weight:700;">' + r.composite.toFixed(1) + '</div></div>' +
-          profileDetails +
-        '</div>' +
-        '<div class="lb-popup-links">' + repoHtml + benchHtml + '</div>' +
-      '</div>';
-    document.body.appendChild(overlay);
-    function close() { overlay.remove(); }
-    overlay.querySelector('.lb-popup-close').addEventListener('click', close);
-    overlay.addEventListener('click', function(ev) { if (ev.target === overlay) close(); });
-    document.addEventListener('keydown', function handler(ev) {
-      if (ev.key === 'Escape') { close(); document.removeEventListener('keydown', handler); }
-    });
+    var composite;
+    if (participated === 0) {
+      composite = 0;
+    } else {
+      var logSum = 0;
+      scores.forEach(function(s) { if (s > 0) logSum += Math.log(s); });
+      composite = Math.exp(logSum / participated) * (participated / activeCount);
+    }
+    results.push({ framework: fw, language: fwLang[fw] || '', scores: scores, composite: composite, participated: participated });
   });
+  results.sort(function(a, b) { return b.composite - a.composite; });
 
-  table.appendChild(row);
+  // Render
+  var table = document.getElementById('composite-table');
+  table.innerHTML = '';
+
+  // Header
+  var header = document.createElement('div');
+  header.className = 'lb-row lb-header';
+  header.style.gridTemplateColumns = '2.5rem 10rem 4rem 4.5rem 4rem 3.5rem 1fr repeat(' + activeCount + ', 5.5rem)';
+  var headerHtml = '<div title="Rank by composite score">#</div>' +
+    '<div>Framework</div>' +
+    '<div>Lang</div>' +
+    '<div title="HTTP server engine">Engine</div>' +
+    '<div>Type</div>' +
+    '<div style="font-weight:700; padding-left:0.5rem;" title="Composite score: geometric mean of normalized profile scores">Score</div>' +
+    '<div></div>';
+  activeIds.forEach(function(pid) {
+    var isH2 = profileProtos[pid] === 'h2';
+    var bgStyle = isH2 ? ' background:rgba(234,179,8,0.12); margin:-0.5rem -0.25rem; padding:0.5rem 0.25rem; border-radius:4px;' : ' background:rgba(59,130,246,0.08); margin:-0.5rem -0.25rem; padding:0.5rem 0.25rem; border-radius:4px;';
+    var sublabel = isH2 ? 'HTTP/2' : 'HTTP/1.1';
+    headerHtml += '<div style="text-align:right; font-size:0.7rem; line-height:1.2;' + bgStyle + '" title="' + profileLabels[pid] + ' (' + sublabel + ') profile score (0-100)">' + profileLabels[pid] + '<br><span style="color:#94a3b8; font-size:0.6rem;">(' + sublabel + ')</span></div>';
+  });
+  header.innerHTML = headerHtml;
+  table.appendChild(header);
+
+  var maxComposite = results.length > 0 ? results[0].composite : 1;
+
+  results.forEach(function(r, idx) {
+    var fmeta = meta[r.framework] || {};
+    var ftype = fmeta.type || 'realistic';
+    var row = document.createElement('div');
+    row.className = 'lb-row';
+    row.dataset.name = r.framework;
+    row.dataset.lang = r.language;
+    row.dataset.type = ftype;
+    row.style.gridTemplateColumns = '2.5rem 10rem 4rem 4.5rem 4rem 3.5rem 1fr repeat(' + activeCount + ', 5.5rem)';
+    row.style.cursor = 'pointer';
+    var lc = getLangColor(r.language);
+    row.style.background = lc.bg;
+    row.style.borderLeft = '3px solid ' + lc.accent;
+
+    var rank = idx < 3 ? medals[idx] : String(idx + 1);
+    var pct = maxComposite > 0 ? (r.composite / maxComposite * 100) : 0;
+    var barClass = barClasses[Math.min(idx, barClasses.length - 1)];
+
+    var profileCells = '';
+    r.scores.forEach(function(s, i) {
+      var pid = activeIds[i];
+      var isH2 = profileProtos[pid] === 'h2';
+      var bgStyle = isH2 ? ' background:rgba(234,179,8,0.12); margin:-0.5rem -0.25rem; padding:0.5rem 0.25rem; border-radius:4px;' : ' background:rgba(59,130,246,0.08); margin:-0.5rem -0.25rem; padding:0.5rem 0.25rem; border-radius:4px;';
+      if (s === 0) {
+        profileCells += '<div class="lb-stat" style="text-align:right; color:#cbd5e1;' + bgStyle + '">—</div>';
+      } else {
+        var rps = avgByProfile[pid][r.framework];
+        var rpsStr = rps >= 1000000 ? (rps / 1000000).toFixed(1) + 'M' : rps >= 1000 ? (rps / 1000).toFixed(0) + 'K' : Math.round(rps);
+        var color = s >= 80 ? '#16a34a' : s >= 50 ? '#ca8a04' : '#dc2626';
+        profileCells += '<div class="lb-stat" style="text-align:right; color:' + color + '; font-weight:500;' + bgStyle + '">' + s.toFixed(1) + ' <span style="font-size:0.6rem; color:#94a3b8; font-weight:400;">(' + rpsStr + ')</span></div>';
+      }
+    });
+
+    row.innerHTML =
+      '<div class="lb-rank">' + rank + '</div>' +
+      '<div class="lb-name">' + r.framework + '</div>' +
+      '<div class="lb-lang" style="color:' + lc.accent + '; font-weight:600;">' + r.language + '</div>' +
+      '<div class="lb-lang">' + (fmeta.engine || '—') + '</div>' +
+      '<div><span class="lb-pill lb-pill-' + ftype + '">' + ftype + '</span></div>' +
+      '<div class="lb-rps" style="font-weight:700; text-align:left; padding-left:0.5rem;">' + r.composite.toFixed(1) + '</div>' +
+      '<div class="lb-bar-cell"><div class="lb-bar ' + barClass + '" style="width:' + pct.toFixed(1) + '%;"></div></div>' +
+      profileCells;
+
+    row.addEventListener('click', function() {
+      var profileDetails = '';
+      r.scores.forEach(function(s, i) {
+        var pid = activeIds[i];
+        var rps = avgByProfile[pid][r.framework];
+        if (s === 0) {
+          profileDetails +=
+            '<div>' +
+              '<div class="lb-popup-stat-label">' + profileLabels[pid] + '</div>' +
+              '<div class="lb-popup-stat-value" style="color:#94a3b8;">— <span style="font-size:0.7rem;">(not participating)</span></div>' +
+            '</div>';
+        } else {
+          profileDetails +=
+            '<div>' +
+              '<div class="lb-popup-stat-label">' + profileLabels[pid] + '</div>' +
+              '<div class="lb-popup-stat-value">' + s.toFixed(1) + ' <span style="font-size:0.7rem; color:#94a3b8;">(' + Number(rps).toLocaleString() + ' req/s)</span></div>' +
+            '</div>';
+        }
+      });
+      var repoHtml = fmeta.repo ? '<a class="lb-popup-link" href="' + fmeta.repo + '" target="_blank" rel="noreferrer">View source &rarr;</a>' : '';
+      var benchHtml = '<a class="lb-popup-link" href="https://github.com/MDA2AV/HttpArena/tree/main/frameworks/' + encodeURIComponent(r.framework) + '" target="_blank" rel="noreferrer">Benchmark implementation &rarr;</a>';
+      var overlay = document.createElement('div');
+      overlay.className = 'lb-overlay';
+      overlay.innerHTML =
+        '<div class="lb-popup">' +
+          '<button class="lb-popup-close" aria-label="Close">&times;</button>' +
+          '<div class="lb-popup-name">' + r.framework + '</div>' +
+          '<div class="lb-popup-lang">' + r.language + '</div>' +
+          '<div class="lb-popup-desc">' + (fmeta.description || '') + '</div>' +
+          '<div class="lb-popup-stats">' +
+            '<div><div class="lb-popup-stat-label">Composite Score</div><div class="lb-popup-stat-value" style="font-size:1.5rem; font-weight:700;">' + r.composite.toFixed(1) + '</div></div>' +
+            profileDetails +
+          '</div>' +
+          '<div class="lb-popup-links">' + repoHtml + benchHtml + '</div>' +
+        '</div>';
+      document.body.appendChild(overlay);
+      function close() { overlay.remove(); }
+      overlay.querySelector('.lb-popup-close').addEventListener('click', close);
+      overlay.addEventListener('click', function(ev) { if (ev.target === overlay) close(); });
+      document.addEventListener('keydown', function handler(ev) {
+        if (ev.key === 'Escape') { close(); document.removeEventListener('keydown', handler); }
+      });
+    });
+
+    table.appendChild(row);
+  });
+}
+
+// Initial render
+renderComposite();
+
+// Profile filter click handlers
+document.querySelectorAll('.composite-profile-filter').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var pid = btn.dataset.profile;
+    var allFilters = document.querySelectorAll('.composite-profile-filter');
+    var allBtn = document.querySelector('.composite-profile-filter[data-profile="all"]');
+    if (pid === 'all') {
+      allFilters.forEach(function(f) { f.classList.add('active'); });
+    } else if (btn.classList.contains('active') && allBtn.classList.contains('active')) {
+      allFilters.forEach(function(f) { f.classList.remove('active'); });
+      btn.classList.add('active');
+    } else {
+      btn.classList.toggle('active');
+      allBtn.classList.remove('active');
+      if (!document.querySelector('.composite-profile-filter[data-profile]:not([data-profile="all"]).active')) {
+        allFilters.forEach(function(f) { f.classList.add('active'); });
+      } else {
+        var total = document.querySelectorAll('.composite-profile-filter[data-profile]:not([data-profile="all"])').length;
+        var active = document.querySelectorAll('.composite-profile-filter[data-profile]:not([data-profile="all"]).active').length;
+        if (total === active) allBtn.classList.add('active');
+      }
+    }
+    renderComposite();
+  });
 });
 
 })();

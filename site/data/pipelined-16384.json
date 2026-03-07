@@ -15,6 +15,36 @@
 }
 ,
 {
+  "framework": "go-fasthttp",
+  "language": "Go",
+  "rps": 1634739,
+  "avg_latency": "102.67ms",
+  "p99_latency": "110.00ms",
+  "cpu": "566.9%",
+  "memory": "231.0MiB",
+  "connections": 16384,
+  "threads": 12,
+  "duration": "5s",
+  "pipeline": 16,
+  "reconnects": 0
+}
+,
+{
+  "framework": "h2o",
+  "language": "C",
+  "rps": 5415036,
+  "avg_latency": "46.68ms",
+  "p99_latency": "110.00ms",
+  "cpu": "2122.8%",
+  "memory": "163.2MiB",
+  "connections": 16384,
+  "threads": 12,
+  "duration": "5s",
+  "pipeline": 16,
+  "reconnects": 0
+}
+,
+{
   "framework": "quarkus-jvm",
   "language": "Java",
   "rps": 8812257,
@@ -37,6 +67,36 @@
   "p99_latency": "14.70ms",
   "cpu": "1146.2%",
   "memory": "1.0GiB",
+  "connections": 16384,
+  "threads": 12,
+  "duration": "5s",
+  "pipeline": 16,
+  "reconnects": 0
+}
+,
+{
+  "framework": "rust-hyper",
+  "language": "Rust",
+  "rps": 16052780,
+  "avg_latency": "15.71ms",
+  "p99_latency": "67.20ms",
+  "cpu": "2133.7%",
+  "memory": "428.3MiB",
+  "connections": 16384,
+  "threads": 12,
+  "duration": "5s",
+  "pipeline": 16,
+  "reconnects": 0
+}
+,
+{
+  "framework": "rust-ntex",
+  "language": "Rust",
+  "rps": 14816261,
+  "avg_latency": "16.99ms",
+  "p99_latency": "59.10ms",
+  "cpu": "2320.1%",
+  "memory": "962.2MiB",
   "connections": 16384,
   "threads": 12,
   "duration": "5s",

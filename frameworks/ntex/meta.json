@@ -1,0 +1,10 @@
+{
+  "display_name": "ntex",
+  "language": "Rust",
+  "type": "realistic",
+  "engine": "ntex-tokio",
+  "description": "High-performance Rust web framework by the creator of actix-web, with mimalloc and sonic_rs.",
+  "repo": "https://github.com/ntex-rs/ntex",
+  "enabled": true,
+  "tests": ["baseline", "pipelined", "limited-conn", "json", "baseline-h2"]
+}

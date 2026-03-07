@@ -1,0 +1,11 @@
+/home/diogo/Desktop/Socket/HttpArena/frameworks/ntex/target/debug/deps/ntex_tls-8e92317b615c8694.d: /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-tls-3.3.0/src/lib.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-tls-3.3.0/src/rustls/mod.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-tls-3.3.0/src/rustls/accept.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-tls-3.3.0/src/rustls/client.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-tls-3.3.0/src/rustls/connect.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-tls-3.3.0/src/rustls/server.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-tls-3.3.0/src/rustls/stream.rs
+
+/home/diogo/Desktop/Socket/HttpArena/frameworks/ntex/target/debug/deps/libntex_tls-8e92317b615c8694.rmeta: /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-tls-3.3.0/src/lib.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-tls-3.3.0/src/rustls/mod.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-tls-3.3.0/src/rustls/accept.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-tls-3.3.0/src/rustls/client.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-tls-3.3.0/src/rustls/connect.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-tls-3.3.0/src/rustls/server.rs /home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-tls-3.3.0/src/rustls/stream.rs
+
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-tls-3.3.0/src/lib.rs:
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-tls-3.3.0/src/rustls/mod.rs:
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-tls-3.3.0/src/rustls/accept.rs:
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-tls-3.3.0/src/rustls/client.rs:
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-tls-3.3.0/src/rustls/connect.rs:
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-tls-3.3.0/src/rustls/server.rs:
+/home/diogo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ntex-tls-3.3.0/src/rustls/stream.rs:
