@@ -188,21 +188,6 @@ app.MapGet("/compression", async (HttpContext ctx) =>
     await ctx.Response.Body.WriteAsync(largeJsonResponse);
 });
 
-const string CachingETag = "\"AOK\"";
-app.MapGet("/caching", (HttpContext ctx) =>
-{
-    var inm = ctx.Request.Headers.IfNoneMatch.ToString();
-    ctx.Response.Headers.ETag = CachingETag;
-    if (inm == CachingETag)
-    {
-        ctx.Response.StatusCode = 304;
-        return;
-    }
-    ctx.Response.ContentType = "text/plain";
-    ctx.Response.ContentLength = 2;
-    ctx.Response.Body.Write("OK"u8);
-});
-
 app.Run();
 
 static int SumQuery(HttpRequest req)

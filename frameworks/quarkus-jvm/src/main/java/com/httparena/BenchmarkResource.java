@@ -142,18 +142,6 @@ public class BenchmarkResource {
         return largeJsonResponse;
     }
 
-    private static final String CACHING_ETAG = "\"AOK\"";
-
-    @GET
-    @Path("/caching")
-    @NonBlocking
-    public jakarta.ws.rs.core.Response caching(@HeaderParam("If-None-Match") String ifNoneMatch) {
-        if (CACHING_ETAG.equals(ifNoneMatch)) {
-            return jakarta.ws.rs.core.Response.notModified().header("ETag", CACHING_ETAG).build();
-        }
-        return jakarta.ws.rs.core.Response.ok("OK", MediaType.TEXT_PLAIN).header("ETag", CACHING_ETAG).build();
-    }
-
     @GET
     @Path("/static/{filename}")
     @NonBlocking

@@ -6,5 +6,11 @@
   "description": "Express.js on Node.js with cluster mode, etag/x-powered-by disabled, raw writeHead responses.",
   "repo": "https://github.com/expressjs/express",
   "enabled": true,
-  "tests": ["baseline", "pipelined", "limited-conn", "json"]
+  "tests": [
+    "baseline",
+    "noisy",
+    "pipelined",
+    "limited-conn",
+    "json"
+  ]
 }

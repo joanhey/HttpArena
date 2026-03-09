@@ -413,7 +413,7 @@ html.dark .lb-filters-toggle:hover .lb-toggle-icon { color: #60a5fa; }
   (dict "id" "json"      "label" "JSON Processing"       "conns" (slice 4096 16384 32768)       "desc" "Each request hits <code>GET /json</code>. The server loads a 50-item dataset at startup, computes a derived <code>total</code> field per item, and returns the full result as a JSON response (~10 KB). Measures object allocation, JSON serialization performance, and framework response overhead — the typical workload of a real-world API.")
   (dict "id" "upload"       "label" "Upload (20 MB)"        "conns" (slice 64 256 512)     "desc" "Each request sends a 20 MB binary payload via <code>POST /upload</code>. The server reads the entire body and returns its CRC32 checksum. Measures request body ingestion throughput — how efficiently a framework handles large uploads, including buffering, memory management, and I/O handling under sustained load.")
   (dict "id" "compression" "label" "Compression"           "conns" (slice 4096 16384) "desc" "Requests <code>GET /compression</code> with <code>Accept-Encoding: gzip</code>. The server loads a 6000-item dataset (~1 MB JSON) at startup and serves it gzip-compressed on the fly. Measures the throughput cost of real-time compression — only frameworks with built-in gzip support are eligible.")
-  (dict "id" "caching"     "label" "Caching (ETag 304)"    "conns" (slice 512 4096 16384) "desc" "Requests <code>GET /caching</code> with <code>If-None-Match</code> matching the server's ETag. The server returns <code>304 Not Modified</code> with no body. Measures conditional request handling efficiency — ETag comparison and minimal-overhead response path.")
+  (dict "id" "noisy"       "label" "Noisy"                 "conns" (slice 512 4096 16384) "desc" "Valid baseline requests interleaved with malformed noise — nonexistent paths, oversized headers, bad content-length, and raw binary. Only 2xx responses count. Measures resilience: how well a framework maintains throughput while rejecting garbage traffic.")
   (dict "id" "pipelined"    "label" "Pipelined (16)"        "conns" (slice 512 4096 16384) "desc" "16 HTTP requests are sent back-to-back on each connection before waiting for responses. Uses a lightweight <code>GET /pipeline</code> endpoint that returns a fixed response, isolating raw I/O and pipeline handling from application logic. Frameworks that batch pipelined requests from the read buffer gain a significant advantage.")
 }}
 
@@ -501,7 +501,7 @@ var lbProfiles = {{ $profiles | jsonify | safeJS }};
   </div>
   <div style="font-size:0.75rem; color:#94a3b8; margin:0 0 0.75rem 0;">Click a row to expand details</div>
 
-  {{ $isReconn := eq $p.id "limited-conn" }}
+  {{ $isReconn := or (eq $p.id "limited-conn") (eq $p.id "noisy") }}
   <div class="lb-conn-panel active" data-profile="{{ $p.id }}" data-conns="best">
     <div class="lb">
       <div class="lb-row lb-header{{ if $isReconn }} lb-row-reconn{{ end }}">
@@ -947,7 +947,7 @@ window.addEventListener('roundChanged', function(ev) {
 
     if (!results || results.length === 0) return;
 
-    var isReconn = profile === 'limited-conn';
+    var isReconn = profile === 'limited-conn' || profile === 'noisy';
     var sorted = results.slice().sort(function(a, b) { return b.rps - a.rps; });
     var maxRps = sorted[0].rps || 1;
 

@@ -29,13 +29,13 @@ declare -A PROFILES=(
     [json]="1|0||4096,16384,32768|json"
     [upload]="1|0||64,256,512|upload"
     [compression]="1|0||4096,16384|compression"
-    [caching]="1|0||512,4096,16384|caching"
+    [noisy]="1|0||512,4096,16384|noisy"
     [baseline-h2]="1|0||64,256,1024|h2"
     [static-h2]="1|0||64,256,1024|static-h2"
     [baseline-h3]="128|0||64,512|h3"
     [static-h3]="128|0||64,512|static-h3"
 )
-PROFILE_ORDER=(baseline pipelined limited-conn json upload compression caching baseline-h2 static-h2 baseline-h3 static-h3)
+PROFILE_ORDER=(baseline pipelined limited-conn json upload compression noisy baseline-h2 static-h2 baseline-h3 static-h3)
 
 # Parse flags
 SAVE_RESULTS=false
@@ -282,8 +282,8 @@ for profile in "${profiles_to_run[@]}"; do
         [ "$endpoint" = "h2" ] && local_check_url="https://localhost:$H2PORT/baseline2?a=1&b=1"
     elif [ "$endpoint" = "upload" ]; then
         local_check_url="http://localhost:$PORT/baseline11?a=1&b=1"
-    elif [ "$endpoint" = "caching" ]; then
-        local_check_url="http://localhost:$PORT/caching"
+    elif [ "$endpoint" = "noisy" ]; then
+        local_check_url="http://localhost:$PORT/baseline11?a=1&b=1"
     elif [ "$endpoint" = "json" ]; then
         local_check_url="http://localhost:$PORT/json"
     else
@@ -342,10 +342,10 @@ for profile in "${profiles_to_run[@]}"; do
         gc_args=("http://localhost:$PORT"
             --raw "$REQUESTS_DIR/json-gzip.raw"
             -c "$CONNS" -t "$THREADS" -d "$DURATION" -p "$pipeline")
-    elif [ "$endpoint" = "caching" ]; then
+    elif [ "$endpoint" = "noisy" ]; then
         gc_args=("http://localhost:$PORT"
-            --raw "$REQUESTS_DIR/caching-etag.raw"
-            -c "$CONNS" -t "$THREADS" -d "$DURATION" -p "$pipeline" -s 304)
+            --raw "$REQUESTS_DIR/get.raw,$REQUESTS_DIR/post_cl.raw,$REQUESTS_DIR/noise-badpath.raw,$REQUESTS_DIR/noise-longheader.raw,$REQUESTS_DIR/noise-badcl.raw,$REQUESTS_DIR/noise-binary.raw"
+            -c "$CONNS" -t "$THREADS" -d "$DURATION" -p "$pipeline")
     elif [ "$endpoint" = "json" ]; then
         gc_args=("http://localhost:$PORT/json"
             -c "$CONNS" -t "$THREADS" -d "$DURATION" -p "$pipeline")

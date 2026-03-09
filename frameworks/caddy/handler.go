@@ -72,6 +72,7 @@ func (h *Handler) Provision(ctx caddy.Context) error {
 	if err != nil {
 		return nil // dataset not available, /json will 500
 	}
+
 	var dataset []struct {
 		ID       int      `json:"id"`
 		Name     string   `json:"name"`
@@ -213,19 +214,6 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyht
 			fmt.Fprintf(w, "%08x", checksum)
 		} else {
 			http.Error(w, "POST required", 405)
-		}
-		return nil
-
-	case "/caching":
-		inm := r.Header.Get("If-None-Match")
-		w.Header().Set("ETag", `"AOK"`)
-		w.Header().Set("Server", "caddy")
-		if inm == `"AOK"` {
-			w.WriteHeader(304)
-		} else {
-			w.Header().Set("Content-Type", "text/plain")
-			w.Header().Set("Content-Length", "2")
-			w.Write([]byte("OK"))
 		}
 		return nil
 

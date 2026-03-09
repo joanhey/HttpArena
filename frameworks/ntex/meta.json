@@ -6,5 +6,14 @@
   "description": "High-performance Rust web framework by the creator of actix-web, with mimalloc and sonic_rs.",
   "repo": "https://github.com/ntex-rs/ntex",
   "enabled": true,
-  "tests": ["baseline", "pipelined", "limited-conn", "json", "upload", "baseline-h2", "static-h2"]
+  "tests": [
+    "baseline",
+    "noisy",
+    "pipelined",
+    "limited-conn",
+    "json",
+    "upload",
+    "baseline-h2",
+    "static-h2"
+  ]
 }

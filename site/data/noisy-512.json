@@ -1,0 +1,41 @@
+[
+{
+  "framework": "aspnet-minimal",
+  "language": "C#",
+  "rps": 648038,
+  "avg_latency": "356us",
+  "p99_latency": "2.66ms",
+  "cpu": "1781.1%",
+  "memory": "162.9MiB",
+  "connections": 512,
+  "threads": 12,
+  "duration": "5s",
+  "pipeline": 1,
+  "bandwidth": "110.42MB/s",
+  "reconnects": 414521,
+  "status_2xx": 3240193,
+  "status_3xx": 0,
+  "status_4xx": 831917,
+  "status_5xx": 147898
+}
+,
+{
+  "framework": "nginx",
+  "language": "C",
+  "rps": 264479,
+  "avg_latency": "136us",
+  "p99_latency": "544us",
+  "cpu": "1269.9%",
+  "memory": "971.6MiB",
+  "connections": 512,
+  "threads": 12,
+  "duration": "5s",
+  "pipeline": 1,
+  "bandwidth": "152.17MB/s",
+  "reconnects": 1884523,
+  "status_2xx": 1322399,
+  "status_3xx": 0,
+  "status_4xx": 2068474,
+  "status_5xx": 0
+}
+]

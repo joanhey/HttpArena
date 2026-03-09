@@ -6,5 +6,11 @@
   "description": "Deno HTTP server using deno serve --parallel with zero-dependency native fetch handler.",
   "repo": "https://github.com/denoland/deno",
   "enabled": true,
-  "tests": ["baseline", "pipelined", "limited-conn", "json"]
+  "tests": [
+    "baseline",
+    "noisy",
+    "pipelined",
+    "limited-conn",
+    "json"
+  ]
 }

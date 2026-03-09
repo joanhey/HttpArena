@@ -137,7 +137,7 @@ check_header() {
 wait_h2() {
     echo "[wait] Waiting for HTTPS port..."
     for i in $(seq 1 15); do
-        if curl -sk -o /dev/null "https://localhost:$H2PORT/baseline2?a=1&b=1" 2>/dev/null; then
+        if curl -sk --http2 -o /dev/null "https://localhost:$H2PORT/baseline2?a=1&b=1" 2>/dev/null; then
             return 0
         fi
         if [ "$i" -eq 15 ]; then
@@ -299,42 +299,34 @@ print(f'{count} {has_total}')
     fi
 fi
 
-# ───── Caching (GET /caching with ETag) ─────
+# ───── Noisy / Resilience (baseline + malformed requests) ─────
 
-if has_test "caching"; then
-    echo "[test] caching endpoint"
+if has_test "noisy"; then
+    echo "[test] noisy resilience"
 
-    # Without If-None-Match: should return 200 with body "OK" and ETag header
-    check_status "GET /caching without If-None-Match" "200" \
-        "http://localhost:$PORT/caching"
+    # Valid baseline request still works
+    check "GET /baseline11?a=13&b=42 (noisy context)" "55" \
+        "http://localhost:$PORT/baseline11?a=13&b=42"
 
-    check "GET /caching body" "OK" \
-        "http://localhost:$PORT/caching"
-
-    check_header "GET /caching ETag header" "ETag" '"AOK"' \
-        "http://localhost:$PORT/caching"
-
-    # With matching If-None-Match: should return 304
-    check_status "GET /caching with matching If-None-Match" "304" \
-        -H 'If-None-Match: "AOK"' "http://localhost:$PORT/caching"
-
-    # 304 should have ETag header
-    check_header "GET /caching 304 ETag header" "ETag" '"AOK"' \
-        -H 'If-None-Match: "AOK"' "http://localhost:$PORT/caching"
-
-    # 304 should have no body
-    caching_304_body=$(curl -s -H 'If-None-Match: "AOK"' "http://localhost:$PORT/caching")
-    if [ -z "$caching_304_body" ]; then
-        echo "  PASS [GET /caching 304 no body]"
+    # Bad method should return 4xx (400 or 405)
+    noisy_bad_method=$(curl -s -o /dev/null -w '%{http_code}' -X GETT "http://localhost:$PORT/baseline11?a=1&b=1" 2>/dev/null || echo "000")
+    if [ "$noisy_bad_method" -ge 400 ] && [ "$noisy_bad_method" -lt 500 ]; then
+        echo "  PASS [bad method] (HTTP $noisy_bad_method)"
         PASS=$((PASS + 1))
     else
-        echo "  FAIL [GET /caching 304 no body]: got body '$caching_304_body'"
+        echo "  FAIL [bad method]: expected 4xx, got HTTP $noisy_bad_method"
         FAIL=$((FAIL + 1))
     fi
 
-    # With non-matching If-None-Match: should return 200
-    check_status "GET /caching with non-matching If-None-Match" "200" \
-        -H 'If-None-Match: "WRONG"' "http://localhost:$PORT/caching"
+    # Nonexistent path should return 404
+    check_status "GET /this/path/does/not/exist" "404" \
+        "http://localhost:$PORT/this/path/does/not/exist"
+
+    # After noise, valid request still works (server didn't crash)
+    A4=$((RANDOM % 900 + 100))
+    B4=$((RANDOM % 900 + 100))
+    check "GET /baseline11?a=$A4&b=$B4 (post-noise)" "$((A4 + B4))" \
+        "http://localhost:$PORT/baseline11?a=$A4&b=$B4"
 fi
 
 # ───── Baseline H2 (GET /baseline2 over HTTP/2 + TLS) ─────
@@ -342,14 +334,24 @@ fi
 if has_test "baseline-h2"; then
     echo "[test] baseline-h2 endpoint"
     if wait_h2; then
+        # Verify server actually speaks HTTP/2
+        h2_proto=$(curl -sk --http2 -o /dev/null -w '%{http_version}' "https://localhost:$H2PORT/baseline2?a=1&b=1")
+        if [ "$h2_proto" = "2" ]; then
+            echo "  PASS [HTTP/2 protocol negotiation] (HTTP/$h2_proto)"
+            PASS=$((PASS + 1))
+        else
+            echo "  FAIL [HTTP/2 protocol negotiation]: server responded with HTTP/$h2_proto"
+            FAIL=$((FAIL + 1))
+        fi
+
         check "GET /baseline2?a=13&b=42 over HTTP/2" "55" \
-            -sk "https://localhost:$H2PORT/baseline2?a=13&b=42"
+            -sk --http2 "https://localhost:$H2PORT/baseline2?a=13&b=42"
 
         # Anti-cheat: randomized query params
         A3=$((RANDOM % 900 + 100))
         B3=$((RANDOM % 900 + 100))
         check "GET /baseline2?a=$A3&b=$B3 over HTTP/2 (random)" "$((A3 + B3))" \
-            -sk "https://localhost:$H2PORT/baseline2?a=$A3&b=$B3"
+            -sk --http2 "https://localhost:$H2PORT/baseline2?a=$A3&b=$B3"
     fi
 fi
 
@@ -360,16 +362,16 @@ if has_test "static-h2"; then
     if wait_h2; then
         # Check a few static files exist and return correct Content-Type
         check_header "GET /static/reset.css Content-Type" "Content-Type" "text/css" \
-            -sk "https://localhost:$H2PORT/static/reset.css"
+            -sk --http2 "https://localhost:$H2PORT/static/reset.css"
 
         check_header "GET /static/app.js Content-Type" "Content-Type" "application/javascript" \
-            -sk "https://localhost:$H2PORT/static/app.js"
+            -sk --http2 "https://localhost:$H2PORT/static/app.js"
 
         check_header "GET /static/manifest.json Content-Type" "Content-Type" "application/json" \
-            -sk "https://localhost:$H2PORT/static/manifest.json"
+            -sk --http2 "https://localhost:$H2PORT/static/manifest.json"
 
         # Check response size is non-zero
-        static_size=$(curl -sk -o /dev/null -w '%{size_download}' "https://localhost:$H2PORT/static/reset.css")
+        static_size=$(curl -sk --http2 -o /dev/null -w '%{size_download}' "https://localhost:$H2PORT/static/reset.css")
         if [ "$static_size" -gt 0 ]; then
             echo "  PASS [static-h2 response size] ($static_size bytes)"
             PASS=$((PASS + 1))
@@ -380,7 +382,7 @@ if has_test "static-h2"; then
 
         # 404 for missing files
         check_status "GET /static/nonexistent.txt" "404" \
-            -sk "https://localhost:$H2PORT/static/nonexistent.txt"
+            -sk --http2 "https://localhost:$H2PORT/static/nonexistent.txt"
     fi
 fi
 

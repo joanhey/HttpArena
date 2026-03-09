@@ -109,21 +109,6 @@ public class BenchmarkController {
         return largeJsonResponse;
     }
 
-    private static final String CACHING_ETAG = "\"AOK\"";
-
-    @GetMapping("/caching")
-    public org.springframework.http.ResponseEntity<String> caching(
-            @RequestHeader(value = "If-None-Match", required = false) String ifNoneMatch) {
-        if (CACHING_ETAG.equals(ifNoneMatch)) {
-            return org.springframework.http.ResponseEntity.status(304)
-                .header("ETag", CACHING_ETAG).build();
-        }
-        return org.springframework.http.ResponseEntity.ok()
-            .header("ETag", CACHING_ETAG)
-            .contentType(MediaType.TEXT_PLAIN)
-            .body("OK");
-    }
-
     @GetMapping("/static/{filename}")
     public org.springframework.http.ResponseEntity<byte[]> staticFile(@PathVariable String filename) {
         byte[] data = staticFiles.get(filename);

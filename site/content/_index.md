@@ -89,10 +89,10 @@ html.dark .test-card-endpoint { color: #64748b; }
     <div class="test-card-desc">Serve ~1 MB JSON with gzip compression. Bandwidth-adjusted scoring.</div>
     <div class="test-card-endpoint">GET /compression (gzip)</div>
   </a>
-  <a class="test-card" href="docs/tests/h1/caching">
-    <div class="test-card-title">Caching (ETag 304)</div>
-    <div class="test-card-desc">Conditional requests with If-None-Match — server returns 304 Not Modified.</div>
-    <div class="test-card-endpoint">GET /caching</div>
+  <a class="test-card" href="docs/tests/h1/noisy">
+    <div class="test-card-title">Noisy (Resilience)</div>
+    <div class="test-card-desc">Valid requests mixed with malformed noise — bad paths, binary, oversized headers, bad content-length. Only 2xx count.</div>
+    <div class="test-card-endpoint">GET/POST /baseline11 + noise</div>
   </a>
   <a class="test-card" href="docs/tests/h1/pipelined">
     <div class="test-card-title">Pipelined (16x)</div>

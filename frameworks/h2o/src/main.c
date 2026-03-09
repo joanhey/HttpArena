@@ -21,7 +21,6 @@ static char *json_response;
 static size_t json_response_len;
 static char *json_large_response;
 static size_t json_large_response_len;
-
 /* Pre-loaded static files */
 #define MAX_STATIC_FILES 32
 typedef struct {
@@ -231,43 +230,6 @@ static int on_upload(h2o_handler_t *h, h2o_req_t *req)
     return 0;
 }
 
-/* GET /caching — ETag-based conditional response */
-static int on_caching(h2o_handler_t *h, h2o_req_t *req)
-{
-    (void)h;
-    static const h2o_iovec_t etag_val = {H2O_STRLIT("\"AOK\"")};
-    static const h2o_iovec_t body = {H2O_STRLIT("OK")};
-
-    h2o_add_header(&req->pool, &req->res.headers, H2O_TOKEN_ETAG,
-                   NULL, etag_val.base, etag_val.len);
-
-    /* Check If-None-Match */
-    ssize_t inm_idx = h2o_find_header(&req->headers, H2O_TOKEN_IF_NONE_MATCH, -1);
-    if (inm_idx != -1 &&
-        req->headers.entries[inm_idx].value.len == etag_val.len &&
-        memcmp(req->headers.entries[inm_idx].value.base, etag_val.base, etag_val.len) == 0) {
-        req->res.status = 304;
-        req->res.reason = "Not Modified";
-        req->res.content_length = 0;
-        h2o_generator_t gen;
-        memset(&gen, 0, sizeof(gen));
-        h2o_start_response(req, &gen);
-        h2o_send(req, NULL, 0, H2O_SEND_STATE_FINAL);
-        return 0;
-    }
-
-    h2o_generator_t gen;
-    memset(&gen, 0, sizeof(gen));
-    req->res.status = 200;
-    req->res.reason = "OK";
-    req->res.content_length = body.len;
-    h2o_add_header(&req->pool, &req->res.headers, H2O_TOKEN_CONTENT_TYPE,
-                   NULL, H2O_STRLIT("text/plain"));
-    h2o_start_response(req, &gen);
-    h2o_send(req, (h2o_iovec_t *)&body, 1, H2O_SEND_STATE_FINAL);
-    return 0;
-}
-
 /* GET /compression — return pre-serialized large JSON (gzip handled by h2o) */
 static int on_compression(h2o_handler_t *h, h2o_req_t *req)
 {
@@ -353,7 +315,6 @@ static void setup_host(h2o_hostconf_t *host)
     register_handler(host, "/json", on_json);
     register_handler(host, "/static", on_static);
     register_handler(host, "/upload", on_upload);
-    register_handler(host, "/caching", on_caching);
     h2o_pathconf_t *pc_compress = register_handler(host, "/compression", on_compression);
     h2o_compress_args_t compress_args = {.min_size = 100, .gzip = {.quality = 1}, .brotli = {.quality = -1}};
     h2o_compress_register(pc_compress, &compress_args);

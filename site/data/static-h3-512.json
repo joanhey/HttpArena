@@ -47,15 +47,20 @@
 {
   "framework": "nginx",
   "language": "C",
-  "rps": 222504,
-  "avg_latency": "279.47ms",
-  "p99_latency": "780.65ms",
-  "cpu": "1704.0%",
-  "memory": "2.4GiB",
+  "rps": 208884,
+  "avg_latency": "297.67ms",
+  "p99_latency": "810.39ms",
+  "cpu": "1728.0%",
+  "memory": "2.8GiB",
   "connections": 512,
   "threads": 12,
   "duration": "5s",
   "pipeline": 128,
-  "reconnects": 0
+  "bandwidth": "3052.87MB/s",
+  "reconnects": 0,
+  "status_2xx": 1055418,
+  "status_3xx": 0,
+  "status_4xx": 0,
+  "status_5xx": 0
 }
 ]
