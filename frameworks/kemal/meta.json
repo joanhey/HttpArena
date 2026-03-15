@@ -1,0 +1,19 @@
+{
+  "display_name": "kemal",
+  "language": "Crystal",
+  "type": "framework",
+  "engine": "Kemal",
+  "description": "Kemal web framework for Crystal, compiled with --release optimizations.",
+  "repo": "https://github.com/kemalcr/kemal",
+  "enabled": true,
+  "tests": [
+    "baseline",
+    "pipelined",
+    "limited-conn",
+    "json",
+    "upload",
+    "compression",
+    "noisy",
+    "mixed"
+  ]
+}
