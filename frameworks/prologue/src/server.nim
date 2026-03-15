@@ -1,5 +1,5 @@
 import prologue
-import std/[json, strutils, math, os, tables]
+import std/[json, strutils, math, os, tables, posix]
 import db_connector/db_sqlite
 import zippy
 
@@ -238,44 +238,101 @@ let staticHandler: HandlerAsync = proc(ctx: Context) {.async, closure, gcsafe.} 
     else:
       resp "Not Found", Http404
 
-# Set up and run
-loadDataset()
-loadDatasetLarge()
-loadStaticFiles()
-loadDb()
+# ---------------------------------------------------------------------------
+# Multi-process setup via SO_REUSEPORT + posix fork
+# ---------------------------------------------------------------------------
 
-let settings = newSettings(
-  port = Port(8080),
-  debug = false,
-  address = "0.0.0.0",
-  data = %*{"maxBody": 33554432}  # 32MB for upload benchmark (~20MB payload)
-)
+proc getCpuCount(): int =
+  try:
+    result = parseInt(getEnv("NPROC", "0"))
+    if result > 0:
+      return result
+  except:
+    discard
+  # Read from /proc/cpuinfo or sysconf
+  try:
+    result = sysconf(SC_NPROCESSORS_ONLN).int
+  except:
+    result = 1
+  if result < 1:
+    result = 1
 
-var app = newApp(settings = settings)
+proc startWorker() =
+  # Each worker loads data independently (post-fork, clean state)
+  loadDataset()
+  loadDatasetLarge()
+  loadStaticFiles()
+  loadDb()
 
-let methodValidationMiddleware: HandlerAsync = proc(ctx: Context) {.async, closure, gcsafe.} =
-  let methStr = $ctx.request.reqMethod
-  if methStr notin validMethodStrs:
-    ctx.response.setHeader("Content-Type", "text/plain")
-    resp "Method Not Allowed", Http405
-    return
-  await switch(ctx)
+  let settings = newSettings(
+    port = Port(8080),
+    debug = false,
+    reusePort = true,
+    address = "0.0.0.0",
+    data = %*{"maxBody": 33554432}  # 32MB for upload benchmark (~20MB payload)
+  )
 
-let serverHeaderMiddleware: HandlerAsync = proc(ctx: Context) {.async, closure, gcsafe.} =
-  ctx.response.setHeader("Server", "prologue")
-  await switch(ctx)
+  var app = newApp(settings = settings)
 
-app.use(methodValidationMiddleware)
-app.use(serverHeaderMiddleware)
+  let methodValidationMiddleware: HandlerAsync = proc(ctx: Context) {.async, closure, gcsafe.} =
+    let methStr = $ctx.request.reqMethod
+    if methStr notin validMethodStrs:
+      ctx.response.setHeader("Content-Type", "text/plain")
+      resp "Method Not Allowed", Http405
+      return
+    await switch(ctx)
 
-app.addRoute("/pipeline", pipelineHandler, HttpGet)
-app.addRoute("/baseline11", baseline11Handler, HttpGet)
-app.addRoute("/baseline11", baseline11Handler, HttpPost)
-app.addRoute("/baseline2", baseline2Handler, HttpGet)
-app.addRoute("/json", jsonHandler, HttpGet)
-app.addRoute("/compression", compressionHandler, HttpGet)
-app.addRoute("/upload", uploadHandler, HttpPost)
-app.addRoute("/db", dbHandler, HttpGet)
-app.addRoute("/static/{filename}", staticHandler, HttpGet)
+  let serverHeaderMiddleware: HandlerAsync = proc(ctx: Context) {.async, closure, gcsafe.} =
+    ctx.response.setHeader("Server", "prologue")
+    await switch(ctx)
 
-app.run()
+  app.use(methodValidationMiddleware)
+  app.use(serverHeaderMiddleware)
+
+  app.addRoute("/pipeline", pipelineHandler, HttpGet)
+  app.addRoute("/baseline11", baseline11Handler, HttpGet)
+  app.addRoute("/baseline11", baseline11Handler, HttpPost)
+  app.addRoute("/baseline2", baseline2Handler, HttpGet)
+  app.addRoute("/json", jsonHandler, HttpGet)
+  app.addRoute("/compression", compressionHandler, HttpGet)
+  app.addRoute("/upload", uploadHandler, HttpPost)
+  app.addRoute("/db", dbHandler, HttpGet)
+  app.addRoute("/static/{filename}", staticHandler, HttpGet)
+
+  app.run()
+
+var gChildPids: array[1024, Pid]
+var gChildCount: int = 0
+
+proc handleSignal(sig: cint) {.noconv.} =
+  for i in 0 ..< gChildCount:
+    discard kill(gChildPids[i], SIGTERM)
+  quit(0)
+
+let workerCount = getCpuCount()
+
+if workerCount > 1:
+  for i in 0 ..< workerCount:
+    let pid = fork()
+    if pid == 0:
+      # Child process — run the server
+      startWorker()
+      quit(0)
+    elif pid > 0:
+      gChildPids[gChildCount] = pid
+      inc gChildCount
+    else:
+      echo "Fork failed for worker ", i
+      quit(1)
+
+  # Parent process — handle signals and wait for children
+  c_signal(SIGINT, handleSignal)
+  c_signal(SIGTERM, handleSignal)
+
+  while true:
+    var status: cint
+    let pid = wait(addr status)
+    if pid < 0:
+      break
+else:
+  startWorker()
