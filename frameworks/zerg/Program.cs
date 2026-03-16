@@ -10,7 +10,7 @@ using Microsoft.Data.Sqlite;
 using zerg;
 using zerg.Engine;
 using zerg.Engine.Configs;
-using Zerg.Core;
+using zerg.Core;
 
 // ── Data models ──
 
