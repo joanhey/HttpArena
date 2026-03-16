@@ -279,5 +279,10 @@ func main() {
 		return c.SendStatus(404)
 	})
 
+	// Catch-all: return 404 for unmatched routes and methods
+	app.Use(func(c *fiber.Ctx) error {
+		return c.SendStatus(fiber.StatusNotFound)
+	})
+
 	app.Listen(":8080")
 }
