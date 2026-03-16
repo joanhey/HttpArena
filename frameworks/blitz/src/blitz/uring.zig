@@ -391,8 +391,20 @@ fn workerThread(router: *Router, config: Config, is_primary: bool) void {
 
                             // Parse and handle pipelined requests
                             var off: usize = 0;
+                            var close_after_write = false;
                             while (off < st.read_len) {
-                                const result = parser.parse(st.read_buf[off..st.read_len]) orelse break;
+                                const result = parser.parse(st.read_buf[off..st.read_len]) orelse {
+                                    // If headers are complete but parse failed, it's a bad request
+                                    const remaining = st.read_buf[off..st.read_len];
+                                    if (mem.indexOf(u8, remaining, "\r\n\r\n")) |hdr_end| {
+                                        const bad_resp = "HTTP/1.1 400 Bad Request\r\nContent-Length: 11\r\nConnection: close\r\n\r\nBad Request";
+                                        st.write_buf.appendSlice(bad_resp) catch {};
+                                        off += hdr_end + 4;
+                                        close_after_write = true;
+                                        break;
+                                    }
+                                    break;
+                                };
                                 var req = result.request;
                                 var resp = Response{};
 
