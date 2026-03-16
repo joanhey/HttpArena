@@ -18,6 +18,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 concurrency:
   group: benchmark
@@ -53,13 +54,22 @@ jobs:
             ./scripts/benchmark.sh --save "$fw" ${{ inputs.profile }} || echo "WARN: $fw benchmark failed"
           done
 
-      - name: Commit and push results
+      - name: Create PR with results
         if: steps.detect.outputs.list != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "HttpArena Bot"
           git config user.email "bot@httparena"
           git add site/data/ site/static/logs/ 2>/dev/null || true
           if ! git diff --cached --quiet; then
+            branch="benchmark-results/$(date +%Y%m%d-%H%M%S)"
+            git checkout -b "$branch"
             git commit -m "benchmark: update results for ${{ steps.detect.outputs.list }}"
-            git push
+            git push -u origin "$branch"
+            gh pr create \
+              --title "benchmark: update results for ${{ steps.detect.outputs.list }}" \
+              --body "Automated benchmark results update." \
+              --base main \
+              --head "$branch"
           fi
