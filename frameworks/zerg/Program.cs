@@ -269,14 +269,15 @@ readonly struct HttpRequest
     public readonly int TotalLength;
     public readonly int ContentLength;
     public readonly bool AcceptsGzip;
+    public readonly bool IsChunked;
 
     public HttpRequest(ReadOnlyMemory<byte> method, ReadOnlyMemory<byte> path,
         ReadOnlyMemory<byte> query, ReadOnlyMemory<byte> body,
-        int totalLength, int contentLength, bool acceptsGzip)
+        int totalLength, int contentLength, bool acceptsGzip, bool isChunked = false)
     {
         Method = method; Path = path; Query = query; Body = body;
         TotalLength = totalLength; ContentLength = contentLength;
-        AcceptsGzip = acceptsGzip;
+        AcceptsGzip = acceptsGzip; IsChunked = isChunked;
     }
 }
 
@@ -320,45 +321,166 @@ static class HttpParser
             path = uri;
         }
 
-        // Parse Content-Length if present
+        // Parse headers — include the full header block up to the double CRLF
         int contentLength = 0;
         bool acceptsGzip = false;
-        var headers = span[..headerEnd];
-        int pos = 0;
-        while (pos < headers.Length)
-        {
-            int lineEnd = headers[pos..].IndexOf("\r\n"u8);
-            if (lineEnd < 0) break;
-            var line = headers[pos..(pos + lineEnd)];
-            pos += lineEnd + 2;
+        bool isChunked = false;
 
-            if (line.Length > 16 &&
-                (line[0] == (byte)'C' || line[0] == (byte)'c') &&
-                (line[8] == (byte)'L' || line[8] == (byte)'l'))
+        // Skip the request line first
+        int reqLineEnd = span.IndexOf("\r\n"u8);
+        if (reqLineEnd < 0) return null;
+
+        // Parse each header line between request line and header end
+        int pos = reqLineEnd + 2;
+        while (pos < headerEnd)
+        {
+            int lineEnd = span[pos..headerEnd].IndexOf("\r\n"u8);
+            ReadOnlySpan<byte> line;
+            if (lineEnd < 0)
             {
-                // Content-Length:
+                // Last header line before \r\n\r\n
+                line = span[pos..headerEnd];
+                pos = headerEnd;
+            }
+            else
+            {
+                line = span[pos..(pos + lineEnd)];
+                pos += lineEnd + 2;
+            }
+
+            if (line.Length < 2) continue;
+
+            byte first = (byte)(line[0] | 0x20); // lowercase
+
+            if (first == (byte)'c')
+            {
+                // Content-Length or Content-Type
                 int colon = line.IndexOf((byte)':');
                 if (colon >= 0)
                 {
-                    var val = line[(colon + 1)..];
-                    // Trim leading space
-                    while (val.Length > 0 && val[0] == (byte)' ') val = val[1..];
-                    if (Utf8Parser.TryParse(val, out int cl, out _))
-                        contentLength = cl;
+                    var headerName = line[..colon];
+                    if (headerName.Length >= 14)
+                    {
+                        // Check for Content-Length (case insensitive)
+                        bool isContentLength = true;
+                        ReadOnlySpan<byte> cl = "content-length"u8;
+                        if (headerName.Length >= cl.Length)
+                        {
+                            for (int i = 0; i < cl.Length; i++)
+                            {
+                                if ((headerName[i] | 0x20) != cl[i]) { isContentLength = false; break; }
+                            }
+                        }
+                        else isContentLength = false;
+
+                        if (isContentLength)
+                        {
+                            var val = line[(colon + 1)..];
+                            while (val.Length > 0 && val[0] == (byte)' ') val = val[1..];
+                            if (Utf8Parser.TryParse(val, out int clv, out _))
+                                contentLength = clv;
+                        }
+                    }
                 }
             }
-            else if (line.Length > 15 &&
-                (line[0] == (byte)'A' || line[0] == (byte)'a') &&
-                (line[7] == (byte)'E' || line[7] == (byte)'e'))
+            else if (first == (byte)'a')
             {
-                // Accept-Encoding:
+                // Accept-Encoding
                 if (line.IndexOf("gzip"u8) >= 0)
                     acceptsGzip = true;
             }
+            else if (first == (byte)'t')
+            {
+                // Transfer-Encoding: chunked
+                int colon = line.IndexOf((byte)':');
+                if (colon >= 0)
+                {
+                    var headerName = line[..colon];
+                    ReadOnlySpan<byte> te = "transfer-encoding"u8;
+                    bool isTE = headerName.Length >= te.Length;
+                    if (isTE)
+                    {
+                        for (int i = 0; i < te.Length; i++)
+                        {
+                            if ((headerName[i] | 0x20) != te[i]) { isTE = false; break; }
+                        }
+                    }
+                    if (isTE)
+                    {
+                        var val = line[(colon + 1)..];
+                        if (val.IndexOf("chunked"u8) >= 0)
+                            isChunked = true;
+                    }
+                }
+            }
         }
 
-        int totalLen = headersLen + contentLength;
-        if (span.Length < totalLen) return null; // body not yet complete
+        // Handle chunked transfer encoding
+        if (isChunked)
+        {
+            // Parse chunked body: read chunks until 0\r\n
+            var remaining = span[headersLen..];
+            int bodyStart = 0;
+            using var bodyStream = new MemoryStream();
+
+            while (bodyStart < remaining.Length)
+            {
+                // Find chunk size line
+                int chunkLineEnd = remaining[bodyStart..].IndexOf("\r\n"u8);
+                if (chunkLineEnd < 0) return null; // incomplete
+
+                var chunkSizeLine = remaining[bodyStart..(bodyStart + chunkLineEnd)];
+                // Parse hex chunk size
+                int chunkSize = 0;
+                for (int i = 0; i < chunkSizeLine.Length; i++)
+                {
+                    byte b = chunkSizeLine[i];
+                    if (b >= (byte)'0' && b <= (byte)'9')
+                        chunkSize = chunkSize * 16 + (b - '0');
+                    else if (b >= (byte)'a' && b <= (byte)'f')
+                        chunkSize = chunkSize * 16 + (b - 'a' + 10);
+                    else if (b >= (byte)'A' && b <= (byte)'F')
+                        chunkSize = chunkSize * 16 + (b - 'A' + 10);
+                    else if (b == (byte)';')
+                        break; // chunk extension
+                    else
+                        break;
+                }
+
+                bodyStart += chunkLineEnd + 2; // skip size line + CRLF
+
+                if (chunkSize == 0)
+                {
+                    // Terminal chunk — skip trailing CRLF
+                    if (bodyStart + 2 <= remaining.Length)
+                        bodyStart += 2;
+                    break;
+                }
+
+                // Ensure we have enough data for the chunk + trailing CRLF
+                if (bodyStart + chunkSize + 2 > remaining.Length)
+                    return null; // incomplete
+
+                bodyStream.Write(remaining.Slice(bodyStart, chunkSize));
+                bodyStart += chunkSize + 2; // skip chunk data + CRLF
+            }
+
+            int totalLen = headersLen + bodyStart;
+            var bodyBytes = bodyStream.ToArray();
+
+            return new HttpRequest(
+                method.ToArray(),
+                path.ToArray(),
+                query.Length > 0 ? query.ToArray() : ReadOnlyMemory<byte>.Empty,
+                bodyBytes,
+                totalLen,
+                bodyBytes.Length,
+                acceptsGzip,
+                isChunked: true);
+        }
+
+        int totalLength = headersLen + contentLength;
+        if (span.Length < totalLength) return null; // body not yet complete
 
         ReadOnlyMemory<byte> body = default;
         if (contentLength > 0)
@@ -371,7 +493,7 @@ static class HttpParser
             path.ToArray(),
             query.Length > 0 ? query.ToArray() : ReadOnlyMemory<byte>.Empty,
             body,
-            totalLen,
+            totalLength,
             contentLength,
             acceptsGzip);
     }
