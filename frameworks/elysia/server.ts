@@ -1,6 +1,6 @@
 import { Elysia } from "elysia";
 import { Database } from "bun:sqlite";
-import { readFileSync, readdirSync, existsSync } from "fs";
+import { readFileSync, readdirSync } from "fs";
 
 const MIME_TYPES: Record<string, string> = {
   ".css": "text/css", ".js": "application/javascript", ".html": "text/html",
@@ -60,24 +60,10 @@ function sumQuery(url: string): number {
   return sum;
 }
 
-// Read TLS certs
-let tlsOptions: { cert: string; key: string } | undefined;
-try {
-  tlsOptions = {
-    cert: readFileSync("/certs/server.crt", "utf8"),
-    key: readFileSync("/certs/server.key", "utf8"),
-  };
-} catch (_) {}
-
 // Build route handlers as a reusable plugin
 function addRoutes(app: Elysia) {
   return app
     .get("/pipeline", () => new Response("ok", { headers: { "content-type": "text/plain" } }))
-
-    .get("/baseline2", ({ request }) => {
-      const body = String(sumQuery(request.url));
-      return new Response(body, { headers: { "content-type": "text/plain" } });
-    })
 
     .all("/baseline11", async ({ request }) => {
       const querySum = sumQuery(request.url);
@@ -171,13 +157,3 @@ function addRoutes(app: Elysia) {
 // HTTP server on port 8080
 const httpApp = addRoutes(new Elysia());
 httpApp.listen({ port: 8080, reusePort: true });
-
-// HTTPS/H2 server on port 8443
-if (tlsOptions) {
-  const httpsApp = addRoutes(new Elysia());
-  httpsApp.listen({
-    port: 8443,
-    reusePort: true,
-    tls: tlsOptions,
-  });
-}
