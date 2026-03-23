@@ -1,0 +1,18 @@
+{
+  "display_name": "Elysia",
+  "language": "TS",
+  "type": "framework",
+  "engine": "JSC",
+  "description": "Ergonomic TypeScript framework built for Bun with end-to-end type safety and excellent DX.",
+  "repo": "https://github.com/elysiajs/elysia",
+  "enabled": true,
+  "tests": [
+    "baseline",
+    "pipelined",
+    "limited-conn",
+    "json",
+    "upload",
+    "compression",
+    "mixed"
+  ]
+}
