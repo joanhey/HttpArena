@@ -1,0 +1,19 @@
+{
+  "display_name": "phoenix",
+  "language": "Elixir",
+  "type": "framework",
+  "engine": "BEAM (Erlang VM)",
+  "description": "Phoenix 1.7 on Cowboy — the most popular Elixir web framework. First Elixir entry in HttpArena.",
+  "repo": "https://github.com/phoenixframework/phoenix",
+  "enabled": true,
+  "tests": [
+    "baseline",
+    "noisy",
+    "pipelined",
+    "limited-conn",
+    "json",
+    "upload",
+    "compression",
+    "mixed"
+  ]
+}

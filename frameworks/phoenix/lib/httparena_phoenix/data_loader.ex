@@ -1,0 +1,75 @@
+defmodule HttparenaPhoenix.DataLoader do
+  @moduledoc """
+  Pre-loads and caches dataset, large dataset, static files, and pre-computed JSON/gzip responses.
+  """
+
+  def load do
+    dataset_path = System.get_env("DATASET_PATH") || "/data/dataset.json"
+
+    dataset = load_json(dataset_path)
+    large_dataset = load_json("/data/dataset-large.json")
+
+    json_cache = build_json_response(dataset)
+    json_large_cache = build_json_response(large_dataset)
+    gzip_large_cache = :zlib.gzip(json_large_cache)
+
+    static_files = load_static_files()
+
+    db_available = File.exists?("/data/benchmark.db")
+
+    :persistent_term.put(:dataset, dataset)
+    :persistent_term.put(:json_cache, json_cache)
+    :persistent_term.put(:json_large_cache, json_large_cache)
+    :persistent_term.put(:gzip_large_cache, gzip_large_cache)
+    :persistent_term.put(:static_files, static_files)
+    :persistent_term.put(:db_available, db_available)
+  end
+
+  defp load_json(path) do
+    case File.read(path) do
+      {:ok, data} ->
+        case Jason.decode(data) do
+          {:ok, items} when is_list(items) -> items
+          _ -> []
+        end
+      _ -> []
+    end
+  end
+
+  defp build_json_response(dataset) do
+    items = Enum.map(dataset, fn d ->
+      total = Float.round(d["price"] * d["quantity"] * 1.0, 2)
+      Map.put(d, "total", total)
+    end)
+
+    Jason.encode!(%{"items" => items, "count" => length(items)})
+  end
+
+  defp load_static_files do
+    case File.ls("/data/static") do
+      {:ok, entries} ->
+        Enum.reduce(entries, %{}, fn name, acc ->
+          path = "/data/static/#{name}"
+          case File.read(path) do
+            {:ok, data} ->
+              Map.put(acc, name, %{data: data, content_type: get_mime(name)})
+            _ -> acc
+          end
+        end)
+      _ -> %{}
+    end
+  end
+
+  defp get_mime(filename) do
+    cond do
+      String.ends_with?(filename, ".css") -> "text/css"
+      String.ends_with?(filename, ".js") -> "application/javascript"
+      String.ends_with?(filename, ".html") -> "text/html"
+      String.ends_with?(filename, ".woff2") -> "font/woff2"
+      String.ends_with?(filename, ".svg") -> "image/svg+xml"
+      String.ends_with?(filename, ".webp") -> "image/webp"
+      String.ends_with?(filename, ".json") -> "application/json"
+      true -> "application/octet-stream"
+    end
+  end
+end
