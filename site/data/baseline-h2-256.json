@@ -193,26 +193,6 @@
     "status_5xx": 0
   },
   {
-    "framework": "hono (node)",
-    "language": "JS",
-    "rps": 1389860,
-    "avg_latency": "18.14ms",
-    "p99_latency": "18.14ms",
-    "cpu": "11657.6%",
-    "memory": "14.2GiB",
-    "connections": 256,
-    "threads": 64,
-    "duration": "5s",
-    "pipeline": 1,
-    "bandwidth": "42.47MB/s",
-    "input_bw": "",
-    "reconnects": 0,
-    "status_2xx": 6959500,
-    "status_3xx": 0,
-    "status_4xx": 0,
-    "status_5xx": 0
-  },
-  {
     "framework": "hyper",
     "language": "Rust",
     "rps": 8150472,

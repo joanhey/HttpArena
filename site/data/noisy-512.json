@@ -410,26 +410,6 @@
     "status_5xx": 0
   },
   {
-    "framework": "hono (node)",
-    "language": "JS",
-    "rps": 608118,
-    "avg_latency": "477us",
-    "p99_latency": "3.45ms",
-    "cpu": "9394.6%",
-    "memory": "9.0GiB",
-    "connections": 512,
-    "threads": 64,
-    "duration": "5s",
-    "pipeline": 1,
-    "bandwidth": "139.17MB/s",
-    "input_bw": "61.47MB/s",
-    "reconnects": 53,
-    "status_2xx": 3046673,
-    "status_3xx": 0,
-    "status_4xx": 1006437,
-    "status_5xx": 0
-  },
-  {
     "framework": "hummingbird",
     "language": "Swift",
     "rps": 317259,

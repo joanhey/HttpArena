@@ -2,7 +2,7 @@
   "display_name": "phoenix",
   "language": "Elixir",
   "type": "framework",
-  "engine": "BEAM (Erlang VM)",
+  "engine": "BEAM",
   "description": "Phoenix 1.7 on Cowboy — the most popular Elixir web framework. First Elixir entry in HttpArena.",
   "repo": "https://github.com/phoenixframework/phoenix",
   "enabled": true,
