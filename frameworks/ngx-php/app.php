@@ -36,7 +36,7 @@ function json()
     }
 
     ngx_header_set('Content-Type', 'application/json');
-    echo json_encode(['items' => $total, 'count' => 50]);
+    echo json_encode(['items' => $total, 'count' => count($total)]);
 }
 
 function upload()
