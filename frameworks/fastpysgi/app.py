@@ -2,7 +2,7 @@ import os
 import sys
 import json
 import threading
-import gzip
+import zlib
 import sqlite3
 from urllib.parse import parse_qs
 
@@ -118,7 +118,7 @@ def json_endpoint(env):
 def compression_endpoint(env):
     if large_json_buf is None:
         return text_resp("No dataset", 500)
-    compressed = gzip.compress(large_json_buf, compresslevel = 1)
+    compressed = zlib.compress(large_json_buf, level = 1, wbits = 31)
     return json_resp(compressed, gzip = True)
 
 def db_endpoint(env):
@@ -145,24 +145,22 @@ def db_endpoint(env):
         )
     return json_resp( { "items": items, "count": len(items) } )
 
+READ_BUF_SIZE = 256*1024
+
 def upload_endpoint(env):
-    wsgi_input = env['wsgi.input']
-    content_length = int(env.get('CONTENT_LENGTH', -1))
+    wsgi_input = env["wsgi.input"]
+    content_length = int(env.get("CONTENT_LENGTH", -1))
     size = 0
-    if content_length > 0:
-        try:
-            if size < content_length:
-                chunk = wsgi_input.read(content_length - size)
-                size += len(chunk)
-        except ValueError:
-            pass
-    elif content_length == -1:
+    if content_length != 0:
         while True:
-            chunk = wsgi_input.read(65536)
+            to_read = min(READ_BUF_SIZE, content_length - size) if content_length > 0 else READ_BUF_SIZE
+            chunk = wsgi_input.read(to_read)
             if not chunk:
                 break
             size += len(chunk)
-    return text_resp((str(size)))
+            if content_length > 0 and size >= content_length:
+                break
+    return text_resp(str(size))
 
 routes = {
     '/pipeline': pipeline,
@@ -186,6 +184,7 @@ http_status = {
     200: '200 OK',
     404: '404 Not Found',
     405: '405 Method Not Allowed',
+    500: '500 Internal Server Error',
 }
 
 def app(env, start_response):
@@ -211,8 +210,8 @@ if __name__ == "__main__":
     port = 8080
 
     def run_app():
+        fastpysgi.server.read_buffer_size = READ_BUF_SIZE
         fastpysgi.server.backlog = 4096
-        fastpysgi.server.loop_timeout = 1
         fastpysgi.run(app, host, port, loglevel = 0)
         sys.exit(0)
 
