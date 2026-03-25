@@ -67,7 +67,7 @@ fn handleJson(_: *blitz.Request, res: *blitz.Response) void {
         return;
     }
 
-    var buf: [32768]u8 = undefined;
+    var buf: [65536]u8 = undefined;
     var pos: usize = 0;
 
     const prefix = "{\"items\":[";
@@ -150,7 +150,7 @@ fn handleCompression(req: *blitz.Request, res: *blitz.Response) void {
             var gzip_buf: [1048576]u8 = undefined;
             var fbs = std.io.fixedBufferStream(&gzip_buf);
             var compressor = std.compress.gzip.compressor(fbs.writer(), .{
-                .level = .best_speed,
+                .level = .fast,
             }) catch {
                 // Fallback to uncompressed
                 _ = res.json(compression_json_body);
@@ -478,15 +478,15 @@ fn parseDatasetItems(path: []const u8) []DatasetItem {
                 const tags_val = obj.get("tags") orelse {
                     break :blk alloc.dupe(u8, "[]") catch "[]";
                 };
-                writeJsonValueToList(&tags_buf, tags_val.*);
+                writeJsonValueToList(&tags_buf, tags_val);
                 break :blk tags_buf.toOwnedSlice() catch "[]";
             },
             .rating_score = blk: {
                 const rating = obj.get("rating") orelse break :blk 0.0;
-                switch (rating.*) {
+                switch (rating) {
                     .object => |robj| {
                         const score = robj.get("score") orelse break :blk 0.0;
-                        break :blk switch (score.*) {
+                        break :blk switch (score) {
                             .float => |f| f,
                             .integer => |v| @as(f64, @floatFromInt(v)),
                             else => 0.0,
@@ -497,10 +497,10 @@ fn parseDatasetItems(path: []const u8) []DatasetItem {
             },
             .rating_count = blk: {
                 const rating = obj.get("rating") orelse break :blk 0;
-                switch (rating.*) {
+                switch (rating) {
                     .object => |robj| {
                         const count_val = robj.get("count") orelse break :blk 0;
-                        break :blk switch (count_val.*) {
+                        break :blk switch (count_val) {
                             .integer => |v| v,
                             else => 0,
                         };
