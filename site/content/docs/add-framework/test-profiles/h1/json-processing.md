@@ -69,7 +69,7 @@ The `count` field must be dynamically computed from the number of items (e.g. `l
 | Parameter | Value |
 |-----------|-------|
 | Endpoint | `GET /json` |
-| Connections | 4,096, 16,384, 32,768 |
+| Connections | 4,096, 16,384 |
 | Pipeline | 1 |
 | Duration | 5s |
 | Runs | 3 (best taken) |

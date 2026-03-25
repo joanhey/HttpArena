@@ -254,6 +254,26 @@
     "status_5xx": 0
   },
   {
+    "framework": "FastPySGI",
+    "language": "Python",
+    "rps": 1445748,
+    "avg_latency": "6.20ms",
+    "p99_latency": "36.70ms",
+    "cpu": "8009.4%",
+    "memory": "4.2GiB",
+    "connections": 16384,
+    "threads": 64,
+    "duration": "5s",
+    "pipeline": 1,
+    "bandwidth": "302.34MB/s",
+    "input_bw": "146.15MB/s",
+    "reconnects": 4166,
+    "status_2xx": 7243200,
+    "status_3xx": 0,
+    "status_4xx": 2187863,
+    "status_5xx": 0
+  },
+  {
     "framework": "flask",
     "language": "Python",
     "rps": 26,

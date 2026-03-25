@@ -275,6 +275,26 @@
     "status_5xx": 0
   },
   {
+    "framework": "FastPySGI",
+    "language": "Python",
+    "rps": 7209166,
+    "avg_latency": "9.05ms",
+    "p99_latency": "45.70ms",
+    "cpu": "7017.2%",
+    "memory": "2.1GiB",
+    "connections": 4096,
+    "threads": 64,
+    "duration": "5s",
+    "pipeline": 16,
+    "bandwidth": "1.11GB/s",
+    "input_bw": "",
+    "reconnects": 0,
+    "status_2xx": 36190014,
+    "status_3xx": 0,
+    "status_4xx": 0,
+    "status_5xx": 0
+  },
+  {
     "framework": "fiber",
     "language": "Go",
     "rps": 623248,
