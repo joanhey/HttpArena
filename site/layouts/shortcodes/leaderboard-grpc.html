@@ -58,6 +58,11 @@ var lbGrpcProfiles = {{ $profiles | jsonify | safeJS }};
   </div>
 </div>
 
+<div class="lb-engine-warning-grpc" style="margin-top:1rem; margin-bottom:0.75rem; padding:0.75rem 1rem; border-radius:0.5rem; background:rgba(220,38,38,0.06); border:1px solid rgba(220,38,38,0.2); color:#7f1d1d; font-size:0.9rem; display:none;">
+  * <strong>Engine</strong> entries are bare-metal HTTP servers without framework overhead. They are shown for reference but are not directly comparable to full frameworks.
+</div>
+<style>html.dark .lb-engine-warning-grpc { color: #fecaca !important; background: rgba(220, 38, 38, 0.1) !important; border-color: rgba(220, 38, 38, 0.3) !important; }</style>
+
 {{ range $i, $p := $profiles }}
 <div class="lb-panel-grpc{{ if eq $i 0 }} active{{ end }}" data-panel="{{ $p.id }}" data-conns="{{ delimit $p.conns "," }}" style="margin-top:1rem;">
   <div class="lb-card">
@@ -280,6 +285,10 @@ function applyFilters() {
   var showAll = w.querySelector('.lb-type-filter[data-type="all"]').classList.contains('active');
   var showEngine = showAll || w.querySelector('.lb-type-filter[data-type="engine"]').classList.contains('active');
   var showFramework = showAll || w.querySelector('.lb-type-filter[data-type="framework"]').classList.contains('active');
+
+  w.classList.toggle('lb-show-all', showAll);
+  var engineWarning = document.querySelector('.lb-engine-warning-grpc');
+  if (engineWarning) engineWarning.style.display = showAll ? 'block' : 'none';
 
   var searchVal = w.querySelector('.lb-search-input').value.toLowerCase().trim();
   var terms = searchVal ? searchVal.split(',').map(function(s) { return s.trim(); }).filter(Boolean) : [];

@@ -296,6 +296,12 @@ html.dark .lb-popup-link { color: #60a5fa; }
 html.dark .lb-header-floating { background: #0d1117; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
 .lb-rank { font-weight: 400; font-size: 0.85rem; color: #000; }
 .lb-name { font-weight: 400; font-size: 0.8rem; color: #000; text-transform: lowercase; }
+.lb-show-all .lb-row[data-type="engine"]:not(.lb-header) { background: rgba(220, 38, 38, 0.06); }
+.lb-show-all .lb-row[data-type="engine"]:not(.lb-header):hover { background: rgba(220, 38, 38, 0.12); }
+.lb-show-all .lb-row[data-type="engine"] .lb-name::after { content: " *"; }
+html.dark .lb-show-all .lb-row[data-type="engine"]:not(.lb-header) { background: rgba(248, 113, 113, 0.08); }
+html.dark .lb-show-all .lb-row[data-type="engine"]:not(.lb-header):hover { background: rgba(248, 113, 113, 0.15); }
+html.dark .lb-engine-warning { color: #fecaca !important; background: rgba(220, 38, 38, 0.1) !important; border-color: rgba(220, 38, 38, 0.3) !important; }
 .lb-lang { font-size: 0.8rem; color: #000; }
 .lb-conns { font-size: 0.8rem; color: #000; text-align: right; font-variant-numeric: tabular-nums; }
 .lb-rps { font-weight: 700; font-size: 0.95rem; text-align: right; font-variant-numeric: tabular-nums; color: #000; }
@@ -452,6 +458,10 @@ var lbProfiles = {{ $profiles | jsonify | safeJS }};
       <input type="text" class="lb-search-input" placeholder="e.g. ringzero, fasthttp, C, C#" />
     </div>
   </div>
+</div>
+
+<div class="lb-engine-warning" style="margin-top:1rem; margin-bottom:0.75rem; padding:0.75rem 1rem; border-radius:0.5rem; background:rgba(220,38,38,0.06); border:1px solid rgba(220,38,38,0.2); color:#7f1d1d; font-size:0.9rem; display:none;">
+  * <strong>Engine</strong> entries are bare-metal HTTP servers without framework overhead. They are shown for reference but are not directly comparable to full frameworks.
 </div>
 
 {{ range $i, $p := $profiles }}
@@ -674,6 +684,11 @@ function applyFilters() {
   var showAll = activePanel.querySelector('.lb-type-filter[data-type="all"]').classList.contains('active');
   var showEngine = showAll || activePanel.querySelector('.lb-type-filter[data-type="engine"]').classList.contains('active');
   var showFramework = showAll || activePanel.querySelector('.lb-type-filter[data-type="framework"]').classList.contains('active');
+
+  var lbWrapper = document.getElementById('lb-wrapper');
+  if (lbWrapper) lbWrapper.classList.toggle('lb-show-all', showAll);
+  var engineWarning = document.querySelector('.lb-engine-warning');
+  if (engineWarning) engineWarning.style.display = showAll ? 'block' : 'none';
 
   var searchVal = document.querySelector('.lb-search-input').value.toLowerCase().trim();
   var terms = searchVal ? searchVal.split(',').map(function(s) { return s.trim(); }).filter(Boolean) : [];
