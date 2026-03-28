@@ -1,6 +1,22 @@
 import { Database } from "jsr:@db/sqlite@0.12";
 import { gzipSync } from "node:zlib";
 
+const MIME_TYPES: Record<string, string> = {
+    ".css": "text/css", ".js": "application/javascript", ".html": "text/html",
+    ".woff2": "font/woff2", ".svg": "image/svg+xml", ".webp": "image/webp", ".json": "application/json",
+};
+
+// Pre-load static files
+const staticFiles: Record<string, { data: Uint8Array; contentType: string }> = {};
+try {
+    for (const entry of Deno.readDirSync("/data/static")) {
+        if (!entry.isFile) continue;
+        const data = Deno.readFileSync(`/data/static/${entry.name}`);
+        const ext = entry.name.slice(entry.name.lastIndexOf("."));
+        staticFiles[entry.name] = { data, contentType: MIME_TYPES[ext] || "application/octet-stream" };
+    }
+} catch { /* static dir not available */ }
+
 const datasetPath = Deno.env.get("DATASET_PATH") || "/data/dataset.json";
 let datasetItems: any[] | undefined;
 
@@ -165,6 +181,17 @@ export default {
                 }
             }
             return new Response(String(size), { headers: PLAIN });
+        }
+
+        if (path.startsWith("/static/")) {
+            const filename = path.slice(8);
+            const sf = staticFiles[filename];
+            if (sf) {
+                return new Response(sf.data, {
+                    headers: { "content-type": sf.contentType, "content-length": String(sf.data.length), "server": "deno" },
+                });
+            }
+            return new Response("Not found", { status: 404 });
         }
 
         // /baseline11

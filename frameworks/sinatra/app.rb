@@ -40,6 +40,32 @@ class App < Sinatra::Base
       set :large_json_payload, nil
     end
 
+    # Static files
+    mime_types = {
+      '.css'   => 'text/css',
+      '.js'    => 'application/javascript',
+      '.html'  => 'text/html',
+      '.woff2' => 'font/woff2',
+      '.svg'   => 'image/svg+xml',
+      '.webp'  => 'image/webp',
+      '.json'  => 'application/json'
+    }.freeze
+    static_dir = '/data/static'
+    if Dir.exist?(static_dir)
+      cache = {}
+      Dir.foreach(static_dir) do |name|
+        next if name == '.' || name == '..'
+        path = File.join(static_dir, name)
+        next unless File.file?(path)
+        ext = File.extname(name)
+        ct = mime_types.fetch(ext, 'application/octet-stream')
+        cache[name] = { data: File.binread(path), content_type: ct }
+      end
+      set :static_files_cache, cache
+    else
+      set :static_files_cache, {}
+    end
+
     # SQLite
     set :db_available, File.exist?('/data/benchmark.db')
   end
@@ -146,6 +172,19 @@ class App < Sinatra::Base
     content_type 'application/json'
     headers 'Server' => 'sinatra'
     JSON.generate({ 'items' => items, 'count' => items.length })
+  end
+
+  get '/static/:filename' do
+    filename = params['filename']
+    entry = settings.static_files_cache[filename]
+    if entry
+      content_type entry[:content_type]
+      headers 'Server' => 'sinatra'
+      entry[:data]
+    else
+      headers 'Server' => 'sinatra'
+      halt 404, 'Not Found'
+    end
   end
 
   get '/async-db' do

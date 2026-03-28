@@ -8,11 +8,38 @@ class BenchmarkController < ActionController::API
   DATASET_PATH = ENV.fetch('DATASET_PATH', '/data/dataset.json')
   LARGE_DATASET_PATH = '/data/dataset-large.json'
 
-  mattr_accessor :dataset_items, :db_available, :large_json_payload
+  mattr_accessor :dataset_items, :db_available, :large_json_payload, :static_files_cache
   self.db_available = File.exist?('/data/benchmark.db')
 
   if File.exist?(DATASET_PATH)
     self.dataset_items = JSON.parse(File.read(DATASET_PATH))
+  end
+
+  # Load static files into memory
+  MIME_TYPES = {
+    '.css'   => 'text/css',
+    '.js'    => 'application/javascript',
+    '.html'  => 'text/html',
+    '.woff2' => 'font/woff2',
+    '.svg'   => 'image/svg+xml',
+    '.webp'  => 'image/webp',
+    '.json'  => 'application/json'
+  }.freeze
+
+  static_dir = '/data/static'
+  if Dir.exist?(static_dir)
+    cache = {}
+    Dir.foreach(static_dir) do |name|
+      next if name == '.' || name == '..'
+      path = File.join(static_dir, name)
+      next unless File.file?(path)
+      ext = File.extname(name)
+      ct = MIME_TYPES.fetch(ext, 'application/octet-stream')
+      cache[name] = { data: File.binread(path), content_type: ct }
+    end
+    self.static_files_cache = cache
+  else
+    self.static_files_cache = {}
   end
 
   if File.exist?(LARGE_DATASET_PATH)
@@ -118,6 +145,16 @@ class BenchmarkController < ActionController::API
   rescue PG::Error
     Thread.current[:pg_conn] = nil
     render json: { items: [], count: 0 }
+  end
+
+  def static_file
+    filename = params[:filename]
+    entry = static_files_cache[filename] if static_files_cache
+    if entry
+      send_data entry[:data], type: entry[:content_type], disposition: :inline
+    else
+      head 404
+    end
   end
 
   def upload

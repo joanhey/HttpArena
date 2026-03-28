@@ -181,7 +181,11 @@ check_header() {
     local value
     value=$(echo "$headers" | grep -i "^${header_name}:" | sed 's/^[^:]*: *//' | tr -d '\r' || true)
 
-    if [ "$value" = "$expected_value" ] || [[ "$value" == "$expected_value;"* ]]; then
+    # Normalize: text/javascript and application/javascript are equivalent (RFC 9239)
+    local norm_value norm_expected
+    norm_value=$(echo "$value" | sed 's|text/javascript|application/javascript|')
+    norm_expected=$(echo "$expected_value" | sed 's|text/javascript|application/javascript|')
+    if [ "$value" = "$expected_value" ] || [[ "$value" == "$expected_value;"* ]] || [ "$norm_value" = "$norm_expected" ] || [[ "$norm_value" == "$norm_expected;"* ]]; then
         echo "  PASS [$label] ($header_name: $value)"
         PASS=$((PASS + 1))
     else

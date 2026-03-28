@@ -400,7 +400,7 @@ public:
         if (it != static_files.end()) {
             auto resp = HttpResponse::newHttpResponse();
             resp->setBody(it->second.data);
-            resp->addHeader("Content-Type", it->second.content_type);
+            resp->setContentTypeString(it->second.content_type);
             callback(resp);
         } else {
             auto resp = HttpResponse::newHttpResponse();

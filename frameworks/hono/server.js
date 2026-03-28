@@ -103,6 +103,18 @@ function startWorker() {
 
     const app = new Hono();
 
+    // --- /static/:filename ---
+    app.get('/static/:filename', (c) => {
+        const sf = staticFiles[c.req.param('filename')];
+        if (sf) {
+            c.header('server', SERVER_NAME);
+            c.header('content-type', sf.ct);
+            c.header('content-length', String(sf.buf.length));
+            return c.body(sf.buf);
+        }
+        return c.text('Not found', 404);
+    });
+
     // --- /pipeline ---
     app.get('/pipeline', (c) => {
         c.header('server', SERVER_NAME);

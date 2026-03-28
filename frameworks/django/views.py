@@ -8,6 +8,26 @@ import psycopg.rows
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.views.decorators.http import require_http_methods, require_GET
 
+# ── MIME types ────────────────────────────────────────────────────────
+MIME_TYPES = {
+    '.css': 'text/css', '.js': 'application/javascript', '.html': 'text/html',
+    '.woff2': 'font/woff2', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.json': 'application/json',
+}
+
+# ── Pre-load static files ────────────────────────────────────────────
+static_files = {}
+try:
+    for name in os.listdir('/data/static'):
+        filepath = os.path.join('/data/static', name)
+        if os.path.isfile(filepath):
+            with open(filepath, 'rb') as f:
+                data = f.read()
+            ext = os.path.splitext(name)[1]
+            ct = MIME_TYPES.get(ext, 'application/octet-stream')
+            static_files[name] = (data, ct)
+except Exception:
+    pass
+
 # Load raw dataset for per-request processing
 dataset_items = None
 dataset_path = os.environ.get('DATASET_PATH', '/data/dataset.json')
@@ -210,5 +230,18 @@ def upload_endpoint(request):
                 break
             total += len(chunk)
     resp = HttpResponse(str(total), content_type='text/plain')
+    resp['Server'] = 'django'
+    return resp
+
+
+@require_GET
+def static_file(request, filename):
+    entry = static_files.get(filename)
+    if entry is None:
+        resp = HttpResponse(b'Not Found', status=404, content_type='text/plain')
+        resp['Server'] = 'django'
+        return resp
+    data, ct = entry
+    resp = HttpResponse(data, content_type=ct)
     resp['Server'] = 'django'
     return resp

@@ -10,6 +10,26 @@ import psycopg.rows
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 
+# ── MIME types ────────────────────────────────────────────────────────
+MIME_TYPES = {
+    '.css': 'text/css', '.js': 'application/javascript', '.html': 'text/html',
+    '.woff2': 'font/woff2', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.json': 'application/json',
+}
+
+# ── Pre-load static files ────────────────────────────────────────────
+static_files = {}
+try:
+    for name in os.listdir('/data/static'):
+        filepath = os.path.join('/data/static', name)
+        if os.path.isfile(filepath):
+            with open(filepath, 'rb') as f:
+                data = f.read()
+            ext = os.path.splitext(name)[1]
+            ct = MIME_TYPES.get(ext, 'application/octet-stream')
+            static_files[name] = (data, ct)
+except Exception:
+    pass
+
 # Load raw dataset for per-request processing
 dataset_items = None
 dataset_path = os.environ.get('DATASET_PATH', '/data/dataset.json')
@@ -191,6 +211,18 @@ def async_db_endpoint():
         resp.content_type = 'application/json'
         resp.headers['Server'] = 'flask'
         return resp
+
+
+@app.route('/static/<filename>')
+def static_file(filename):
+    entry = static_files.get(filename)
+    if entry is None:
+        return 'Not Found', 404, {'Content-Type': 'text/plain', 'Server': 'flask'}
+    data, ct = entry
+    resp = make_response(data)
+    resp.content_type = ct
+    resp.headers['Server'] = 'flask'
+    return resp
 
 
 @app.route('/upload', methods=['POST'])

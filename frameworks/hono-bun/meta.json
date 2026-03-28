@@ -14,6 +14,7 @@
     "upload",
     "compression",
     "mixed",
-    "async-db"
+    "async-db",
+    "static"
   ]
 }

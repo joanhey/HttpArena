@@ -13,6 +13,7 @@ require "pg"
 DATASET_PATH       = ENV.fetch("DATASET_PATH", "/data/dataset.json")
 LARGE_DATASET_PATH = "/data/dataset-large.json"
 DB_PATH            = "/data/benchmark.db"
+STATIC_DIR         = "/data/static"
 DB_QUERY           = "SELECT id, name, category, price, quantity, active, tags, rating_score, rating_count FROM items WHERE price BETWEEN ? AND ? LIMIT 50"
 
 # Process a raw JSON array of items → add "total" field
@@ -51,6 +52,32 @@ rescue
 end
 
 DB_AVAILABLE = File.exists?(DB_PATH)
+
+# Load static files into memory at startup
+MIME_TYPES = {
+  ".css"   => "text/css",
+  ".js"    => "application/javascript",
+  ".html"  => "text/html",
+  ".woff2" => "font/woff2",
+  ".svg"   => "image/svg+xml",
+  ".webp"  => "image/webp",
+  ".json"  => "application/json",
+}
+
+STATIC_FILES = begin
+  files = Hash(String, {data: Bytes, content_type: String}).new
+  if Dir.exists?(STATIC_DIR)
+    Dir.each_child(STATIC_DIR) do |name|
+      path = "#{STATIC_DIR}/#{name}"
+      next unless File.file?(path)
+      data = File.read(path).to_slice
+      ext = File.extname(name)
+      ct = MIME_TYPES.fetch(ext, "application/octet-stream")
+      files[name] = {data: data, content_type: ct}
+    end
+  end
+  files
+end
 
 PG_QUERY = "SELECT id, name, category, price, quantity, active, tags, rating_score, rating_count FROM items WHERE price BETWEEN $1 AND $2 LIMIT 50"
 
@@ -233,6 +260,19 @@ get "/async-db" do |env|
     {items: items, count: items.size}.to_json
   rescue
     %({"items":[],"count":0})
+  end
+end
+
+get "/static/:filename" do |env|
+  server_header(env)
+  filename = env.params.url["filename"]
+  if sf = STATIC_FILES[filename]?
+    env.response.content_type = sf[:content_type]
+    env.response.write(sf[:data])
+    nil
+  else
+    env.response.status_code = 404
+    "Not Found"
   end
 end
 

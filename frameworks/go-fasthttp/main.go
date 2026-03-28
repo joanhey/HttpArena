@@ -4,12 +4,14 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"io"
 	"log"
 	"math"
+	"mime"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strconv"
+	"strings"
 	"sync"
 
 	"compress/flate"
@@ -53,10 +55,16 @@ type ProcessResponse struct {
 	Count int             `json:"count"`
 }
 
+type StaticFile struct {
+	Data        []byte
+	ContentType string
+}
+
 var dataset []DatasetItem
 var jsonLargeResponse []byte
 var db *sql.DB
 var pgPool *pgxpool.Pool
+var staticFiles map[string]StaticFile
 
 func loadDataset() {
 	path := os.Getenv("DATASET_PATH")
@@ -150,6 +158,41 @@ func processHandler(ctx *fasthttp.RequestCtx) {
 	ctx.SetBody(body)
 }
 
+func loadStaticFiles() {
+	staticFiles = make(map[string]StaticFile)
+	entries, err := os.ReadDir("/data/static")
+	if err != nil {
+		return
+	}
+	for _, entry := range entries {
+		if entry.IsDir() {
+			continue
+		}
+		name := entry.Name()
+		data, err := os.ReadFile(filepath.Join("/data/static", name))
+		if err != nil {
+			continue
+		}
+		ct := mime.TypeByExtension(filepath.Ext(name))
+		if ct == "" {
+			ct = "application/octet-stream"
+		}
+		staticFiles[name] = StaticFile{Data: data, ContentType: ct}
+	}
+}
+
+func staticHandler(ctx *fasthttp.RequestCtx) {
+	path := string(ctx.Path())
+	filename := strings.TrimPrefix(path, "/static/")
+	if sf, ok := staticFiles[filename]; ok {
+		ctx.Response.Header.Set("Server", "go-fasthttp")
+		ctx.SetContentType(sf.ContentType)
+		ctx.SetBody(sf.Data)
+	} else {
+		ctx.SetStatusCode(404)
+	}
+}
+
 func loadDB() {
 	d, err := sql.Open("sqlite", "file:/data/benchmark.db?mode=ro&immutable=1")
 	if err != nil {
@@ -233,10 +276,10 @@ func asyncDbHandler(ctx *fasthttp.RequestCtx) {
 }
 
 func uploadHandler(ctx *fasthttp.RequestCtx) {
-	size, _ := io.Copy(io.Discard, ctx.RequestBodyStream())
+	body := ctx.PostBody()
 	ctx.Response.Header.Set("Server", "go-fasthttp")
 	ctx.SetContentType("text/plain")
-	ctx.SetBodyString(strconv.FormatInt(size, 10))
+	ctx.SetBodyString(strconv.Itoa(len(body)))
 }
 
 func dbHandler(ctx *fasthttp.RequestCtx) {
@@ -295,6 +338,7 @@ func main() {
 	loadDatasetLarge()
 	loadDB()
 	loadPgPool()
+	loadStaticFiles()
 
 	compressedHandler = fasthttp.CompressHandlerLevel(func(ctx *fasthttp.RequestCtx) {
 		ctx.Response.Header.Set("Server", "go-fasthttp")
@@ -317,6 +361,10 @@ func main() {
 		case "/async-db":
 			asyncDbHandler(ctx)
 		default:
+			if strings.HasPrefix(string(ctx.Path()), "/static/") {
+				staticHandler(ctx)
+				return
+			}
 			baseline11Handler(ctx)
 		}
 	}
@@ -332,7 +380,6 @@ func main() {
 			}
 			s := &fasthttp.Server{
 				Handler:            handler,
-				StreamRequestBody:  true,
 				MaxRequestBodySize: 25 * 1024 * 1024, // 25 MB
 			}
 			s.Serve(ln)

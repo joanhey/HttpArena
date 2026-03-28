@@ -16,6 +16,7 @@
     "compression",
     "mixed",
     "async-db",
+    "static",
     "baseline-h2",
     "static-h2",
     "baseline-h3"

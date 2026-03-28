@@ -1,6 +1,9 @@
-use ntex::http::header::{ContentEncoding, CONTENT_TYPE, SERVER};
+use ntex::http::header::{CONTENT_TYPE, SERVER};
 use ntex::util::{Bytes, BytesMut};
-use ntex::web::{self, App, BodyEncoding, HttpRequest, HttpResponse};
+use ntex::web::{self, App, HttpRequest, HttpResponse};
+use flate2::write::GzEncoder;
+use flate2::Compression;
+use std::io::Write;
 use deadpool_postgres::{Manager, ManagerConfig, Pool, RecyclingMethod};
 use rusqlite::Connection;
 use serde::{Deserialize, Serialize};
@@ -208,11 +211,14 @@ async fn json_endpoint(state: web::types::State<Arc<AppState>>) -> HttpResponse 
 }
 
 async fn compression(state: web::types::State<Arc<AppState>>) -> HttpResponse {
+    let mut encoder = GzEncoder::new(Vec::new(), Compression::fast());
+    encoder.write_all(&state.json_large_cache).unwrap();
+    let compressed = encoder.finish().unwrap();
     HttpResponse::Ok()
         .header(SERVER, SERVER_NAME)
         .header(CONTENT_TYPE, "application/json")
-        .encoding(ContentEncoding::Gzip)
-        .body(state.json_large_cache.clone())
+        .header("Content-Encoding", "gzip")
+        .body(compressed)
 }
 
 async fn db_endpoint(req: HttpRequest, db: web::types::State<WorkerDb>) -> HttpResponse {

@@ -53,6 +53,22 @@ if (cluster.isPrimary) {
         } catch (e) {}
     }
 
+    // MIME types for static files
+    const MIME_TYPES = {
+        '.css': 'text/css', '.js': 'application/javascript', '.html': 'text/html',
+        '.woff2': 'font/woff2', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.json': 'application/json',
+    };
+
+    // Pre-load static files
+    const staticFiles = {};
+    try {
+        for (const name of fs.readdirSync('/data/static')) {
+            const buf = fs.readFileSync(`/data/static/${name}`);
+            const ext = name.slice(name.lastIndexOf('.'));
+            staticFiles[name] = { buf, ct: MIME_TYPES[ext] || 'application/octet-stream' };
+        }
+    } catch (e) {}
+
     function sumQuery(query) {
         let sum = 0;
         for (const k in query) {
@@ -157,6 +173,15 @@ if (cluster.isPrimary) {
             });
         } else {
             res.set(SERVER_HDR).type('text/plain').send(String(querySum));
+        }
+    });
+
+    app.get('/static/:filename', (req, res) => {
+        const sf = staticFiles[req.params.filename];
+        if (sf) {
+            res.set({ ...SERVER_HDR, 'content-type': sf.ct, 'content-length': String(sf.buf.length) }).send(sf.buf);
+        } else {
+            res.status(404).send('Not found');
         }
     });
 

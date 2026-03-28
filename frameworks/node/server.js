@@ -215,6 +215,16 @@ const server = http.createServer((req, res) => {
             res.writeHead(200, { 'content-type': 'text/plain', ...SERVER_HEADERS });
             res.end(String(size));
         });
+    } else if (path.startsWith('/static/')) {
+        const name = path.slice(8);
+        const sf = staticFiles[name];
+        if (sf) {
+            res.writeHead(200, { 'content-type': sf.ct, 'content-length': sf.buf.length, ...SERVER_HEADERS });
+            res.end(sf.buf);
+        } else {
+            res.writeHead(404);
+            res.end();
+        }
     } else {
         // /baseline11 — GET or POST
         const querySum = sumQuery(url);

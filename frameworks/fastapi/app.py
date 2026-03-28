@@ -9,6 +9,26 @@ import asyncpg
 import orjson
 from fastapi import FastAPI, Request, Response
 
+# ── MIME types ────────────────────────────────────────────────────────
+MIME_TYPES = {
+    ".css": "text/css", ".js": "application/javascript", ".html": "text/html",
+    ".woff2": "font/woff2", ".svg": "image/svg+xml", ".webp": "image/webp", ".json": "application/json",
+}
+
+# ── Pre-load static files ────────────────────────────────────────────
+static_files: dict[str, tuple[bytes, str]] = {}
+try:
+    for name in os.listdir("/data/static"):
+        filepath = os.path.join("/data/static", name)
+        if os.path.isfile(filepath):
+            with open(filepath, "rb") as f:
+                data = f.read()
+            ext = os.path.splitext(name)[1]
+            ct = MIME_TYPES.get(ext, "application/octet-stream")
+            static_files[name] = (data, ct)
+except Exception:
+    pass
+
 # ── Postgres (async) ─────────────────────────────────────────────────
 pg_pool: asyncpg.Pool | None = None
 PG_QUERY = (
@@ -195,7 +215,7 @@ async def async_db_endpoint(request: Request):
                     "price": r["price"],
                     "quantity": r["quantity"],
                     "active": r["active"],
-                    "tags": r["tags"],
+                    "tags": json.loads(r["tags"]) if isinstance(r["tags"], str) else r["tags"],
                     "rating": {"score": r["rating_score"], "count": r["rating_count"]},
                 }
             )
@@ -203,6 +223,15 @@ async def async_db_endpoint(request: Request):
         return _json_resp(body)
     except Exception:
         return _json_resp(b'{"items":[],"count":0}')
+
+
+@app.get("/static/{filename}")
+async def static_file(filename: str):
+    entry = static_files.get(filename)
+    if entry is None:
+        return _text(b"Not Found", 404)
+    data, ct = entry
+    return Response(content=data, status_code=200, media_type=ct, headers={"Server": "fastapi"})
 
 
 @app.post("/upload")

@@ -16,6 +16,7 @@
     "mixed",
     "noisy",
     "async-db",
+    "static",
     "baseline-h2",
     "static-h2"
   ]

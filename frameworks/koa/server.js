@@ -100,6 +100,19 @@ function startWorker() {
 
     const router = new Router();
 
+    // --- /static/:filename ---
+    router.get('/static/:filename', (ctx) => {
+        const sf = staticFiles[ctx.params.filename];
+        if (sf) {
+            ctx.set('server', SERVER_NAME);
+            ctx.set('content-type', sf.ct);
+            ctx.set('content-length', String(sf.buf.length));
+            ctx.body = sf.buf;
+        } else {
+            ctx.status = 404;
+        }
+    });
+
     // --- /pipeline ---
     router.get('/pipeline', (ctx) => {
         ctx.set('server', SERVER_NAME);

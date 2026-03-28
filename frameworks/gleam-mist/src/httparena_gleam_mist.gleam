@@ -45,13 +45,24 @@ fn pg_query(
 @external(erlang, "bench_pgo", "coerce")
 fn pg_float(a: Float) -> PgValue
 
+@external(erlang, "bench_pgo", "init_config")
+fn pg_init_config(
+  host: String,
+  port: Int,
+  database: String,
+  user: String,
+  password: String,
+) -> Nil
+
+@external(erlang, "bench_pgo", "ensure_pool")
+fn pg_ensure_pool() -> Result(PgPool, Nil)
+
 pub type Context {
   Context(
     dataset: List(DatasetItem),
     json_large_cache: BitArray,
     static_files: List(#(String, StaticFile)),
     db_available: Bool,
-    pg_conn: Option(PgPool),
   )
 }
 
@@ -527,14 +538,14 @@ fn handle_db(
 
 fn handle_async_db(
   req: Request(Connection),
-  ctx: Context,
+  _ctx: Context,
 ) -> Response(ResponseData) {
   case req.method {
     Get -> {
-      case ctx.pg_conn {
-        None ->
+      case pg_ensure_pool() {
+        Error(_) ->
           json_response(<<"{\"items\":[],\"count\":0}":utf8>>)
-        Some(conn) -> {
+        Ok(conn) -> {
           let min_price = get_query_float(req.query, "min", 10.0)
           let max_price = get_query_float(req.query, "max", 50.0)
 
@@ -708,15 +719,15 @@ pub fn main() {
     _ -> False
   }
 
-  let pg_conn = case envoy.get("DATABASE_URL") {
+  case envoy.get("DATABASE_URL") {
     Ok(url) -> {
       case parse_pg_url(url) {
         Ok(#(host, port, database, user, password)) ->
-          Some(pg_connect(host, port, database, user, password))
-        Error(_) -> None
+          pg_init_config(host, port, database, user, password)
+        Error(_) -> Nil
       }
     }
-    Error(_) -> None
+    Error(_) -> Nil
   }
 
   let ctx =
@@ -725,7 +736,6 @@ pub fn main() {
       json_large_cache:,
       static_files:,
       db_available:,
-      pg_conn:,
     )
 
   let assert Ok(_) =

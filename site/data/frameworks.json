@@ -56,12 +56,10 @@
   "Sinatra": {"description": "Sinatra DSL web framework on Puma, multi-threaded with one worker per CPU core.", "repo": "https://github.com/sinatra/sinatra", "type": "framework", "engine": "puma"},
   "spring-jvm": {"description": "Spring Boot with embedded Tomcat on JDK 21 (HotSpot JVM with ZGC).", "repo": "https://github.com/spring-projects/spring-boot", "type": "framework", "engine": "Tomcat"},
   "spring-jvm-grpc": {"description": "Spring Boot gRPC server using grpc-spring-boot-starter with Netty transport on JDK 24.", "repo": "https://github.com/grpc-ecosystem/grpc-spring", "type": "framework", "engine": "Netty (gRPC)"},
-  "spring-jvm-jetty": {"description": "Spring Boot with embedded Jetty 12 on JDK 21, supporting HTTP/1.1 and HTTP/2.", "repo": "https://github.com/spring-projects/spring-boot", "type": "framework", "engine": "Jetty"},
   "Starlette": {"description": "Starlette ASGI framework on Uvicorn (uvloop), multi-worker via gunicorn. The foundation FastAPI is built on.", "repo": "https://github.com/encode/starlette", "type": "framework", "engine": "uvicorn"},
   "tonic-grpc": {"description": "Rust gRPC server using tonic, a native Rust gRPC implementation built on top of hyper and tower.", "repo": "https://github.com/hyperium/tonic", "type": "framework", "engine": "Tonic"},
   "ulfius": {"description": "Ulfius C REST framework built on GNU Libmicrohttpd with Jansson JSON. Lightweight with small memory footprint, designed for embedded systems.", "repo": "https://github.com/babelouest/ulfius", "type": "framework", "engine": "libmicrohttpd"},
   "ultimate-express": {"description": "ultimate-express (Express API on uWebSockets.js) with single-process threading.", "repo": "https://github.com/dimdenGD/ultimate-express", "type": "framework", "engine": "uWebSockets"},
   "vertx": {"description": "Eclipse Vert.x 4.5 — reactive toolkit on Netty with event-loop threading, JDK 21.", "repo": "https://github.com/eclipse-vertx/vert.x", "type": "engine", "engine": "Netty"},
-  "workerman-websocket": {"description": "Workerman WebSocket echo server", "repo": "https://github.com/walkor/Workerman", "type": "framework", "engine": "Workerman"},
-  "zerg": {"description": "Raw C# TCP server on Linux io_uring via zerg, with zero-copy buffer rings and manual HTTP parsing.", "repo": "https://github.com/MDA2AV/zerg", "type": "framework", "engine": "io_uring"}
+  "workerman-websocket": {"description": "Workerman WebSocket echo server", "repo": "https://github.com/walkor/Workerman", "type": "framework", "engine": "Workerman"}
 }

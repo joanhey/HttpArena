@@ -552,7 +552,7 @@ int main(void) {
     ulfius_add_endpoint_by_val(&instance, "POST", "/baseline11", NULL, 0, &cb_baseline11, NULL);
     ulfius_add_endpoint_by_val(&instance, "GET", "/db", NULL, 0, &cb_db, NULL);
     ulfius_add_endpoint_by_val(&instance, "GET", "/async-db", NULL, 0, &cb_async_db, NULL);
-    ulfius_add_endpoint_by_val(&instance, "GET", "/static/:filename", NULL, 0, &cb_static, NULL);
+    ulfius_add_endpoint_by_val(&instance, "GET", "/static", "/:filename", 0, &cb_static, NULL);
 
     if (ulfius_start_framework(&instance) != U_OK) {
         fprintf(stderr, "Error starting ulfius framework\n");
@@ -584,7 +584,7 @@ int main(void) {
                 ulfius_add_endpoint_by_val(&instance_tls, "POST", "/baseline11", NULL, 0, &cb_baseline11, NULL);
                 ulfius_add_endpoint_by_val(&instance_tls, "GET", "/db", NULL, 0, &cb_db, NULL);
                 ulfius_add_endpoint_by_val(&instance_tls, "GET", "/async-db", NULL, 0, &cb_async_db, NULL);
-                ulfius_add_endpoint_by_val(&instance_tls, "GET", "/static/:filename", NULL, 0, &cb_static, NULL);
+                ulfius_add_endpoint_by_val(&instance_tls, "GET", "/static", "/:filename", 0, &cb_static, NULL);
 
                 if (ulfius_start_secure_framework(&instance_tls, key_data, cert_data) == U_OK) {
                     printf("Ulfius TLS listening on port %d\n", TLS_PORT);

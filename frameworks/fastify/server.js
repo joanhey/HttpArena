@@ -92,6 +92,20 @@ function startWorker() {
     app.addContentTypeParser('application/octet-stream', { parseAs: 'buffer' }, (req, body, done) => done(null, body));
     app.addContentTypeParser('*', { parseAs: 'buffer' }, (req, body, done) => done(null, body));
 
+    // --- /static/:filename ---
+    app.get('/static/:filename', (req, reply) => {
+        const sf = staticFiles[req.params.filename];
+        if (sf) {
+            reply
+                .header('server', SERVER_NAME)
+                .header('content-type', sf.ct)
+                .header('content-length', sf.buf.length)
+                .send(sf.buf);
+        } else {
+            reply.code(404).send();
+        }
+    });
+
     // --- /pipeline ---
     app.get('/pipeline', (req, reply) => {
         reply.header('server', SERVER_NAME).type('text/plain').send('ok');

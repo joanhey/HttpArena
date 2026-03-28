@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   get  '/db',          to: 'benchmark#db'
   get  '/async-db',    to: 'benchmark#async_db'
   post '/upload',      to: 'benchmark#upload'
+  get  '/static/:filename', to: 'benchmark#static_file', constraints: { filename: /[^\/]+/ }
 
   # Catch-all for unknown paths → 404
   match '*path', to: 'benchmark#not_found', via: :all

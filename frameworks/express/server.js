@@ -97,6 +97,18 @@ function startWorker() {
         });
     });
 
+    // --- /static/:filename --- (defined before body-parsing middleware so it's not affected)
+    app.get('/static/:filename', (req, res) => {
+        const sf = staticFiles[req.params.filename];
+        if (sf) {
+            res.writeHead(200, { 'content-type': sf.ct, 'content-length': sf.buf.length, 'server': SERVER_NAME });
+            res.end(sf.buf);
+        } else {
+            res.writeHead(404);
+            res.end();
+        }
+    });
+
     // Raw body parsing (applied to all routes except /upload which is already defined above)
     app.use(express.raw({ type: 'application/octet-stream', limit: '50mb' }));
     app.use(express.text({ type: 'text/plain', limit: '50mb' }));
