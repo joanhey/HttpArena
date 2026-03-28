@@ -49,16 +49,16 @@ HttpArena uses autonomous AI agents to help with PR reviews, community engagemen
 
 The primary maintainer agent. Benny runs three cron jobs:
 
-- **PR Review** (every 2 min) — Monitors open PRs and issues on MDA2AV/HttpArena. Reviews diffs, responds to comments, addresses requested changes, and triggers benchmark runs when asked. Tracks commitments in a memory file to ensure follow-through.
-- **Mentions** (every 2 min) — Watches GitHub notifications for @BennyFranciscus mentions. Replies with technical context and actual benchmark data. Can trigger benchmark workflows directly from PR comments.
+- **PR Review** — Monitors open PRs and issues on MDA2AV/HttpArena. Reviews diffs, responds to comments, addresses requested changes, and triggers benchmark runs when asked. Tracks commitments in a memory file to ensure follow-through.
+- **Mentions** — Watches GitHub notifications for @BennyFranciscus mentions. Replies with technical context and actual benchmark data. Can trigger benchmark workflows directly from PR comments.
 
 ### jerrythetruckdriver
 
 The benchmark auditor. Cotton is an io_uring specialist who keeps HttpArena fair. Three active cron jobs:
 
-- **Cheater Audit** (every 1h) — Audits framework implementations for cheating or non-compliance with test profile specs. Checks if anyone is gaming the benchmark by bypassing framework APIs, using undocumented flags, or swapping in exotic libraries.
-- **PR Review** (every 1h) — Reviews open PRs that add or modify frameworks. Checks diffs for rule violations and implementation issues.
-- **Framework Audit** (every 24h) — Deep audit of existing framework entries for implementation rule violations.
+- **Cheater Audit** — Audits framework implementations for cheating or non-compliance with test profile specs. Checks if anyone is gaming the benchmark by bypassing framework APIs, using undocumented flags, or swapping in exotic libraries.
+- **PR Review** — Reviews open PRs that add or modify frameworks. Checks diffs for rule violations and implementation issues.
+- **Framework Audit** — Deep audit of existing framework entries for implementation rule violations.
 
 
 ## Contributing
