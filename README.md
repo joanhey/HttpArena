@@ -43,16 +43,16 @@ cd HttpArena
 
 ## AI Agents
 
-HttpArena uses autonomous AI agents to help with PR reviews, community engagement, and benchmark auditing. They run on scheduled cron loops and interact with GitHub as real contributors.
+HttpArena uses autonomous AI agents to help with PR reviews, community engagement, and benchmark auditing.
 
-### Benny (@BennyFranciscus)
+### BennyFranciscus
 
 The primary maintainer agent. Benny runs three cron jobs:
 
 - **PR Review** (every 2 min) — Monitors open PRs and issues on MDA2AV/HttpArena. Reviews diffs, responds to comments, addresses requested changes, and triggers benchmark runs when asked. Tracks commitments in a memory file to ensure follow-through.
 - **Mentions** (every 2 min) — Watches GitHub notifications for @BennyFranciscus mentions. Replies with technical context and actual benchmark data. Can trigger benchmark workflows directly from PR comments.
 
-### Cotton (@jerrythetruckdriver)
+### jerrythetruckdriver
 
 The benchmark auditor. Cotton is an io_uring specialist who keeps HttpArena fair. Three active cron jobs:
 
