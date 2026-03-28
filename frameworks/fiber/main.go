@@ -1,8 +1,6 @@
 package main
 
 import (
-	"compress/flate"
-	"compress/gzip"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -16,6 +14,7 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/compress"
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "modernc.org/sqlite"
 )
@@ -173,6 +172,12 @@ func main() {
 		BodyLimit:             25 * 1024 * 1024, // 25 MB
 	})
 
+	// Use Fiber's built-in compression middleware globally.
+	// The framework handles Accept-Encoding negotiation and Content-Encoding headers.
+	app.Use(compress.New(compress.Config{
+		Level: compress.LevelBestSpeed,
+	}))
+
 	app.Get("/pipeline", func(c *fiber.Ctx) error {
 		c.Set("Server", "fiber")
 		return c.SendString("ok")
@@ -216,26 +221,6 @@ func main() {
 
 	app.Get("/compression", func(c *fiber.Ctx) error {
 		c.Set("Server", "fiber")
-		ae := c.Get("Accept-Encoding")
-		if strings.Contains(ae, "deflate") {
-			c.Set("Content-Type", "application/json")
-			c.Set("Content-Encoding", "deflate")
-			w, err := flate.NewWriter(c.Response().BodyWriter(), flate.BestSpeed)
-			if err == nil {
-				w.Write(jsonLargeResponse)
-				w.Close()
-			}
-			return nil
-		} else if strings.Contains(ae, "gzip") {
-			c.Set("Content-Type", "application/json")
-			c.Set("Content-Encoding", "gzip")
-			w, err := gzip.NewWriterLevel(c.Response().BodyWriter(), gzip.BestSpeed)
-			if err == nil {
-				w.Write(jsonLargeResponse)
-				w.Close()
-			}
-			return nil
-		}
 		c.Set("Content-Type", "application/json")
 		return c.Send(jsonLargeResponse)
 	})
