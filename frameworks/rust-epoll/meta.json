@@ -1,0 +1,13 @@
+{
+  "display_name": "rust-epoll",
+  "language": "Rust",
+  "type": "engine",
+  "engine": "epoll",
+  "description": "Zero-dependency Rust HTTP engine using raw epoll syscalls, one-thread-per-core with SO_REUSEPORT.",
+  "enabled": true,
+  "tests": [
+    "baseline",
+    "pipelined",
+    "limited-conn"
+  ]
+}
