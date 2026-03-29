@@ -63,7 +63,6 @@ function startServer() {
     });
   });
 
-  // c1
   // Catch-all GET — /baseline11 etc: sum query params
   app.get('/*', (res, req) => {
     const qs = req.getQuery();
