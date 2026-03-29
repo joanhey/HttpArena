@@ -14,6 +14,7 @@
     "upload",
     "compression",
     "noisy",
+    "static",
     "mixed"
   ]
 }
