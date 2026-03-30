@@ -1,7 +1,11 @@
 import "reflect-metadata";
-import { Carno, Controller, Get, Post, Ctx, Context, CompressionMiddleware } from "@carno.js/core";
+import { Carno, Controller, Get, Post, Ctx, Context, Use, CompressionMiddleware } from "@carno.js/core";
 import { Database } from "bun:sqlite";
 import { readFileSync, readdirSync } from "fs";
+
+// Inject reusePort so multiple workers can share port 8080
+const _serve = Bun.serve.bind(Bun);
+Bun.serve = (opts: any) => _serve({ ...opts, reusePort: true });
 
 const MIME_TYPES: Record<string, string> = {
   ".css": "text/css", ".js": "application/javascript", ".html": "text/html",
@@ -73,6 +77,12 @@ function sumQuery(url: string): number {
   return sum;
 }
 
+const gzipMiddleware = new CompressionMiddleware({
+  threshold: 0,
+  encodings: ["gzip"],
+  gzipLevel: 1,
+});
+
 @Controller()
 class BenchController {
   @Get("/pipeline")
@@ -111,13 +121,12 @@ class BenchController {
   }
 
   @Get("/compression")
+  @Use(gzipMiddleware)
   compression() {
-    const compressed = Bun.gzipSync(largeJsonBuf, { level: 1 });
-    return new Response(compressed, {
+    return new Response(largeJsonBuf, {
       headers: {
         "content-type": "application/json",
-        "content-encoding": "gzip",
-        "content-length": String(compressed.length),
+        "content-length": String(largeJsonBuf.length),
       },
     });
   }
