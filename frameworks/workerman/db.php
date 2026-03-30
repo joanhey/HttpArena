@@ -2,8 +2,8 @@
 
 class DB
 {
-    public static $db;
-    public static $prepared;
+    private static $db;
+    private static $prepared;
 
     public static function init()
     {
@@ -37,6 +37,7 @@ class DB
                     "count" => $row["rating_count"]],
             ];
         }
-        return json_encode(['items' => $data, 'count' => count($data)]);
+        return json_encode(['items' => $data, 'count' => count($data)],
+                            JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 }
