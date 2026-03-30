@@ -312,6 +312,13 @@ func main() {
 	}
 
 	handler := func(ctx *fasthttp.RequestCtx) {
+		method := string(ctx.Method())
+
+		if method != "GET" && method != "POST" {
+			ctx.SetStatusCode(fasthttp.StatusMethodNotAllowed)
+			return
+		}
+
 		switch string(ctx.Path()) {
 		case "/pipeline":
 			pipelineHandler(ctx)
