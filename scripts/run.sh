@@ -54,10 +54,11 @@ fi
 docker rm -f "$CONTAINER_NAME" 2>/dev/null || true
 
 # Build docker run args — mount all data files unconditionally for local testing
-docker_args=(--name "$CONTAINER_NAME" -p "$PORT:8080")
+docker_args=(--name "$CONTAINER_NAME" --network host)
 docker_args+=(-v "$DATA_DIR/dataset.json:/data/dataset.json:ro")
 docker_args+=(-v "$DATA_DIR/dataset-large.json:/data/dataset-large.json:ro")
 docker_args+=(-v "$DATA_DIR/static:/data/static:ro")
+docker_args+=(-e "DATABASE_URL=postgres://bench:bench@localhost:5432/benchmark")
 
 if [ -d "$CERTS_DIR" ]; then
     docker_args+=(-p "$H2PORT:8443" -v "$CERTS_DIR:/certs:ro")
@@ -69,6 +70,30 @@ if [ ! -f "$DB_FILE" ]; then
     python3 "$SCRIPT_DIR/generate-db.py" "$DATA_DIR/dataset.json" "$DB_FILE"
 fi
 docker_args+=(-v "$DB_FILE:/data/benchmark.db:ro")
+
+# Start Postgres sidecar
+PG_CONTAINER="httparena-pg"
+
+echo "[postgres] Starting Postgres sidecar for validation..."
+docker rm -f "$PG_CONTAINER" 2>/dev/null || true
+docker run -d --name "$PG_CONTAINER" --network host \
+    -e POSTGRES_USER=bench \
+    -e POSTGRES_PASSWORD=bench \
+    -e POSTGRES_DB=benchmark \
+    -v "$DATA_DIR/pgdb-seed.sql:/docker-entrypoint-initdb.d/seed.sql:ro" \
+    postgres:17-alpine \
+    -c max_connections=500
+for i in $(seq 1 60); do
+    if docker exec "$PG_CONTAINER" pg_isready -U bench -d benchmark >/dev/null 2>&1; then
+        # Ensure seed data is loaded (pg_isready fires before init scripts finish)
+        if docker exec "$PG_CONTAINER" psql -U bench -d benchmark -tAc "SELECT 1 FROM items LIMIT 1" 2>/dev/null | grep -q 1; then
+            echo "[postgres] Ready"
+            break
+        fi
+    fi
+    [ "$i" -eq 60 ] && { echo "FAIL: Postgres sidecar not ready"; exit 1; }
+    sleep 1
+done
 
 ENGINE=$(python3 -c "import json; print(json.load(open('$META_FILE')).get('engine',''))" 2>/dev/null || true)
 if [ "$ENGINE" = "io_uring" ]; then
