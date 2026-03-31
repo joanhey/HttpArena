@@ -7,14 +7,21 @@
   "repo": "https://github.com/rryqszq4/ngx-php",
   "enabled": true,
   "tests": [
-    "pipelined",
     "baseline",
-    "tcp-frag",
+    "pipelined",
+    "limited-conn",
     "json",
     "upload",
-    "limited-conn",
+    "compression",
     "noisy",
+    "mixed",
+    "db",
+    "async-db",
+    "static",
+    "tcp-frag",
     "baseline-h2",
-    "baseline-h3"
+    "static-h2",
+    "baseline-h3",
+    "static-h3"
   ]
 }

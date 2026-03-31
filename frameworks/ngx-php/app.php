@@ -1,18 +1,12 @@
 <?php
 
-$jsonData = json_decode(file_get_contents('/data/dataset.json'), true);
+require 'Db.php';
+require 'Pgsql.php';
+require 'data.php';
 
-//$db = new SQLite3('/data/benchmark.db', SQLITE3_OPEN_READONLY);
-// mejor un prepared statement
-// $stmt = $db->prepare('SELECT id, name, category, price, quantity, active, tags, rating_score, rating_count FROM items WHERE price BETWEEN ? AND ? LIMIT 50');
-
-// $largeJson = json_decode(file_get_contents('/data/large-dataset.json'), true);
-// foreach ($largeJson as &$item) {
-//     $item['total'] = $item['price'] * $item['quantity'];
-// }
-// $largeJson = json_encode(['items' => $largeJson, 'count' => 6000]);
-
-//$bad = fn($x) => !in_array($x, ['POST', 'GET', 'HEAD']);
+// Init
+Db::init();
+Pgsql::init();
 
 function guard()
 {
@@ -36,16 +30,15 @@ function baseline()
 
 function json()
 {
-    global $jsonData;
-
     $total = [];
-    foreach ($jsonData as $item) {
+    foreach (JSON_DATA as $item) {
         $item['total'] = $item['price'] * $item['quantity'];
         $total[] = $item;
     }
 
     ngx_header_set('Content-Type', 'application/json');
-    echo json_encode(['items' => $total, 'count' => count($total)]);
+    echo json_encode(['items' => $total, 'count' => count($total)],
+                    JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 }
 
 function upload()
@@ -54,16 +47,50 @@ function upload()
     echo strlen(ngx_request_body());
 }
 
-//function compression()
-//{
-    //global $largeJson;
-
-//    ngx_header_set('Content-Type', 'application/json');
-    //echo $largeJson;
-//}
+function compression()
+{
+    ngx_header_set('Content-Type', 'application/json');
+    echo LARGE_JSON;
+}
 
 function pipeline()
 {
     ngx_header_set('Content-Type', 'text/plain');
     echo 'ok';
+}
+
+function db()
+{
+    ngx_header_set('Content-Type', 'application/json');
+    echo Db::query(
+        ngx::query_args()['min'] ?? 10,
+        ngx::query_args()['max'] ?? 50
+    );
+}
+
+function asyncDb()
+{
+    ngx_header_set('Content-Type', 'application/json');
+    echo Pgsql::query(
+        ngx::query_args()['min'] ?? 10,
+        ngx::query_args()['max'] ?? 50
+    );
+}
+
+function files()
+{
+    $path = ngx_request_uri();
+    if (!isset(STATIC_FILES[$path])) {
+        return notFound();
+    }
+
+    ngx_header_set('Content-Type', STATIC_FILES[$path][1]);
+    echo STATIC_FILES[$path][0];
+}
+
+function notFound()
+{
+    ngx_header_set('Content-Type', 'text/plain');
+    echo 'Not Found';
+    ngx_status(404);
 }
