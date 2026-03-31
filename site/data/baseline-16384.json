@@ -1040,6 +1040,26 @@
     "status_5xx": 0
   },
   {
+    "framework": "Rage",
+    "language": "Ruby",
+    "rps": 14224,
+    "avg_latency": "319.84ms",
+    "p99_latency": "607.50ms",
+    "cpu": "5910.6%",
+    "memory": "5.6GiB",
+    "connections": 16384,
+    "threads": 64,
+    "duration": "5s",
+    "pipeline": 1,
+    "bandwidth": "23.12MB/s",
+    "input_bw": "1.10MB/s",
+    "reconnects": 0,
+    "status_2xx": 71122,
+    "status_3xx": 0,
+    "status_4xx": 140412,
+    "status_5xx": 0
+  },
+  {
     "framework": "Rails",
     "language": "Ruby",
     "rps": 28271,
