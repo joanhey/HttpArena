@@ -6,7 +6,6 @@ use futures_util::StreamExt;
 use rusqlite::Connection;
 use rustls::ServerConfig;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use std::io;
 use std::sync::{Arc, Mutex};
 
@@ -61,11 +60,6 @@ struct JsonResponse {
     count: usize,
 }
 
-struct StaticFile {
-    data: Vec<u8>,
-    content_type: String,
-}
-
 struct AppState {
     dataset: Vec<DatasetItem>,
     json_large_cache: Vec<u8>,
@@ -104,18 +98,6 @@ fn build_json_cache(dataset: &[DatasetItem]) -> Vec<u8> {
         items,
     };
     serde_json::to_vec(&resp).unwrap_or_default()
-}
-
-fn parse_query_sum(query: &str) -> i64 {
-    let mut sum: i64 = 0;
-    for pair in query.split('&') {
-        if let Some(val) = pair.split('=').nth(1) {
-            if let Ok(n) = val.parse::<i64>() {
-                sum += n;
-            }
-        }
-    }
-    sum
 }
 
 async fn pipeline() -> HttpResponse {
