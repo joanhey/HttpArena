@@ -363,13 +363,12 @@ async fn main() -> io::Result<()> {
     });
 
     // r2d2 pool shared across all workers — each get() hands out a connection from the pool
-    let sqlite_pool: Option<SqlitePool<SqliteConnectionManager>> =
-        SqliteConnectionManager::file("/data/benchmark.db")
+    let sqlite_pool: Option<SqlitePool<SqliteConnectionManager>> = {
+        let mgr = SqliteConnectionManager::file("/data/benchmark.db")
             .with_flags(rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY)
-            .with_init(|conn| conn.execute_batch("PRAGMA mmap_size=268435456"))
-            .map(|mgr| r2d2::Pool::builder().max_size(16).build(mgr).ok())
-            .ok()
-            .flatten();
+            .with_init(|conn| conn.execute_batch("PRAGMA mmap_size=268435456"));
+        r2d2::Pool::builder().max_size(16).build(mgr).ok()
+    };
 
     let tls_config = load_tls_config();
     let workers = num_cpus::get();
