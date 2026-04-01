@@ -1,5 +1,7 @@
 # HttpArena
 
+[![Discord](https://discordapp.com/api/guilds/1177529388229734410/widget.png?style=shield)](https://discord.com/invite/H84B5ZqDXR)
+
 HTTP framework benchmark platform.
 
 18 test profiles. 64-core dedicated hardware. Same conditions for every framework.
