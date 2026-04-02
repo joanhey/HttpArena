@@ -30,4 +30,13 @@ public class AppHost() : AppHostBase("ServiceStack.Benchmark", typeof(AppHost).A
             });
         });
     
+    public override void Configure()
+    {
+        SetConfig(new HostConfig
+        {
+            EnableAutoHtmlResponses = false,
+            EnableFeatures = Feature.All.Remove(Feature.Html | Feature.Metadata),
+        });
+    }
+    
 }
