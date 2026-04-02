@@ -9,10 +9,7 @@ using SimpleW.Modules;
 using SimpleW.Benchmarks;
 
 using System.Net;
-using System.Reflection.Metadata;
 using System.Text.Json;
-
-var server = new SimpleWServer(IPAddress.Any, 8080);
 
 var options = new JsonSerializerOptions
 {
@@ -20,7 +17,9 @@ var options = new JsonSerializerOptions
     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
 };
 
-server.ConfigureJsonEngine(new SystemTextJsonEngine(_ => options));
+var server = new SimpleWServer(IPAddress.Any, 8080)
+    .ConfigureJsonEngine(new SystemTextJsonEngine(_ => options))
+    .Configure(o => o.MaxRequestBodySize = 25 * 1024 * 1024);
 
 if (Directory.Exists("/data/static"))
 {
