@@ -10,8 +10,21 @@ permissions:
   actions: write
 
 jobs:
+  runner-busy:
+    if: github.event.issue.pull_request && (contains(github.event.comment.body, '/validate') || contains(github.event.comment.body, '/benchmark')) && vars.RUNNER_LOCAL == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post runner-busy notice
+        run: |
+          gh api "/repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions" -f content="eyes"
+          gh pr comment "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --body "⏸️ Runner is currently performing local benchmark runs and is disabled for GitHub Actions, please try later or check our Discord announcements on runner state for more info."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   handle-command:
-    if: github.event.issue.pull_request && (contains(github.event.comment.body, '/validate') || contains(github.event.comment.body, '/benchmark'))
+    if: github.event.issue.pull_request && (contains(github.event.comment.body, '/validate') || contains(github.event.comment.body, '/benchmark')) && vars.RUNNER_LOCAL != 'true'
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v5

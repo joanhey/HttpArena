@@ -27,7 +27,20 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  runner-busy:
+    if: vars.RUNNER_LOCAL == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post runner-busy notice
+        run: |
+          gh pr comment "${{ inputs.pr }}" \
+            --repo "${{ github.repository }}" \
+            --body "⏸️ Runner is currently performing local benchmark runs and is disabled for GitHub Actions, please try later or check our Discord announcements on runner state for more info."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   benchmark:
+    if: vars.RUNNER_LOCAL != 'true'
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v5
