@@ -2,10 +2,12 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-ROOT_DIR="$SCRIPT_DIR/.."
+ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$ROOT_DIR"
 
 GCANNON="${GCANNON:-gcannon}"
+GCANNON_IMAGE="${GCANNON_IMAGE:-gcannon:latest}"
+GCANNON_CPUS="${GCANNON_CPUS:-32-63,96-127}"
 H2LOAD="${H2LOAD:-h2load}"
 OHA="${OHA:-$HOME/.cargo/bin/oha}"
 GHZ="${GHZ:-ghz}"
@@ -27,27 +29,27 @@ CERTS_DIR="$ROOT_DIR/certs"
 #           "grpc" = gRPC unary (h2load h2c), "grpc-tls" = gRPC unary (h2load TLS),
 #           "static" = multi-URI static files (gcannon --raw), "ws-echo" = WebSocket echo (gcannon --ws)
 declare -A PROFILES=(
-    [baseline]="1|0|64|512,4096,16384|"
-    [pipelined]="16|0|64|512,4096,16384|pipeline"
-    [limited-conn]="1|10|64|512,4096|"
-    [json]="1|0|64|4096,16384|json"
-    [upload]="1|0|64|64,256,512|upload"
-    [compression]="1|0|64|4096,16384|compression"
-    [noisy]="1|0|64|512,4096,16384|noisy"
-    [mixed]="1|5|64|4096|mixed"
-    [api-4]="1|5|4|256|api-4"
-    [api-16]="1|5|16|1024|api-16"
-    [static]="1|10|64|4096,16384|static"
-    [tcp-frag]="1|2|64|512,4096,16384|tcp-frag"
-    [baseline-h2]="1|0|64|256,1024|h2"
-    [static-h2]="1|0|64|256,1024|static-h2"
-    [baseline-h3]="32|0|64|256,512|h3"
-    [static-h3]="32|0|64|256,512|static-h3"
-    [unary-grpc]="1|0|64|256,1024|grpc"
-    [unary-grpc-tls]="1|0|64|256,1024|grpc-tls"
-    [echo-ws]="1|0|64|512,4096,16384|ws-echo"
-    [sync-db]="1|0|64|1024|sync-db"
-    [async-db]="1|0|64|1024|async-db"
+    [baseline]="1|0|0-31,64-95|512,4096,16384|"
+    [pipelined]="16|0|0-31,64-95|512,4096,16384|pipeline"
+    [limited-conn]="1|10|0-31,64-95|512,4096|"
+    [json]="1|0|0-31,64-95|4096,16384|json"
+    [upload]="1|0|0-31,64-95|64,256,512|upload"
+    [compression]="1|0|0-31,64-95|4096,16384|compression"
+    [noisy]="1|0|0-31,64-95|512,4096,16384|noisy"
+    [mixed]="1|5|0-31,64-95|4096|mixed"
+    [api-4]="1|5|0-3|256|api-4"
+    [api-16]="1|5|0-7,64-71|1024|api-16"
+    [static]="1|10|0-31,64-95|4096,16384|static"
+    [tcp-frag]="1|2|0-31,64-95|512,4096,16384|tcp-frag"
+    [baseline-h2]="1|0|0-31,64-95|256,1024|h2"
+    [static-h2]="1|0|0-31,64-95|256,1024|static-h2"
+    [baseline-h3]="32|0|0-31,64-95|256,512|h3"
+    [static-h3]="32|0|0-31,64-95|256,512|static-h3"
+    [unary-grpc]="1|0|0-31,64-95|256,1024|grpc"
+    [unary-grpc-tls]="1|0|0-31,64-95|256,1024|grpc-tls"
+    [echo-ws]="1|0|0-31,64-95|512,4096,16384|ws-echo"
+    [sync-db]="1|0|0-31,64-95|1024|sync-db"
+    [async-db]="1|0|0-31,64-95|1024|async-db"
 )
 PROFILE_ORDER=(baseline pipelined limited-conn json upload compression noisy mixed api-4 api-16 static sync-db async-db baseline-h2 static-h2 baseline-h3 static-h3 unary-grpc unary-grpc-tls echo-ws)
 
@@ -636,7 +638,12 @@ for profile in "${profiles_to_run[@]}"; do
         elif [ "$USE_H2LOAD" = "true" ]; then
             output=$(timeout 45 "${gc_args[@]}" 2>&1) || true
         else
-            output=$(timeout 45 "$GCANNON" "${gc_args[@]}" 2>&1) || true
+            output=$(timeout 45 docker run --rm --network host \
+                --cpuset-cpus="$GCANNON_CPUS" \
+                --security-opt seccomp=unconfined \
+                --ulimit memlock=-1:-1 \
+                -v "$REQUESTS_DIR:$REQUESTS_DIR:ro" \
+                "$GCANNON_IMAGE" "${gc_args[@]}" 2>&1) || true
         fi
 
         kill "$stats_pid" 2>/dev/null; wait "$stats_pid" 2>/dev/null || true

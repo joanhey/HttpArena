@@ -1390,15 +1390,15 @@ function h1Iso_fmtK(n) {
   return String(n);
 }
 
-var h1Iso_mixedColors = {baseline:'#3b82f6', json:'#8b5cf6', db:'#f59e0b', upload:'#10b981', compression:'#ef4444', static:'#06b6d4', async_db:'#d946ef'};
-var h1Iso_mixedLabels = {baseline:'Baseline', json:'JSON', db:'DB', upload:'Upload', compression:'Gzip', static:'Static', async_db:'Async DB'};
-var h1Iso_mixedKeys = ['baseline','json','db','upload','compression','static','async_db'];
-var h1Iso_mixedWeights = {baseline:0.15, json:1, db:10, upload:10, compression:7, static:2, async_db:10};
+var h1Iso_mixedColors = {baseline:'#3b82f6', json:'#8b5cf6', sync_db:'#f59e0b', upload:'#10b981', compression:'#ef4444', static:'#06b6d4', async_db:'#d946ef'};
+var h1Iso_mixedLabels = {baseline:'Baseline', json:'JSON', sync_db:'Sync DB', upload:'Upload', compression:'Gzip', static:'Static', async_db:'Async DB'};
+var h1Iso_mixedKeys = ['baseline','json','sync_db','upload','compression','static','async_db'];
+var h1Iso_mixedWeights = {baseline:0.15, json:1, sync_db:10, upload:10, compression:7, static:2, async_db:10};
 
 var h1Iso_mixedGrid = '2.5rem 10rem 5.5rem 4.95rem 4.5rem 3.5rem 6rem 5rem 3.5rem 5rem 4.5rem 5.5rem 5rem 5rem 4rem';
 
 function h1Iso_buildMixBar(d) {
-  var total = d.baseline + d.json + d.db + d.upload + d.compression;
+  var total = d.baseline + d.json + d.sync_db + d.upload + d.compression;
   if (total === 0) return '';
   var tipLines = h1Iso_mixedKeys.map(function(k) {
     return h1Iso_mixedLabels[k] + ': ' + h1Iso_fmtK(d[k]) + ' (' + (d[k]/total*100).toFixed(1) + '%) [w=' + h1Iso_mixedWeights[k] + ']';
@@ -1427,7 +1427,7 @@ function applyH1IsoMixedPanel(panel) {
     var d = {
       baseline: Number(row.dataset.tplBaseline) || 0,
       json: Number(row.dataset.tplJson) || 0,
-      db: Number(row.dataset.tplDb) || 0,
+      sync_db: Number(row.dataset.tplDb) || 0,
       upload: Number(row.dataset.tplUpload) || 0,
       compression: Number(row.dataset.tplCompression) || 0,
       static: Number(row.dataset.tplStatic) || 0,
@@ -1458,7 +1458,7 @@ function applyH1IsoMixedPanel(panel) {
       barHeader.className = 'lb-mix-header';
       barHeader.style.textAlign = 'right';
       barHeader.style.fontWeight = '600';
-      barHeader.title = 'Weighted score: baseline\u00d70.15 + json\u00d71 + db\u00d710 + upload\u00d710 + gzip\u00d77 + static\u00d72 + async-db\u00d710, normalized to 100';
+      barHeader.title = 'Weighted score: baseline\u00d70.15 + json\u00d71 + sync-db\u00d710 + upload\u00d710 + gzip\u00d77 + static\u00d72 + async-db\u00d710, normalized to 100';
       barHeader.textContent = 'Score';
       /* Insert mix legend header after Score */
       var mixHeader = document.createElement('div');
@@ -1553,7 +1553,7 @@ function applyH1IsoMixedScores() {
         barHeader.className = 'lb-mix-header';
         barHeader.style.textAlign = 'right';
         barHeader.style.fontWeight = '600';
-        barHeader.title = 'Weighted score: baseline\u00d70.15 + json\u00d71 + db\u00d710 + upload\u00d710 + gzip\u00d77 + static\u00d72 + async-db\u00d710, normalized to 100';
+        barHeader.title = 'Weighted score: baseline\u00d70.15 + json\u00d71 + sync-db\u00d710 + upload\u00d710 + gzip\u00d77 + static\u00d72 + async-db\u00d710, normalized to 100';
         barHeader.textContent = 'Score';
         var mixHeader = document.createElement('div');
         mixHeader.innerHTML = '<div style="font-size:0.65rem;font-weight:600;margin-bottom:1px;">Request Mix</div>' +

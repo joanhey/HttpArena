@@ -1,17 +1,17 @@
-[0.014s][warning][os] NUMA support disabled: Failed to initialize libnuma
+[0.001s][warning][os] NUMA support disabled: Failed to initialize libnuma
 SLF4J(W): No SLF4J providers were found.
 SLF4J(W): Defaulting to no-operation (NOP) logger implementation
 SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
-Apr 01, 2026 2:09:54 AM io.helidon.common.features.HelidonFeatures features
+Apr 04, 2026 2:01:10 AM io.helidon.common.features.HelidonFeatures features
 INFO: Helidon SE 4.4.0 features: [Config, Encoding, Media, Registry, WebServer]
-Apr 01, 2026 2:09:54 AM io.helidon.webserver.ServerListener startIt
-INFO: [0x55d73e36] http://0.0.0.0:8080 bound for socket '@default'
+Apr 04, 2026 2:01:10 AM io.helidon.webserver.ServerListener startIt
+INFO: [0x487a9e69] http://0.0.0.0:8080 bound for socket '@default'
 There is no Helidon logging implementation on classpath, skipping log configuration.
-Apr 01, 2026 2:09:54 AM io.helidon.webserver.LoomServer startIt
-INFO: Started all channels in 19 milliseconds. 1598 milliseconds since JVM startup. Java 25.0.2+10-LTS
+Apr 04, 2026 2:01:10 AM io.helidon.webserver.LoomServer startIt
+INFO: Started all channels in 17 milliseconds. 1529 milliseconds since JVM startup. Java 25.0.2+10-LTS
 Helidon HttpArena server started on port 8080
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x62e5d2b8] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x29756aa3] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -38,8 +38,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x289d4d4c] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x4337cef8] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -66,8 +66,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x31ba536e] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x4b83845f] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -94,8 +94,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x0f9774fd] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x7fcbae05] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -122,8 +122,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x4203c177] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x4f4f1df5] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -150,8 +150,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x32360269] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x1d16df92] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -178,8 +178,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x7acf5aa5] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x72be4d08] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -206,8 +206,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x36c5825d] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x24278370] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -234,8 +234,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x1a4a5c7e] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x419f695f] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -262,8 +262,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x41ab7888] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x52aae7fb] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -290,8 +290,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x559214a5] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x32710597] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -318,8 +318,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x26da0aca] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x2d28325c] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -346,8 +346,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x07b418df] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x6fded7d8] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -374,8 +374,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x3e15ed56] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x7b274ce1] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -402,8 +402,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x33869589] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x20ac58bd] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -430,8 +430,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x19ed0a6c] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x2c4e08ac] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -458,8 +458,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x694aa818] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x6a79e12a] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -486,8 +486,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x780130e9] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x5a3a4eae] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -514,8 +514,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x563d931b] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x0d0b26c8] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -542,8 +542,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x626bb0ac] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x7f657a5a] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -570,8 +570,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x3fd240f4] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x02193d40] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -598,8 +598,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x5ed7f600] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x6a694e3b] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -626,8 +626,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x287eae6b] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x5b86368c] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -654,8 +654,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x0b508516] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x03810bf6] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -682,8 +682,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x634c5c34] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x6e2839b0] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -710,8 +710,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x1a1432ba] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x5b1cebc3] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -738,8 +738,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x1e01696f] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x156c0f5c] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -766,8 +766,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x6bf0f032] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x3a16ca7c] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -794,8 +794,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x7aada71d] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x6b478a38] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -822,8 +822,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x47fe2210] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x5c63bef3] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -850,8 +850,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x1c254f4f] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x77d561b7] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -878,8 +878,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x47b8c656] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x4f8a262f] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -906,8 +906,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x659f3384] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x553212d6] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -934,8 +934,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x64eb2dff] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x03073307] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -962,8 +962,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x20f4d848] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x4ceb7e37] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -990,8 +990,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x75a3f674] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x06937bf0] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -1018,8 +1018,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x76c1e6e5] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x26d65c58] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -1046,8 +1046,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x04e7d1de] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x42bfa280] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -1074,8 +1074,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x25cf5d87] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x42a1a041] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -1102,8 +1102,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x0f1543b6] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x1661eeda] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -1130,8 +1130,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x25769c25] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x51088d3a] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
@@ -1158,848 +1158,8 @@ Caused by: java.lang.IllegalStateException: Cannot set response header after res
 	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
 	... 8 more
 
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x7e9addbb] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x379d2268] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x2cc45167] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x71b54772] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x7ee1e6e2] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x5ababe51] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x0598adb1] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x22c00da3] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x47104bf2] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x5e523c9a] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x215aefe3] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x4e18f21f] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x26ec3237] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x77c3120c] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x77a15591] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x5650837e] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x3b5ebff4] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x2c376200] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x5390632e] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x580094d6] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x00d8e191] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x166d0ef3] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x52c06e98] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x6b7dccb3] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x1e954ad2] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x171f2660] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x01d59ba3] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x5477ef7e] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x2e8a6774] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x2432b34f] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
-io.helidon.http.RequestException: Cannot set response header after response was already sent.
-	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
-	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
-	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
-	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
-	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
-	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
-	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
-	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
-	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
-	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
-	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
-	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
-	at java.base/java.lang.VirtualThread.run(Unknown Source)
-Caused by: java.lang.IllegalStateException: Cannot set response header after response was already sent.
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:185)
-	at io.helidon.webserver.http1.Http1ServerResponse.header(Http1ServerResponse.java:60)
-	at io.helidon.webserver.http.ServerResponse.header(ServerResponse.java:78)
-	at com.httparena.Main.asyncDb(Main.java:252)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
-	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
-	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
-	... 8 more
-
-Apr 01, 2026 2:10:29 AM io.helidon.common.socket.SocketContext log
-WARNING: [0x55d73e36 0x6f43693b] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
+Apr 04, 2026 2:01:21 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x487a9e69 0x21d1a6c0] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/async-db, query=?min=10&max=50, fragment=], cannot send error response, as response already sent
 io.helidon.http.RequestException: Cannot set response header after response was already sent.
 	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
 	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)

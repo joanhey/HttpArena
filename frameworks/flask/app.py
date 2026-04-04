@@ -146,10 +146,16 @@ def json_endpoint():
 @app.route('/compression')
 def compression_endpoint():
     if large_json_buf:
-        compressed = gzip.compress(large_json_buf, compresslevel=1)
-        resp = make_response(compressed)
+        accept_encoding = request.headers.get('Accept-Encoding', '')
+        if 'gzip' in accept_encoding:
+            compressed = gzip.compress(large_json_buf, compresslevel=1)
+            resp = make_response(compressed)
+            resp.content_type = 'application/json'
+            resp.headers['Content-Encoding'] = 'gzip'
+            resp.headers['Server'] = 'flask'
+            return resp
+        resp = make_response(large_json_buf)
         resp.content_type = 'application/json'
-        resp.headers['Content-Encoding'] = 'gzip'
         resp.headers['Server'] = 'flask'
         return resp
     return 'No dataset', 500

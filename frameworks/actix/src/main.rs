@@ -206,15 +206,29 @@ async fn json_endpoint(state: web::Data<AppState>) -> HttpResponse {
         .body(body)
 }
 
-async fn compression(state: web::Data<AppState>) -> HttpResponse {
-    let mut encoder = GzEncoder::new(Vec::new(), Compression::fast());
-    std::io::Write::write_all(&mut encoder, &state.json_large_cache).unwrap();
-    let compressed = encoder.finish().unwrap();
-    HttpResponse::Ok()
-        .insert_header(("Content-Type", "application/json"))
-        .insert_header(("Content-Encoding", "gzip"))
-        .insert_header(("Server", "actix"))
-        .body(compressed)
+async fn compression(req: actix_web::HttpRequest, state: web::Data<AppState>) -> HttpResponse {
+    let accepts_gzip = req
+        .headers()
+        .get("accept-encoding")
+        .and_then(|v| v.to_str().ok())
+        .map(|v| v.contains("gzip"))
+        .unwrap_or(false);
+
+    if accepts_gzip {
+        let mut encoder = GzEncoder::new(Vec::new(), Compression::fast());
+        std::io::Write::write_all(&mut encoder, &state.json_large_cache).unwrap();
+        let compressed = encoder.finish().unwrap();
+        HttpResponse::Ok()
+            .insert_header(("Content-Type", "application/json"))
+            .insert_header(("Content-Encoding", "gzip"))
+            .insert_header(("Server", "actix"))
+            .body(compressed)
+    } else {
+        HttpResponse::Ok()
+            .insert_header(("Server", "actix"))
+            .content_type(ContentType::json())
+            .body(state.json_large_cache.clone())
+    }
 }
 
 async fn db_endpoint(

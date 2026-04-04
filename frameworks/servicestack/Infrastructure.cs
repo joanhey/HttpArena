@@ -1,18 +1,44 @@
+using System.Collections.Concurrent;
+using Microsoft.Data.Sqlite;
+
 namespace ServiceStack.Benchmarks;
+
+public sealed class SqlitePool
+{
+    private readonly ConcurrentBag<SqliteConnection> _connections = new();
+
+    public SqlitePool(string connectionString, int size)
+    {
+        for (int i = 0; i < size; i++)
+        {
+            var conn = new SqliteConnection(connectionString);
+            conn.Open();
+            using var pragma = conn.CreateCommand();
+            pragma.CommandText = "PRAGMA mmap_size=268435456";
+            pragma.ExecuteNonQuery();
+            _connections.Add(conn);
+        }
+    }
+
+    public SqliteConnection Rent()
+    {
+        SqliteConnection? conn;
+        var spin = new SpinWait();
+        while (!_connections.TryTake(out conn))
+            spin.SpinOnce();
+        return conn;
+    }
+
+    public void Return(SqliteConnection conn) => _connections.Add(conn);
+}
 
 public static class DbConnectionFactory
 {
-    public static Microsoft.Data.Sqlite.SqliteConnection? Open()
+    public static SqlitePool? Open()
     {
         const string path = "/data/benchmark.db";
         if (!File.Exists(path)) return null;
-
-        var con = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={path};Mode=ReadOnly");
-        con.Open();
-        using var p = con.CreateCommand();
-        p.CommandText = "PRAGMA mmap_size=268435456";
-        p.ExecuteNonQuery();
-        return con;
+        return new SqlitePool($"Data Source={path};Mode=ReadOnly", Environment.ProcessorCount);
     }
 }
 

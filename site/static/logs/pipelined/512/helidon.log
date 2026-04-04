@@ -1,9 +1,219 @@
 [0.001s][warning][os] NUMA support disabled: Failed to initialize libnuma
-Mar 30, 2026 11:16:06 PM io.helidon.common.features.HelidonFeatures features
+Apr 04, 2026 1:49:07 AM io.helidon.common.features.HelidonFeatures features
 INFO: Helidon SE 4.4.0 features: [Config, Encoding, Media, Registry, WebServer]
-Mar 30, 2026 11:16:06 PM io.helidon.webserver.ServerListener startIt
-INFO: [0x1bbbeb67] http://0.0.0.0:8080 bound for socket '@default'
+Apr 04, 2026 1:49:07 AM io.helidon.webserver.ServerListener startIt
+INFO: [0x6a42ea15] http://0.0.0.0:8080 bound for socket '@default'
 There is no Helidon logging implementation on classpath, skipping log configuration.
-Mar 30, 2026 11:16:06 PM io.helidon.webserver.LoomServer startIt
-INFO: Started all channels in 19 milliseconds. 1469 milliseconds since JVM startup. Java 25.0.2+10-LTS
+Apr 04, 2026 1:49:07 AM io.helidon.webserver.LoomServer startIt
+INFO: Started all channels in 16 milliseconds. 1423 milliseconds since JVM startup. Java 25.0.2+10-LTS
 Helidon HttpArena server started on port 8080
+Apr 04, 2026 1:49:13 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x6a42ea15 0x670320c2] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/pipeline, query=, fragment=], cannot send error response, as response already sent
+io.helidon.http.RequestException: java.io.IOException: Broken pipe
+	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
+	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
+	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
+	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
+	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
+	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
+	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
+	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
+	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
+	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
+	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
+	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
+	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
+	at java.base/java.lang.VirtualThread.run(Unknown Source)
+Caused by: java.io.UncheckedIOException: java.io.IOException: Broken pipe
+	at io.helidon.common.socket.NioSocket.write(NioSocket.java:150)
+	at io.helidon.common.socket.SocketWriter.writeNow(SocketWriter.java:81)
+	at io.helidon.common.socket.SocketWriterDirect.write(SocketWriterDirect.java:43)
+	at io.helidon.webserver.http1.Http1ServerResponse.send(Http1ServerResponse.java:217)
+	at io.helidon.webserver.http1.Http1ServerResponse.send(Http1ServerResponse.java:196)
+	at io.helidon.webserver.http.ServerResponseBase.doSend(ServerResponseBase.java:314)
+	at io.helidon.webserver.http.ServerResponseBase.send(ServerResponseBase.java:128)
+	at com.httparena.Main.pipeline(Main.java:82)
+	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
+	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
+	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
+	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
+	... 8 more
+Caused by: java.io.IOException: Broken pipe
+	at java.base/sun.nio.ch.SocketDispatcher.write0(Native Method)
+	at java.base/sun.nio.ch.SocketDispatcher.write(Unknown Source)
+	at java.base/sun.nio.ch.IOUtil.writeFromNativeBuffer(Unknown Source)
+	at java.base/sun.nio.ch.IOUtil.write(Unknown Source)
+	at java.base/sun.nio.ch.IOUtil.write(Unknown Source)
+	at java.base/sun.nio.ch.SocketChannelImpl.implWrite(Unknown Source)
+	at java.base/sun.nio.ch.SocketChannelImpl.write(Unknown Source)
+	at io.helidon.common.socket.NioSocket.write(NioSocket.java:147)
+	... 19 more
+
+Apr 04, 2026 1:49:13 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x6a42ea15 0x6081f85b] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/pipeline, query=, fragment=], cannot send error response, as response already sent
+io.helidon.http.RequestException: java.io.IOException: Connection reset by peer
+	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
+	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
+	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
+	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
+	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
+	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
+	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
+	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
+	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
+	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
+	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
+	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
+	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
+	at java.base/java.lang.VirtualThread.run(Unknown Source)
+Caused by: java.io.UncheckedIOException: java.io.IOException: Connection reset by peer
+	at io.helidon.common.socket.NioSocket.write(NioSocket.java:150)
+	at io.helidon.common.socket.SocketWriter.writeNow(SocketWriter.java:81)
+	at io.helidon.common.socket.SocketWriterDirect.write(SocketWriterDirect.java:43)
+	at io.helidon.webserver.http1.Http1ServerResponse.send(Http1ServerResponse.java:217)
+	at io.helidon.webserver.http1.Http1ServerResponse.send(Http1ServerResponse.java:196)
+	at io.helidon.webserver.http.ServerResponseBase.doSend(ServerResponseBase.java:314)
+	at io.helidon.webserver.http.ServerResponseBase.send(ServerResponseBase.java:128)
+	at com.httparena.Main.pipeline(Main.java:82)
+	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
+	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
+	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
+	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
+	... 8 more
+Caused by: java.io.IOException: Connection reset by peer
+	at java.base/sun.nio.ch.SocketDispatcher.write0(Native Method)
+	at java.base/sun.nio.ch.SocketDispatcher.write(Unknown Source)
+	at java.base/sun.nio.ch.IOUtil.writeFromNativeBuffer(Unknown Source)
+	at java.base/sun.nio.ch.IOUtil.write(Unknown Source)
+	at java.base/sun.nio.ch.IOUtil.write(Unknown Source)
+	at java.base/sun.nio.ch.SocketChannelImpl.implWrite(Unknown Source)
+	at java.base/sun.nio.ch.SocketChannelImpl.write(Unknown Source)
+	at io.helidon.common.socket.NioSocket.write(NioSocket.java:147)
+	... 19 more
+
+Apr 04, 2026 1:49:13 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x6a42ea15 0x0eb430f9] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/pipeline, query=, fragment=], cannot send error response, as response already sent
+io.helidon.http.RequestException: java.io.IOException: Connection reset by peer
+	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
+	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
+	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
+	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
+	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
+	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
+	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
+	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
+	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
+	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
+	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
+	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
+	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
+	at java.base/java.lang.VirtualThread.run(Unknown Source)
+Caused by: java.io.UncheckedIOException: java.io.IOException: Connection reset by peer
+	at io.helidon.common.socket.NioSocket.write(NioSocket.java:150)
+	at io.helidon.common.socket.SocketWriter.writeNow(SocketWriter.java:81)
+	at io.helidon.common.socket.SocketWriterDirect.write(SocketWriterDirect.java:43)
+	at io.helidon.webserver.http1.Http1ServerResponse.send(Http1ServerResponse.java:217)
+	at io.helidon.webserver.http1.Http1ServerResponse.send(Http1ServerResponse.java:196)
+	at io.helidon.webserver.http.ServerResponseBase.doSend(ServerResponseBase.java:314)
+	at io.helidon.webserver.http.ServerResponseBase.send(ServerResponseBase.java:128)
+	at com.httparena.Main.pipeline(Main.java:82)
+	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
+	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
+	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
+	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
+	... 8 more
+Caused by: java.io.IOException: Connection reset by peer
+	at java.base/sun.nio.ch.SocketDispatcher.write0(Native Method)
+	at java.base/sun.nio.ch.SocketDispatcher.write(Unknown Source)
+	at java.base/sun.nio.ch.IOUtil.writeFromNativeBuffer(Unknown Source)
+	at java.base/sun.nio.ch.IOUtil.write(Unknown Source)
+	at java.base/sun.nio.ch.IOUtil.write(Unknown Source)
+	at java.base/sun.nio.ch.SocketChannelImpl.implWrite(Unknown Source)
+	at java.base/sun.nio.ch.SocketChannelImpl.write(Unknown Source)
+	at io.helidon.common.socket.NioSocket.write(NioSocket.java:147)
+	... 19 more
+
+Apr 04, 2026 1:49:13 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x6a42ea15 0x3a96dc39] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/pipeline, query=, fragment=], cannot send error response, as response already sent
+io.helidon.http.RequestException: java.io.IOException: Connection reset by peer
+	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
+	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
+	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
+	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
+	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
+	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
+	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
+	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
+	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
+	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
+	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
+	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
+	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
+	at java.base/java.lang.VirtualThread.run(Unknown Source)
+Caused by: java.io.UncheckedIOException: java.io.IOException: Connection reset by peer
+	at io.helidon.common.socket.NioSocket.write(NioSocket.java:150)
+	at io.helidon.common.socket.SocketWriter.writeNow(SocketWriter.java:81)
+	at io.helidon.common.socket.SocketWriterDirect.write(SocketWriterDirect.java:43)
+	at io.helidon.webserver.http1.Http1ServerResponse.send(Http1ServerResponse.java:217)
+	at io.helidon.webserver.http1.Http1ServerResponse.send(Http1ServerResponse.java:196)
+	at io.helidon.webserver.http.ServerResponseBase.doSend(ServerResponseBase.java:314)
+	at io.helidon.webserver.http.ServerResponseBase.send(ServerResponseBase.java:128)
+	at com.httparena.Main.pipeline(Main.java:82)
+	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
+	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
+	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
+	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
+	... 8 more
+Caused by: java.io.IOException: Connection reset by peer
+	at java.base/sun.nio.ch.SocketDispatcher.write0(Native Method)
+	at java.base/sun.nio.ch.SocketDispatcher.write(Unknown Source)
+	at java.base/sun.nio.ch.IOUtil.writeFromNativeBuffer(Unknown Source)
+	at java.base/sun.nio.ch.IOUtil.write(Unknown Source)
+	at java.base/sun.nio.ch.IOUtil.write(Unknown Source)
+	at java.base/sun.nio.ch.SocketChannelImpl.implWrite(Unknown Source)
+	at java.base/sun.nio.ch.SocketChannelImpl.write(Unknown Source)
+	at io.helidon.common.socket.NioSocket.write(NioSocket.java:147)
+	... 19 more
+
+Apr 04, 2026 1:49:13 AM io.helidon.common.socket.SocketContext log
+WARNING: [0x6a42ea15 0x42b2b72d] Request failed: HttpPrologue[protocol=HTTP, protocolVersion=1.1, method=GET, uriPath=/pipeline, query=, fragment=], cannot send error response, as response already sent
+io.helidon.http.RequestException: java.io.IOException: Connection reset by peer
+	at io.helidon.http.RequestException$Builder.build(RequestException.java:157)
+	at io.helidon.webserver.http.ErrorHandlers.unhandledError(ErrorHandlers.java:205)
+	at io.helidon.webserver.http.ErrorHandlers.lambda$handleError$1(ErrorHandlers.java:180)
+	at java.base/java.util.Optional.ifPresentOrElse(Unknown Source)
+	at io.helidon.webserver.http.ErrorHandlers.handleError(ErrorHandlers.java:179)
+	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:113)
+	at io.helidon.webserver.http.Filters.filter(Filters.java:83)
+	at io.helidon.webserver.http.HttpRoutingImpl.route(HttpRoutingImpl.java:74)
+	at io.helidon.webserver.http1.Http1Connection.route(Http1Connection.java:548)
+	at io.helidon.webserver.http1.Http1Connection.handle(Http1Connection.java:216)
+	at io.helidon.webserver.ConnectionHandler.run(ConnectionHandler.java:185)
+	at io.helidon.common.task.InterruptableTask.call(InterruptableTask.java:47)
+	at io.helidon.webserver.ThreadPerTaskExecutor$ThreadBoundFuture.run(ThreadPerTaskExecutor.java:241)
+	at java.base/java.lang.VirtualThread.run(Unknown Source)
+Caused by: java.io.UncheckedIOException: java.io.IOException: Connection reset by peer
+	at io.helidon.common.socket.NioSocket.write(NioSocket.java:150)
+	at io.helidon.common.socket.SocketWriter.writeNow(SocketWriter.java:81)
+	at io.helidon.common.socket.SocketWriterDirect.write(SocketWriterDirect.java:43)
+	at io.helidon.webserver.http1.Http1ServerResponse.send(Http1ServerResponse.java:217)
+	at io.helidon.webserver.http1.Http1ServerResponse.send(Http1ServerResponse.java:196)
+	at io.helidon.webserver.http.ServerResponseBase.doSend(ServerResponseBase.java:314)
+	at io.helidon.webserver.http.ServerResponseBase.send(ServerResponseBase.java:128)
+	at com.httparena.Main.pipeline(Main.java:82)
+	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.doRoute(HttpRoutingImpl.java:174)
+	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:132)
+	at io.helidon.webserver.http.HttpRoutingImpl$RoutingExecutor.call(HttpRoutingImpl.java:110)
+	at io.helidon.webserver.http.ErrorHandlers.runWithErrorHandling(ErrorHandlers.java:76)
+	... 8 more
+Caused by: java.io.IOException: Connection reset by peer
+	at java.base/sun.nio.ch.SocketDispatcher.write0(Native Method)
+	at java.base/sun.nio.ch.SocketDispatcher.write(Unknown Source)
+	at java.base/sun.nio.ch.IOUtil.writeFromNativeBuffer(Unknown Source)
+	at java.base/sun.nio.ch.IOUtil.write(Unknown Source)
+	at java.base/sun.nio.ch.IOUtil.write(Unknown Source)
+	at java.base/sun.nio.ch.SocketChannelImpl.implWrite(Unknown Source)
+	at java.base/sun.nio.ch.SocketChannelImpl.write(Unknown Source)
+	at io.helidon.common.socket.NioSocket.write(NioSocket.java:147)
+	... 19 more
+

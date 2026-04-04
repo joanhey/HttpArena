@@ -174,12 +174,20 @@ function startWorker() {
             ctx.body = 'No dataset';
             return;
         }
-        const compressed = zlib.gzipSync(largeJsonBuf, { level: 1 });
-        ctx.set('server', SERVER_NAME);
-        ctx.set('content-type', 'application/json');
-        ctx.set('content-encoding', 'gzip');
-        ctx.set('content-length', String(compressed.length));
-        ctx.body = compressed;
+        const acceptEncoding = ctx.get('accept-encoding') || '';
+        if (acceptEncoding.includes('gzip')) {
+            const compressed = zlib.gzipSync(largeJsonBuf, { level: 1 });
+            ctx.set('server', SERVER_NAME);
+            ctx.set('content-type', 'application/json');
+            ctx.set('content-encoding', 'gzip');
+            ctx.set('content-length', String(compressed.length));
+            ctx.body = compressed;
+        } else {
+            ctx.set('server', SERVER_NAME);
+            ctx.set('content-type', 'application/json');
+            ctx.set('content-length', String(largeJsonBuf.length));
+            ctx.body = largeJsonBuf;
+        }
     });
 
     // --- /db ---

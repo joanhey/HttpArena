@@ -123,14 +123,24 @@ const server = http.createServer((req, res) => {
         }
     } else if (path === '/compression') {
         if (largeJsonBuf) {
-            const compressed = zlib.gzipSync(largeJsonBuf, { level: 1 });
-            res.writeHead(200, {
-                'content-type': 'application/json',
-                'content-encoding': 'gzip',
-                'content-length': compressed.length,
-                ...SERVER_HEADERS
-            });
-            res.end(compressed);
+            const acceptEncoding = req.headers['accept-encoding'] || '';
+            if (acceptEncoding.includes('gzip')) {
+                const compressed = zlib.gzipSync(largeJsonBuf, { level: 1 });
+                res.writeHead(200, {
+                    'content-type': 'application/json',
+                    'content-encoding': 'gzip',
+                    'content-length': compressed.length,
+                    ...SERVER_HEADERS
+                });
+                res.end(compressed);
+            } else {
+                res.writeHead(200, {
+                    'content-type': 'application/json',
+                    'content-length': largeJsonBuf.length,
+                    ...SERVER_HEADERS
+                });
+                res.end(largeJsonBuf);
+            }
         } else {
             res.writeHead(500);
             res.end('No dataset');

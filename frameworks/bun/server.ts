@@ -159,12 +159,21 @@ async function handleRequest(req: Request): Promise<Response> {
   }
 
   if (path === "/compression") {
-    const compressed = Bun.gzipSync(largeJsonBuf, { level: 1 });
-    return new Response(compressed, {
+    const ae = req.headers.get("accept-encoding") || "";
+    if (ae.includes("gzip")) {
+      const compressed = Bun.gzipSync(largeJsonBuf, { level: 1 });
+      return new Response(compressed, {
+        headers: {
+          "content-type": "application/json",
+          "content-encoding": "gzip",
+          "content-length": String(compressed.length),
+        },
+      });
+    }
+    return new Response(largeJsonBuf, {
       headers: {
         "content-type": "application/json",
-        "content-encoding": "gzip",
-        "content-length": String(compressed.length),
+        "content-length": String(largeJsonBuf.length),
       },
     });
   }
@@ -197,7 +206,15 @@ async function handleRequest(req: Request): Promise<Response> {
     return new Response(String(size), { headers: { "content-type": "text/plain" } });
   }
 
-  // /baseline11 — GET or POST
+  // /baseline11 and /pipeline
+  if (path !== "/baseline11" && path !== "/pipeline") {
+    return new Response("Not found", { status: 404 });
+  }
+
+  if (req.method !== "GET" && req.method !== "POST") {
+    return new Response("Method Not Allowed", { status: 405 });
+  }
+
   const querySum = sumQuery(url);
   if (req.method === "POST") {
     return req.text().then((body) => {

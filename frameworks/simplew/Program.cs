@@ -1,5 +1,6 @@
 using System.Buffers;
 using System.Buffers.Text;
+using System.Collections.Concurrent;
 
 using Microsoft.Data.Sqlite;
 using Npgsql;
@@ -74,35 +75,43 @@ server.MapGet("/json", () =>
     return new ListWithCount<ProcessedItem>(processed);
 });
 
-var dbConn = OpenConnection();
+var dbPool = OpenPool();
 
 server.MapGet("/db", (int min = 10, int max = 50) =>
 {
-    using var cmd = dbConn.CreateCommand();
-    cmd.CommandText = "SELECT id, name, category, price, quantity, active, tags, rating_score, rating_count FROM items WHERE price BETWEEN @min AND @max LIMIT 50";
-    cmd.Parameters.AddWithValue("@min", min);
-    cmd.Parameters.AddWithValue("@max", max);
-
-    using var reader = cmd.ExecuteReader();
-
-    var items = new List<ProcessedItem>();
-
-    while (reader.Read())
+    var conn = dbPool!.Rent();
+    try
     {
-        items.Add(new ProcessedItem
-        {
-            Id = reader.GetInt32(0),
-            Name = reader.GetString(1),
-            Category = reader.GetString(2),
-            Price = reader.GetDouble(3),
-            Quantity = reader.GetInt32(4),
-            Active = reader.GetInt32(5) == 1,
-            Tags = JsonSerializer.Deserialize<List<string>>(reader.GetString(6)),
-            Rating = new RatingInfo { Score = reader.GetDouble(7), Count = reader.GetInt32(8) },
-        });
-    }
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = "SELECT id, name, category, price, quantity, active, tags, rating_score, rating_count FROM items WHERE price BETWEEN @min AND @max LIMIT 50";
+        cmd.Parameters.AddWithValue("@min", min);
+        cmd.Parameters.AddWithValue("@max", max);
 
-    return new ListWithCount<ProcessedItem>(items);
+        using var reader = cmd.ExecuteReader();
+
+        var items = new List<ProcessedItem>();
+
+        while (reader.Read())
+        {
+            items.Add(new ProcessedItem
+            {
+                Id = reader.GetInt32(0),
+                Name = reader.GetString(1),
+                Category = reader.GetString(2),
+                Price = reader.GetDouble(3),
+                Quantity = reader.GetInt32(4),
+                Active = reader.GetInt32(5) == 1,
+                Tags = JsonSerializer.Deserialize<List<string>>(reader.GetString(6)),
+                Rating = new RatingInfo { Score = reader.GetDouble(7), Count = reader.GetInt32(8) },
+            });
+        }
+
+        return new ListWithCount<ProcessedItem>(items);
+    }
+    finally
+    {
+        dbPool.Return(conn);
+    }
 });
 
 var pgDataSource = OpenPgPool();
@@ -193,23 +202,11 @@ static List<DatasetItem>? LoadItems()
     return null;
 }
 
-static SqliteConnection? OpenConnection()
+static SqlitePool? OpenPool()
 {
     var dbPath = "/data/benchmark.db";
-
-    if (File.Exists(dbPath))
-    {
-        var con = new SqliteConnection($"Data Source={dbPath};Mode=ReadOnly");
-        con.Open();
-
-        using var pragma = con.CreateCommand();
-        pragma.CommandText = "PRAGMA mmap_size=268435456";
-        pragma.ExecuteNonQuery();
-
-        return con;
-    }
-
-    return null;
+    if (!File.Exists(dbPath)) return null;
+    return new SqlitePool($"Data Source={dbPath};Mode=ReadOnly", Environment.ProcessorCount);
 }
 
 static NpgsqlDataSource? OpenPgPool()
@@ -239,4 +236,33 @@ static int ParseInt(ReadOnlySequence<byte> sequence)
     sequence.CopyTo(buffer);
     Utf8Parser.TryParse(buffer, out int value2, out _);
     return value2;
+}
+
+sealed class SqlitePool
+{
+    private readonly ConcurrentBag<SqliteConnection> _connections = new();
+
+    public SqlitePool(string connectionString, int size)
+    {
+        for (int i = 0; i < size; i++)
+        {
+            var conn = new SqliteConnection(connectionString);
+            conn.Open();
+            using var pragma = conn.CreateCommand();
+            pragma.CommandText = "PRAGMA mmap_size=268435456";
+            pragma.ExecuteNonQuery();
+            _connections.Add(conn);
+        }
+    }
+
+    public SqliteConnection Rent()
+    {
+        SqliteConnection? conn;
+        var spin = new SpinWait();
+        while (!_connections.TryTake(out conn))
+            spin.SpinOnce();
+        return conn;
+    }
+
+    public void Return(SqliteConnection conn) => _connections.Add(conn);
 }

@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Text.Json;
 using Microsoft.Data.Sqlite;
 using Npgsql;
@@ -12,8 +13,8 @@ static class AppData
 
     public static List<DatasetItem>? DatasetItems;
     public static byte[]? LargeJsonResponse;
-    
-    public static SqliteConnection? DbConnection;
+
+    public static SqlitePool? DbPool;
     public static NpgsqlDataSource? PgDataSource;
 
     public static void Load()
@@ -73,11 +74,35 @@ static class AppData
     {
         var path = "/data/benchmark.db";
         if (!File.Exists(path)) return;
-        DbConnection = new SqliteConnection($"Data Source={path};Mode=ReadOnly");
-        DbConnection.Open();
-        using var pragma = DbConnection.CreateCommand();
-        pragma.CommandText = "PRAGMA mmap_size=268435456";
-        pragma.ExecuteNonQuery();
+        DbPool = new SqlitePool($"Data Source={path};Mode=ReadOnly", Environment.ProcessorCount);
     }
-    
+}
+
+sealed class SqlitePool
+{
+    private readonly ConcurrentBag<SqliteConnection> _connections = new();
+
+    public SqlitePool(string connectionString, int size)
+    {
+        for (int i = 0; i < size; i++)
+        {
+            var conn = new SqliteConnection(connectionString);
+            conn.Open();
+            using var pragma = conn.CreateCommand();
+            pragma.CommandText = "PRAGMA mmap_size=268435456";
+            pragma.ExecuteNonQuery();
+            _connections.Add(conn);
+        }
+    }
+
+    public SqliteConnection Rent()
+    {
+        SqliteConnection? conn;
+        var spin = new SpinWait();
+        while (!_connections.TryTake(out conn))
+            spin.SpinOnce();
+        return conn;
+    }
+
+    public void Return(SqliteConnection conn) => _connections.Add(conn);
 }

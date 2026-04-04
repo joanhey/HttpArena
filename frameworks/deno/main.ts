@@ -110,12 +110,22 @@ export default {
 
         if (path === "/compression") {
             if (largeJsonBuf) {
-                const compressed = gzipSync(largeJsonBuf, { level: 1 });
-                return new Response(compressed, {
+                const ae = req.headers.get("accept-encoding") || "";
+                if (ae.includes("gzip")) {
+                    const compressed = gzipSync(largeJsonBuf, { level: 1 });
+                    return new Response(compressed, {
+                        headers: {
+                            "content-type": "application/json",
+                            "content-encoding": "gzip",
+                            "content-length": String(compressed.length),
+                            "server": "deno",
+                        },
+                    });
+                }
+                return new Response(largeJsonBuf, {
                     headers: {
                         "content-type": "application/json",
-                        "content-encoding": "gzip",
-                        "content-length": String(compressed.length),
+                        "content-length": String(largeJsonBuf.length),
                         "server": "deno",
                     },
                 });
@@ -187,7 +197,15 @@ export default {
             }
         }
 
-        // /baseline11
+        // /baseline11 and /pipeline
+        if (path !== "/baseline11" && path !== "/pipeline") {
+            return new Response("Not found", { status: 404 });
+        }
+
+        if (req.method !== "GET" && req.method !== "POST") {
+            return new Response("Method Not Allowed", { status: 405 });
+        }
+
         let sum = sumQuery(url, pathStart);
         if (req.method === "POST") {
             const body = (await req.text()).trim();

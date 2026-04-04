@@ -121,17 +121,26 @@ public class BenchmarkController {
     }
 
     @GetMapping(value = "/compression", produces = MediaType.APPLICATION_JSON_VALUE)
-    public org.springframework.http.ResponseEntity<byte[]> compression() throws IOException {
-        java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
-        java.util.zip.GZIPOutputStream gzip = new java.util.zip.GZIPOutputStream(baos) {{
-            def.setLevel(java.util.zip.Deflater.BEST_SPEED);
-        }};
-        gzip.write(largeJsonResponse);
-        gzip.close();
-        return org.springframework.http.ResponseEntity.ok()
-            .header("Content-Type", "application/json")
-            .header("Content-Encoding", "gzip")
-            .body(baos.toByteArray());
+    public org.springframework.http.ResponseEntity<byte[]> compression(jakarta.servlet.http.HttpServletRequest request) throws IOException {
+        String acceptEncoding = request.getHeader("Accept-Encoding");
+        boolean acceptsGzip = acceptEncoding != null && acceptEncoding.contains("gzip");
+
+        if (acceptsGzip) {
+            java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+            java.util.zip.GZIPOutputStream gzip = new java.util.zip.GZIPOutputStream(baos) {{
+                def.setLevel(java.util.zip.Deflater.BEST_SPEED);
+            }};
+            gzip.write(largeJsonResponse);
+            gzip.close();
+            return org.springframework.http.ResponseEntity.ok()
+                .header("Content-Type", "application/json")
+                .header("Content-Encoding", "gzip")
+                .body(baos.toByteArray());
+        } else {
+            return org.springframework.http.ResponseEntity.ok()
+                .header("Content-Type", "application/json")
+                .body(largeJsonResponse);
+        }
     }
 
     @GetMapping(value = "/json", produces = MediaType.APPLICATION_JSON_VALUE)

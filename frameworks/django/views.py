@@ -147,9 +147,14 @@ def json_endpoint(request):
 @require_GET
 def compression_endpoint(request):
     if large_json_buf:
-        compressed = gzip.compress(large_json_buf, compresslevel=1)
-        resp = HttpResponse(compressed, content_type='application/json')
-        resp['Content-Encoding'] = 'gzip'
+        accept_encoding = request.META.get('HTTP_ACCEPT_ENCODING', '')
+        if 'gzip' in accept_encoding:
+            compressed = gzip.compress(large_json_buf, compresslevel=1)
+            resp = HttpResponse(compressed, content_type='application/json')
+            resp['Content-Encoding'] = 'gzip'
+            resp['Server'] = 'django'
+            return resp
+        resp = HttpResponse(large_json_buf, content_type='application/json')
         resp['Server'] = 'django'
         return resp
     return HttpResponse('No dataset', status=500)

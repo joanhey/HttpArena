@@ -367,7 +367,7 @@ html.dark .lb-card-title { color: #ffffff; }
 
 {{ $profiles := slice
   (dict "id" "mixed"        "label" "Mixed Workload"        "conns" (slice 4096) "desc" "A realistic mix of request types: 3 baseline GETs, 2 baseline POSTs, 1 JSON processing, 1 SQLite DB lookup, 1 file upload (1 MB), 2 compression requests, 2 static file serves, and 2 async Postgres queries. Connections limited to 5 requests each. Measures overall framework performance under a diverse, real-world-like workload that exercises multiple code paths simultaneously.")
-  (dict "id" "api-4"         "label" "API-4"                  "conns" (slice 256) "desc" "Lighter workload (baseline, JSON, async-db) with the server constrained to 4 CPUs and 16 GB memory. 4 threads, 256 connections. Measures framework efficiency under limited resources — closer to a typical production deployment.")
+  (dict "id" "api-4"         "label" "API-4"                  "conns" (slice 256) "desc" "Lighter workload (baseline, JSON, async-db) with the server constrained to 4 CPUs. 4 threads, 256 connections. Measures framework efficiency under limited resources — closer to a typical production deployment.")
   (dict "id" "api-16"        "label" "API-16"                 "conns" (slice 1024) "desc" "Same API workload (baseline, JSON, async-db) with the server constrained to 16 CPUs and 32 GB memory. 64 threads, 256 connections. Tests performance scaling with more resources.")
 }}
 

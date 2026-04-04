@@ -71,31 +71,39 @@ public class TestController : ControllerBase
     [HttpGet("/db")]
     public IActionResult Database([FromQuery] double min = 10, [FromQuery] double max = 50)
     {
-        if (AppData.DbConnection == null)
+        if (AppData.DbPool == null)
             return Problem("DB not available");
 
-        using var cmd = AppData.DbConnection.CreateCommand();
-        cmd.CommandText = "SELECT id, name, category, price, quantity, active, tags, rating_score, rating_count FROM items WHERE price BETWEEN @min AND @max LIMIT 50";
-        cmd.Parameters.AddWithValue("@min", min);
-        cmd.Parameters.AddWithValue("@max", max);
-        using var reader = cmd.ExecuteReader();
-
-        var items = new List<object>();
-        while (reader.Read())
+        var conn = AppData.DbPool.Rent();
+        try
         {
-            items.Add(new
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT id, name, category, price, quantity, active, tags, rating_score, rating_count FROM items WHERE price BETWEEN @min AND @max LIMIT 50";
+            cmd.Parameters.AddWithValue("@min", min);
+            cmd.Parameters.AddWithValue("@max", max);
+            using var reader = cmd.ExecuteReader();
+
+            var items = new List<object>();
+            while (reader.Read())
             {
-                id = reader.GetInt32(0),
-                name = reader.GetString(1),
-                category = reader.GetString(2),
-                price = reader.GetDouble(3),
-                quantity = reader.GetInt32(4),
-                active = reader.GetInt32(5) == 1,
-                tags = JsonSerializer.Deserialize<List<string>>(reader.GetString(6)),
-                rating = new { score = reader.GetDouble(7), count = reader.GetInt32(8) },
-            });
+                items.Add(new
+                {
+                    id = reader.GetInt32(0),
+                    name = reader.GetString(1),
+                    category = reader.GetString(2),
+                    price = reader.GetDouble(3),
+                    quantity = reader.GetInt32(4),
+                    active = reader.GetInt32(5) == 1,
+                    tags = JsonSerializer.Deserialize<List<string>>(reader.GetString(6)),
+                    rating = new { score = reader.GetDouble(7), count = reader.GetInt32(8) },
+                });
+            }
+            return Ok(new { items, count = items.Count });
         }
-        return Ok(new { items, count = items.Count });
+        finally
+        {
+            AppData.DbPool.Return(conn);
+        }
     }
 
     [HttpGet("/async-db")]

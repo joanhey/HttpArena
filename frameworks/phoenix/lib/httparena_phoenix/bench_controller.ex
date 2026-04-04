@@ -61,17 +61,29 @@ defmodule HttparenaPhoenix.BenchController do
 
   def compression(conn, _params) do
     json_large_cache = :persistent_term.get(:json_large_cache)
-    z = :zlib.open()
-    :ok = :zlib.deflateInit(z, 1, :deflated, 31, 8, :default)
-    compressed = IO.iodata_to_binary(:zlib.deflate(z, json_large_cache, :finish))
-    :zlib.deflateEnd(z)
-    :zlib.close(z)
 
-    conn
-    |> put_resp_header("server", "phoenix")
-    |> put_resp_header("content-encoding", "gzip")
-    |> put_resp_header("content-type", "application/json")
-    |> send_resp(200, compressed)
+    accepts_gzip =
+      get_req_header(conn, "accept-encoding")
+      |> Enum.any?(fn val -> String.contains?(val, "gzip") end)
+
+    if accepts_gzip do
+      z = :zlib.open()
+      :ok = :zlib.deflateInit(z, 1, :deflated, 31, 8, :default)
+      compressed = IO.iodata_to_binary(:zlib.deflate(z, json_large_cache, :finish))
+      :zlib.deflateEnd(z)
+      :zlib.close(z)
+
+      conn
+      |> put_resp_header("server", "phoenix")
+      |> put_resp_header("content-encoding", "gzip")
+      |> put_resp_header("content-type", "application/json")
+      |> send_resp(200, compressed)
+    else
+      conn
+      |> put_resp_header("server", "phoenix")
+      |> put_resp_header("content-type", "application/json")
+      |> send_resp(200, json_large_cache)
+    end
   end
 
   def upload(conn, _params) do

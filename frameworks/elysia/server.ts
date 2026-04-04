@@ -94,13 +94,22 @@ function addRoutes(app: Elysia) {
       });
     })
 
-    .get("/compression", () => {
-      const compressed = Bun.gzipSync(largeJsonBuf, { level: 1 });
-      return new Response(compressed, {
+    .get("/compression", ({ request }) => {
+      const ae = request.headers.get("accept-encoding") || "";
+      if (ae.includes("gzip")) {
+        const compressed = Bun.gzipSync(largeJsonBuf, { level: 1 });
+        return new Response(compressed, {
+          headers: {
+            "content-type": "application/json",
+            "content-encoding": "gzip",
+            "content-length": String(compressed.length),
+          },
+        });
+      }
+      return new Response(largeJsonBuf, {
         headers: {
           "content-type": "application/json",
-          "content-encoding": "gzip",
-          "content-length": String(compressed.length),
+          "content-length": String(largeJsonBuf.length),
         },
       });
     })

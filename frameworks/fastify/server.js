@@ -125,13 +125,22 @@ function startWorker() {
             reply.code(500).send('No dataset');
             return;
         }
-        const compressed = zlib.gzipSync(largeJsonBuf, { level: 1 });
-        reply
-            .header('server', SERVER_NAME)
-            .header('content-type', 'application/json')
-            .header('content-encoding', 'gzip')
-            .header('content-length', compressed.length)
-            .send(compressed);
+        const acceptEncoding = req.headers['accept-encoding'] || '';
+        if (acceptEncoding.includes('gzip')) {
+            const compressed = zlib.gzipSync(largeJsonBuf, { level: 1 });
+            reply
+                .header('server', SERVER_NAME)
+                .header('content-type', 'application/json')
+                .header('content-encoding', 'gzip')
+                .header('content-length', compressed.length)
+                .send(compressed);
+        } else {
+            reply
+                .header('server', SERVER_NAME)
+                .header('content-type', 'application/json')
+                .header('content-length', largeJsonBuf.length)
+                .send(largeJsonBuf);
+        }
     });
 
     // --- /db ---

@@ -111,9 +111,15 @@ if (cluster.isPrimary) {
 
     app.get('/compression', (req, res) => {
         if (largeJsonBuf) {
-            const compressed = zlib.gzipSync(largeJsonBuf, { level: 1 });
-            res.set({ ...SERVER_HDR, 'content-encoding': 'gzip', 'content-type': 'application/json' })
-               .send(compressed);
+            const acceptEncoding = req.headers['accept-encoding'] || '';
+            if (acceptEncoding.includes('gzip')) {
+                const compressed = zlib.gzipSync(largeJsonBuf, { level: 1 });
+                res.set({ ...SERVER_HDR, 'content-encoding': 'gzip', 'content-type': 'application/json' })
+                   .send(compressed);
+            } else {
+                res.set({ ...SERVER_HDR, 'content-type': 'application/json' })
+                   .send(largeJsonBuf);
+            }
         } else {
             res.status(500).send('No dataset');
         }

@@ -163,13 +163,22 @@ function startWorker() {
         if (!largeJsonBuf) {
             return res.status(500).send('No dataset');
         }
-        const compressed = zlib.gzipSync(largeJsonBuf, { level: 1 });
-        res
-            .set('server', SERVER_NAME)
-            .set('content-type', 'application/json')
-            .set('content-encoding', 'gzip')
-            .set('content-length', compressed.length)
-            .send(compressed);
+        const acceptEncoding = req.headers['accept-encoding'] || '';
+        if (acceptEncoding.includes('gzip')) {
+            const compressed = zlib.gzipSync(largeJsonBuf, { level: 1 });
+            res
+                .set('server', SERVER_NAME)
+                .set('content-type', 'application/json')
+                .set('content-encoding', 'gzip')
+                .set('content-length', compressed.length)
+                .send(compressed);
+        } else {
+            res
+                .set('server', SERVER_NAME)
+                .set('content-type', 'application/json')
+                .set('content-length', largeJsonBuf.length)
+                .send(largeJsonBuf);
+        }
     });
 
     // --- /db ---

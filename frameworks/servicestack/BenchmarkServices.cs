@@ -97,39 +97,47 @@ public class BenchmarkServices : Service
     // ── /db (SQLite) ──────────────────────────────────────────────────────────
     public ListWithCount<ProcessedItem> Get(DbGet req)
     {
-        var conn = TryResolve<SqliteConnection>();
-        if (conn == null) return new ListWithCount<ProcessedItem>(new());
+        var pool = TryResolve<SqlitePool>();
+        if (pool == null) return new ListWithCount<ProcessedItem>(new());
 
-        using var cmd = conn.CreateCommand();
-        cmd.CommandText =
-            "SELECT id, name, category, price, quantity, active, tags, rating_score, rating_count " +
-            "FROM items WHERE price BETWEEN @min AND @max LIMIT 50";
-        cmd.Parameters.AddWithValue("@min", req.Min);
-        cmd.Parameters.AddWithValue("@max", req.Max);
-
-        using var reader = cmd.ExecuteReader();
-        var items = new List<ProcessedItem>();
-
-        while (reader.Read())
+        var conn = pool.Rent();
+        try
         {
-            items.Add(new ProcessedItem
-            {
-                Id       = reader.GetInt32(0),
-                Name     = reader.GetString(1),
-                Category = reader.GetString(2),
-                Price    = reader.GetDouble(3),
-                Quantity = reader.GetInt32(4),
-                Active   = reader.GetInt32(5) == 1,
-                Tags     = JsonSerializer.Deserialize<List<string>>(reader.GetString(6)),
-                Rating   = new RatingInfo
-                {
-                    Score = reader.GetDouble(7),
-                    Count = reader.GetInt32(8)
-                }
-            });
-        }
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText =
+                "SELECT id, name, category, price, quantity, active, tags, rating_score, rating_count " +
+                "FROM items WHERE price BETWEEN @min AND @max LIMIT 50";
+            cmd.Parameters.AddWithValue("@min", req.Min);
+            cmd.Parameters.AddWithValue("@max", req.Max);
 
-        return new ListWithCount<ProcessedItem>(items);
+            using var reader = cmd.ExecuteReader();
+            var items = new List<ProcessedItem>();
+
+            while (reader.Read())
+            {
+                items.Add(new ProcessedItem
+                {
+                    Id       = reader.GetInt32(0),
+                    Name     = reader.GetString(1),
+                    Category = reader.GetString(2),
+                    Price    = reader.GetDouble(3),
+                    Quantity = reader.GetInt32(4),
+                    Active   = reader.GetInt32(5) == 1,
+                    Tags     = JsonSerializer.Deserialize<List<string>>(reader.GetString(6)),
+                    Rating   = new RatingInfo
+                    {
+                        Score = reader.GetDouble(7),
+                        Count = reader.GetInt32(8)
+                    }
+                });
+            }
+
+            return new ListWithCount<ProcessedItem>(items);
+        }
+        finally
+        {
+            pool.Return(conn);
+        }
     }
 
     // ── /async-db (PostgreSQL) ────────────────────────────────────────────────

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"runtime"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -10,7 +11,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strconv"
 	"strings"
 
@@ -19,25 +19,6 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	_ "modernc.org/sqlite"
 )
-
-func cgroupCPUs() int {
-	data, err := os.ReadFile("/sys/fs/cgroup/cpu.max")
-	if err == nil {
-		parts := strings.SplitN(strings.TrimSpace(string(data)), " ", 2)
-		if len(parts) == 2 && parts[0] != "max" {
-			quota, e1 := strconv.Atoi(parts[0])
-			period, e2 := strconv.Atoi(parts[1])
-			if e1 == nil && e2 == nil && period > 0 {
-				cpus := quota / period
-				if cpus >= 1 {
-					return cpus
-				}
-			}
-		}
-	}
-	return cgroupCPUs()
-}
-
 type Rating struct {
 	Score float64 `json:"score"`
 	Count int     `json:"count"`
@@ -121,7 +102,7 @@ func loadDB() {
 	if err != nil {
 		return
 	}
-	d.SetMaxOpenConns(cgroupCPUs())
+	d.SetMaxOpenConns(runtime.NumCPU())
 	db = d
 }
 
@@ -134,7 +115,7 @@ func loadPgPool() {
 	if err != nil {
 		return
 	}
-	config.MaxConns = int32(cgroupCPUs() * 4)
+	config.MaxConns = int32(runtime.NumCPU() * 4)
 	pool, err := pgxpool.NewWithConfig(context.Background(), config)
 	if err != nil {
 		return

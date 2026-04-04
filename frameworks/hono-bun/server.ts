@@ -122,12 +122,22 @@ app.get("/json", (c) => {
 
 // --- /compression ---
 app.get("/compression", (c) => {
-  const gz = Buffer.from(Bun.gzipSync(largeJsonBuf, { level: 1 }));
-  return new Response(gz, {
+  const ae = c.req.header("accept-encoding") || "";
+  if (ae.includes("gzip")) {
+    const gz = Buffer.from(Bun.gzipSync(largeJsonBuf, { level: 1 }));
+    return new Response(gz, {
+      headers: {
+        "content-type": "application/json",
+        "content-encoding": "gzip",
+        "content-length": String(gz.length),
+        server: SERVER_NAME,
+      },
+    });
+  }
+  return new Response(largeJsonBuf, {
     headers: {
       "content-type": "application/json",
-      "content-encoding": "gzip",
-      "content-length": String(gz.length),
+      "content-length": String(largeJsonBuf.length),
       server: SERVER_NAME,
     },
   });

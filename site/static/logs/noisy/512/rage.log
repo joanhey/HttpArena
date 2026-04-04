@@ -31,9 +31,9 @@ INFO: 40 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 45 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 50 is running.
+INFO: 51 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 55 is running.
+INFO: 56 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 61 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
@@ -45,19 +45,19 @@ INFO: 77 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 81 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 86 is running.
+INFO: 85 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 91 is running.
+INFO: 90 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 96 is running.
+INFO: 95 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 101 is running.
+INFO: 100 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 106 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 111 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 116 is running.
+INFO: 115 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 121 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
@@ -67,11 +67,11 @@ INFO: 131 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 136 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 141 is running.
+INFO: 140 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 146 is running.
+INFO: 145 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 151 is running.
+INFO: 150 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 156 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
@@ -81,7 +81,7 @@ INFO: 166 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 171 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 176 is running.
+INFO: 175 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 181 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
@@ -89,27 +89,27 @@ INFO: 186 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 191 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 197 is running.
+INFO: 196 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 201 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 206 is running.
+INFO: 205 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 211 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 216 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 221 is running.
+INFO: 220 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 226 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 231 is running.
+INFO: 230 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 236 is running.
+INFO: 235 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 241 is running.
+INFO: 240 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 246 is running.
+INFO: 245 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 251 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
@@ -127,13 +127,13 @@ INFO: 281 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 286 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 293 is running.
+INFO: 290 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 298 is running.
+INFO: 299 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 302 is running.
+INFO: 303 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 306 is running.
+INFO: 307 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 311 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
@@ -143,9 +143,9 @@ INFO: 321 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 326 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 332 is running.
+INFO: 331 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 337 is running.
+INFO: 336 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 342 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
@@ -171,21 +171,21 @@ INFO: 392 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 397 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 401 is running.
+INFO: 402 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 405 is running.
+INFO: 407 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 409 is running.
+INFO: 412 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 414 is running.
+INFO: 417 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 419 is running.
+INFO: 422 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 425 is running.
+INFO: 427 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 430 is running.
+INFO: 432 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 436 is running.
+INFO: 437 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 442 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
@@ -193,25 +193,25 @@ INFO: 447 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 452 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 462 is running.
-/usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 457 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 471 is running.
+INFO: 462 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 467 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 476 is running.
+INFO: 472 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 481 is running.
+INFO: 477 is running.
+/usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
+INFO: 482 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 487 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 492 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 498 is running.
+INFO: 497 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 503 is running.
+INFO: 502 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 507 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
@@ -221,19 +221,19 @@ INFO: 517 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 522 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 528 is running.
+INFO: 527 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 533 is running.
+INFO: 532 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 537 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 548 is running.
+INFO: 542 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 543 is running.
+INFO: 547 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 552 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 556 is running.
+INFO: 557 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 562 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
@@ -243,17 +243,15 @@ INFO: 572 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 577 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 582 is running.
-/usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 587 is running.
+INFO: 588 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 592 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 597 is running.
+INFO: 596 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 603 is running.
+INFO: 601 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 608 is running.
+INFO: 606 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 612 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
@@ -261,8 +259,10 @@ INFO: 617 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 622 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 627 is running.
+INFO: 584 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
-INFO: 632 is running.
+INFO: 626 is running.
+/usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
+INFO: 631 is running.
 /usr/local/bundle/gems/rage-rb-1.22.1/lib/rage/middleware/fiber_wrapper.rb:11: warning: Scheduler should implement #fiber_interrupt
 INFO: 637 is running.

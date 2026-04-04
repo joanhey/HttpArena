@@ -161,17 +161,27 @@ Future<void> _run(dynamic numIsolates) async {
   });
 
   app.get('/compression', (req, res) {
+    final acceptsGzip = (req.headers['accept-encoding'] ?? []).any((v) => v.contains('gzip'));
+
     if (compressionDataset == null) {
-      res.bytes(Uint8List.fromList(GZipCodec(level: 1).encode(_emptyJson)),
-          contentType: 'application/json');
-      res.setHeader('Content-Encoding', 'gzip');
+      if (acceptsGzip) {
+        res.bytes(Uint8List.fromList(GZipCodec(level: 1).encode(_emptyJson)),
+            contentType: 'application/json');
+        res.setHeader('Content-Encoding', 'gzip');
+      } else {
+        res.bytes(_emptyJson, contentType: 'application/json');
+      }
       return;
     }
     final items = compressionDataset.map(_mapItem).toList();
     final jsonBytes = utf8.encode(jsonEncode({'items': items, 'count': items.length}));
-    final gzipBytes = Uint8List.fromList(GZipCodec(level: 1).encode(jsonBytes));
-    res.bytes(gzipBytes, contentType: 'application/json');
-    res.setHeader('Content-Encoding', 'gzip');
+    if (acceptsGzip) {
+      final gzipBytes = Uint8List.fromList(GZipCodec(level: 1).encode(jsonBytes));
+      res.bytes(gzipBytes, contentType: 'application/json');
+      res.setHeader('Content-Encoding', 'gzip');
+    } else {
+      res.bytes(Uint8List.fromList(jsonBytes), contentType: 'application/json');
+    }
   });
 
   app.get('/static/:filename', (req, res) {

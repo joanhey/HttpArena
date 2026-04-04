@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Collections.Concurrent;
+using System.Text.Json;
 
 using GenHTTP.Api.Content;
 using GenHTTP.Api.Protocol;
@@ -9,68 +10,87 @@ using Microsoft.Data.Sqlite;
 
 namespace genhttp.Tests;
 
-public class Database
+public sealed class SqlitePool
 {
-    private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
-    {
-        PropertyNameCaseInsensitive = true,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-    };
-    
-    private static readonly SqliteConnection? DbConn = OpenConnection();
+    private readonly ConcurrentBag<SqliteConnection> _connections = new();
 
-    private static SqliteConnection? OpenConnection()
+    public SqlitePool(string connectionString, int size)
     {
-        var dbPath = "/data/benchmark.db";
-
-        if (File.Exists(dbPath))
+        for (int i = 0; i < size; i++)
         {
-            var con = new SqliteConnection($"Data Source={dbPath};Mode=ReadOnly");
-            con.Open();
-
-            using var pragma = con.CreateCommand();
+            var conn = new SqliteConnection(connectionString);
+            conn.Open();
+            using var pragma = conn.CreateCommand();
             pragma.CommandText = "PRAGMA mmap_size=268435456";
             pragma.ExecuteNonQuery();
-
-            return con;
+            _connections.Add(conn);
         }
+    }
 
-        return null;
+    public SqliteConnection Rent()
+    {
+        SqliteConnection? conn;
+        var spin = new SpinWait();
+        while (!_connections.TryTake(out conn))
+            spin.SpinOnce();
+        return conn;
+    }
+
+    public void Return(SqliteConnection conn) => _connections.Add(conn);
+}
+
+public class Database
+{
+    private static readonly SqlitePool? DbPool = OpenPool();
+
+    private static SqlitePool? OpenPool()
+    {
+        var dbPath = "/data/benchmark.db";
+        if (!File.Exists(dbPath)) return null;
+        return new SqlitePool($"Data Source={dbPath};Mode=ReadOnly", Environment.ProcessorCount);
     }
 
     [ResourceMethod]
     public ListWithCount<ProcessedItem> Compute(int min = 10, int max = 50)
     {
-        if (DbConn == null)
+        if (DbPool == null)
         {
             throw new ProviderException(ResponseStatus.InternalServerError, "DB not available");
         }
 
-        using var cmd = DbConn.CreateCommand();
-        cmd.CommandText = "SELECT id, name, category, price, quantity, active, tags, rating_score, rating_count FROM items WHERE price BETWEEN @min AND @max LIMIT 50";
-        cmd.Parameters.AddWithValue("@min", min);
-        cmd.Parameters.AddWithValue("@max", max);
-        
-        using var reader = cmd.ExecuteReader();
-        
-        var items = new List<ProcessedItem>();
-        
-        while (reader.Read())
+        var conn = DbPool.Rent();
+        try
         {
-            items.Add(new ProcessedItem
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT id, name, category, price, quantity, active, tags, rating_score, rating_count FROM items WHERE price BETWEEN @min AND @max LIMIT 50";
+            cmd.Parameters.AddWithValue("@min", min);
+            cmd.Parameters.AddWithValue("@max", max);
+
+            using var reader = cmd.ExecuteReader();
+
+            var items = new List<ProcessedItem>();
+
+            while (reader.Read())
             {
-                Id = reader.GetInt32(0),
-                Name = reader.GetString(1),
-                Category = reader.GetString(2),
-                Price = reader.GetDouble(3),
-                Quantity = reader.GetInt32(4),
-                Active = reader.GetInt32(5) == 1,
-                Tags = JsonSerializer.Deserialize<List<string>>(reader.GetString(6)),
-                Rating = new RatingInfo { Score = reader.GetDouble(7), Count = reader.GetInt32(8) },
-            });
+                items.Add(new ProcessedItem
+                {
+                    Id = reader.GetInt32(0),
+                    Name = reader.GetString(1),
+                    Category = reader.GetString(2),
+                    Price = reader.GetDouble(3),
+                    Quantity = reader.GetInt32(4),
+                    Active = reader.GetInt32(5) == 1,
+                    Tags = JsonSerializer.Deserialize<List<string>>(reader.GetString(6)),
+                    Rating = new RatingInfo { Score = reader.GetDouble(7), Count = reader.GetInt32(8) },
+                });
+            }
+
+            return new ListWithCount<ProcessedItem>(items);
         }
-        
-        return new ListWithCount<ProcessedItem>(items);
+        finally
+        {
+            DbPool.Return(conn);
+        }
     }
-    
+
 }

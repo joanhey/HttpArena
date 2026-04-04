@@ -174,8 +174,11 @@ async def json_endpoint(request: Request) -> Response:
 async def compression_endpoint(request: Request) -> Response:
     if large_json_buf is None:
         return _text("No dataset", 500)
-    compressed = gzip.compress(large_json_buf, compresslevel=1)
-    return _json_resp(compressed, extra_headers={"Content-Encoding": "gzip"})
+    accept_encoding = request.headers.get("accept-encoding", "")
+    if "gzip" in accept_encoding:
+        compressed = gzip.compress(large_json_buf, compresslevel=1)
+        return _json_resp(compressed, extra_headers={"Content-Encoding": "gzip"})
+    return _json_resp(large_json_buf)
 
 
 async def db_endpoint(request: Request) -> Response:
