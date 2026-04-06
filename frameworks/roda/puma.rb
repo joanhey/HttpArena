@@ -1,4 +1,4 @@
-threads 4, 4
+threads ENV.fetch('MAX_THREADS', 4).to_i
 
 bind 'tcp://0.0.0.0:8080'
 
