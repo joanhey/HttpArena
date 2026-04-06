@@ -77,31 +77,6 @@ class App < Sinatra::Base
   DB_QUERY = 'SELECT id, name, category, price, quantity, active, tags, rating_score, rating_count FROM items WHERE price BETWEEN ? AND ? LIMIT 50'.freeze
   PG_QUERY = 'SELECT id, name, category, price, quantity, active, tags, rating_score, rating_count FROM items WHERE price BETWEEN $1 AND $2 LIMIT 50'.freeze
 
-  helpers do
-    def get_db
-      Thread.current[:sinatra_db] ||= begin
-        db = SQLite3::Database.new(settings.database_path, readonly: true)
-        db.execute('PRAGMA mmap_size=268435456')
-        db.results_as_hash = true
-        db
-      rescue
-        nil
-      end
-    end
-
-    def pg_conn
-      Thread.current[:sinatra_pg] ||= begin
-        url = ENV['DATABASE_URL']
-        return nil unless url
-        db = PG.connect(url)
-        db.prepare('select', PG_QUERY)
-        db
-      rescue PG::Error
-        nil
-      end
-    end
-  end
-
   get '/pipeline' do
     content_type 'text/plain'
     headers 'Server' => SERVER_NAME
@@ -188,7 +163,9 @@ class App < Sinatra::Base
     min_val = (params['min'] || 10).to_i
     max_val = (params['max'] || 50).to_i
 
-    rows = pg_conn&.exec_prepared('select', [min_val, max_val]) || []
+    rows = self.class.get_async_db&.with do |connection|
+      connection.exec_prepared('select', [min_val, max_val])
+    end || []
 
     items = rows.map do |r|
       {
@@ -214,6 +191,31 @@ class App < Sinatra::Base
     else
       headers 'Server' => SERVER_NAME
       halt 404, 'Not Found'
+    end
+  end
+
+  private
+
+  def get_db
+    Thread.current[:sinatra_db] ||= begin
+      db = SQLite3::Database.new(settings.database_path, readonly: true)
+      db.execute('PRAGMA mmap_size=268435456')
+      db.results_as_hash = true
+      db
+    rescue
+      nil
+    end
+  end
+
+  def self.get_async_db
+    @async_db ||= begin
+      return unless ENV['DATABASE_URL']
+      max_connections = ENV.fetch('MAX_THREADS', 4).to_i
+      ConnectionPool.new(size: max_connections, timeout: 5) do
+        db = PG.connect(ENV['DATABASE_URL'])
+        db.prepare('select', PG_QUERY)
+        db
+      end
     end
   end
 
