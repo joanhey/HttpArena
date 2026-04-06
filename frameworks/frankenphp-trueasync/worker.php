@@ -209,7 +209,20 @@ function handleCompression(Request $request, Response $response): void
         return;
     }
 
-    jsonResponseRaw($response, $compressionJson);
+    $acceptEncoding = $request->getHeader('Accept-Encoding') ?? '';
+
+    $response->setStatus(200);
+    $response->setHeader('Content-Type', 'application/json');
+
+    if (str_contains($acceptEncoding, 'gzip')) {
+        $compressed = gzencode($compressionJson, 1);
+        $response->setHeader('Content-Encoding', 'gzip');
+        $response->write($compressed);
+    } else {
+        $response->write($compressionJson);
+    }
+
+    $response->end();
 }
 
 function handleStatic(string $path, Response $response): void
