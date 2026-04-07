@@ -135,11 +135,6 @@ html.dark .test-card-endpoint { color: #64748b; }
 <div class="tests-proto">
 <span class="tests-proto-label tests-proto-h1">H/1.1 Workload</span>
 <div class="tests-grid">
-  <a class="test-card" href="docs/test-profiles/h1/workload/mixed">
-    <div class="test-card-title">Mixed Workload</div>
-    <div class="test-card-desc">Realistic mix of baseline, JSON, DB, upload, and compression requests with weighted scoring.</div>
-    <div class="test-card-endpoint">GET/POST mixed endpoints (100 req/conn)</div>
-  </a>
   <a class="test-card" href="docs/test-profiles/h1/workload/api-4">
     <div class="test-card-title">API-4</div>
     <div class="test-card-desc">Lighter workload (baseline, JSON, async-db) constrained to 4 CPUs and 16 GB memory — measures efficiency under limited resources.</div>

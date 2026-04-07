@@ -1,7 +1,7 @@
 ---
 title: Implementation Guidelines
 ---
-{{< type-rules production="Response compression must use the framework's standard middleware. Pre-compressed files on disk are allowed if the framework documents this as the official/recommended approach (e.g., ASP.NET MapStaticAssets, Nginx gzip_static). Binary formats (webp, woff2) should not be compressed." tuned="May cache compressed and uncompressed versions in memory. Pre-compressed files on disk allowed. Must serve uncompressed when Accept-Encoding: gzip is absent." engine="Pre-compressed files on disk allowed. Must respect Accept-Encoding header presence/absence." >}}
+{{< type-rules production="Response compression must use the framework's standard middleware. Pre-compressed files on disk are allowed if the framework documents this as the official/recommended approach (e.g., ASP.NET MapStaticAssets, Nginx gzip_static). Binary formats (webp, woff2) should not be compressed." tuned="May cache compressed and uncompressed versions in memory. Pre-compressed files on disk allowed. Must serve uncompressed when Accept-Encoding: gzip is absent." engine="Pre-compressed files on disk allowed. Must respect Accept-Encoding header presence/absence. JSON endpoint must serialize and compress on every request — no pre-compressed JSON." >}}
 
 The Assets-4 profile serves a mix of static files and JSON responses, where some requests include `Accept-Encoding: gzip` and others do not. The server must compress text-based responses on-the-fly when the header is present, skip compression for binary formats, and serve uncompressed responses when the header is absent. The server container is constrained to **4 CPUs and 16 GB memory**.
 
@@ -11,7 +11,8 @@ The Assets-4 profile serves a mix of static files and JSON responses, where some
 2. **Binary files** (webp, woff2): must NOT be compressed even when `Accept-Encoding: gzip` is present — these formats are already compressed
 3. **SVG files**: server may choose to compress or not (both are accepted)
 4. **No compression header**: when `Accept-Encoding: gzip` is absent, responses must always be uncompressed regardless of content type
-5. **Pre-compressed files on disk**: allowed for **production** frameworks if the framework documents this as the official/recommended approach (e.g., ASP.NET `MapStaticAssets`, Nginx `gzip_static`). Always allowed for **tuned** and **engine** types.
+5. **JSON endpoint (`/json`)**: the response must be serialized and compressed on every request. Pre-compressed or cached JSON responses are not allowed — this endpoint tests live serialization + compression performance.
+6. **Pre-compressed files on disk**: allowed for **production** frameworks if the framework documents this as the official/recommended approach (e.g., ASP.NET `MapStaticAssets`, Nginx `gzip_static`). Always allowed for **tuned** and **engine** types.
 
 ## Caching rules
 

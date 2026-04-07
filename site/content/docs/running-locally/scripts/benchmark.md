@@ -50,5 +50,5 @@ Each profile defines its own configuration:
 
 - **Pipeline depth** — 1 (sequential) or 16 (pipelined)
 - **Connection counts** — varies by profile (e.g. 512/4096 for baseline, 256/512 for HTTP/3)
-- **Duration** — 5 seconds per run (15 seconds for mixed)
+- **Duration** — 5 seconds per run (10s for sync-db/async-db, 15s for workload profiles)
 - **Runs** — 3 per configuration, best kept

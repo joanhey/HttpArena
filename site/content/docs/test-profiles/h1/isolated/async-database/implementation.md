@@ -4,7 +4,7 @@ title: Implementation Guidelines
 {{< type-rules production="Must use an async PostgreSQL driver with standard connection pooling. Pool size should follow common defaults (e.g. CPU count × 4)." tuned="May use custom pool sizes, prepared statement caching, or driver-specific optimizations beyond defaults." engine="No specific rules." >}}
 
 
-The Async Database profile measures how efficiently a framework handles concurrent database queries over a network connection. Unlike the [synchronous SQLite `/db` endpoint](../../database) (CPU-bound, tested only within mixed workloads), this test exercises async I/O scheduling, connection pooling, and async Postgres driver efficiency.
+The Async Database profile measures how efficiently a framework handles concurrent database queries over a network connection. Unlike the [synchronous SQLite `/db` endpoint](../../database) (CPU-bound, tested as the `sync-db` profile), this test exercises async I/O scheduling, connection pooling, and async Postgres driver efficiency.
 
 **This test is for framework-type entries only** - engines (nginx, h2o, etc.) are excluded.
 

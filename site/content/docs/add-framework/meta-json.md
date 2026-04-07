@@ -13,7 +13,7 @@ Create a `meta.json` file in your framework directory:
   "description": "Short description of the framework and its key features.",
   "repo": "https://github.com/org/repo",
   "enabled": true,
-  "tests": ["baseline", "pipelined", "limited-conn", "json", "upload", "compression", "noisy", "mixed", "baseline-h2", "static-h2"],
+  "tests": ["baseline", "pipelined", "limited-conn", "json", "upload", "compression", "noisy", "api-4", "api-16", "baseline-h2", "static-h2"],
   "maintainers": ["your-github-username"]
 }
 ```

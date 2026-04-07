@@ -3,24 +3,21 @@ title: Implementation Guidelines
 ---
 {{< type-rules production="All endpoint implementations must follow their respective production rules. No endpoint-specific optimizations that would not be used in production." tuned="May optimize each endpoint independently. Pre-computed responses, custom serializers, and non-default configurations allowed." engine="No specific rules." >}}
 
-The API-4 profile runs a lighter workload than [Mixed](../../mixed/implementation) with the server container constrained to **4 CPUs and 16 GB memory**. Only baseline, JSON, static files, and async database endpoints are tested — heavy endpoints (upload, compression, SQLite DB) are excluded. The load generator uses 4 threads and 256 connections.
+The API-4 profile runs a multi-endpoint workload with the server container constrained to **4 CPUs and 16 GB memory**. Only baseline, JSON, and async database endpoints are tested. The load generator uses 64 threads and 256 connections.
 
 **Connections:** 256
 
-## How it differs from Mixed
+## Configuration
 
-| Parameter | Mixed | API-4 |
-|-----------|-------|--------|
-| Server CPUs | Unlimited | 4 |
-| Server memory | Unlimited | 16 GB |
-| Connections | 4,096 | 256 |
-| gcannon threads | 64 | 64 |
-| Duration | 15s | 15s |
-| Request templates | 14 | 8 |
-| Requests per connection | 5 | 5 |
-| Upload | Yes | No |
-| Compression | Yes | No |
-| SQLite DB | Yes | No |
+| Parameter | Value |
+|-----------|-------|
+| Server CPUs | 4 (cpuset 0-3) |
+| Server memory | 16 GB |
+| Connections | 256 |
+| gcannon threads | 64 |
+| Duration | 15s |
+| Request templates | 8 (3 baseline, 3 JSON, 2 async-db) |
+| Requests per connection | 5 (then reconnect) |
 
 ## What it measures
 
