@@ -1,6 +1,6 @@
 {{ $profiles := slice
-  (dict "id" "baseline-h2" "label" "Baseline (HTTP/2)" "conns" (slice 256 1024) "desc" "Same workload as the HTTP/1.1 baseline — <code>GET /baseline2</code> with query parameter parsing — but over encrypted HTTP/2 connections using TLS + ALPN. Benchmarked with <code>h2load</code> instead of gcannon. Measures how efficiently a framework handles HTTP/2 multiplexing and TLS overhead. <a href='/docs/test-profiles/h2/baseline-h2/' class='lb-desc-link'>Learn more &rarr;</a>")
-  (dict "id" "static-h2" "label" "Static Files (HTTP/2)" "conns" (slice 256 1024) "desc" "Serves 20 static files of various types and sizes (CSS, JS, HTML, fonts, SVG, WebP, JSON — totaling ~325 KB) over HTTP/2 with TLS. The load generator (<code>h2load</code>) requests all files using multiplexed streams, simulating a realistic browser page load. Measures static file serving throughput with HTTP/2 multiplexing. <a href='/docs/test-profiles/h2/static-h2/' class='lb-desc-link'>Learn more &rarr;</a>")
+  (dict "id" "baseline-h2" "label" "Baseline (HTTP/2)" "conns" (slice 256 1024) "desc" "Same workload as the HTTP/1.1 baseline — <code>GET /baseline2</code> with query parameter parsing — but over encrypted HTTP/2 connections using TLS + ALPN. Benchmarked with <code>h2load</code> instead of gcannon. Measures how efficiently a framework handles HTTP/2 multiplexing and TLS overhead. Container pinned to 64 CPU threads (cores 0-31, 64-95). <a href='/docs/test-profiles/h2/baseline-h2/' class='lb-desc-link'>Learn more &rarr;</a>")
+  (dict "id" "static-h2" "label" "Static Files (HTTP/2)" "conns" (slice 256 1024) "desc" "Serves 20 static files of various types and sizes (CSS, JS, HTML, fonts, SVG, WebP, JSON — totaling ~325 KB) over HTTP/2 with TLS. The load generator (<code>h2load</code>) requests all files using multiplexed streams, simulating a realistic browser page load. Measures static file serving throughput with HTTP/2 multiplexing. Container pinned to 64 CPU threads (cores 0-31, 64-95). <a href='/docs/test-profiles/h2/static-h2/' class='lb-desc-link'>Learn more &rarr;</a>")
 }}
 
 {{/* Build JSON data blob for round switching */}}
@@ -258,9 +258,9 @@ function applyFilters_h2(activePanel) {
   var typeNote = document.querySelector('.lb-type-note-h2');
   if (typeNote) {
     var defs = [];
-    if (showProduction) defs.push('<span class="lb-type-badge lb-type-badge-production">$ Production</span> Standard framework configuration. Must follow production-specific implementation rules for each test.');
-    if (showTuned) defs.push('<span class="lb-type-badge lb-type-badge-tuned"># Tuned</span> May use experimental flags and non-default optimizations. Not bound by production implementation rules.');
-    if (showEngine) defs.push('<span class="lb-type-badge lb-type-badge-engine">* Engine</span> Bare-metal HTTP servers — not frameworks. A different breed entirely.');
+    if (showProduction) defs.push('<span class="lb-type-badge lb-type-badge-production"><span class="lb-type-square" style="background:#22c55e;"></span> Production</span> Standard framework configuration. Must follow production-specific implementation rules for each test.');
+    if (showTuned) defs.push('<span class="lb-type-badge lb-type-badge-tuned"><span class="lb-type-square" style="background:#eab308;"></span> Tuned</span> May use experimental flags and non-default optimizations. Not bound by production implementation rules.');
+    if (showEngine) defs.push('<span class="lb-type-badge lb-type-badge-engine"><span class="lb-type-square" style="background:#dc2626;"></span> Engine</span> Bare-metal HTTP servers — not frameworks. A different breed entirely.');
     typeNote.innerHTML = defs.join('<br>');
   }
 

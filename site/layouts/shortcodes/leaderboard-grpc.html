@@ -1,6 +1,6 @@
 {{ $profiles := slice
-  (dict "id" "unary-grpc" "label" "Unary (h2c)" "conns" (slice 256 1024) "desc" "Unary gRPC call (<code>BenchmarkService/GetSum</code>) over cleartext HTTP/2 (h2c). Measures raw gRPC transport performance without TLS overhead. Benchmarked with <code>h2load</code>. <a href='/docs/test-profiles/grpc/unary/' class='lb-desc-link'>Learn more &rarr;</a>")
-  (dict "id" "unary-grpc-tls" "label" "Unary (TLS)" "conns" (slice 256 1024) "desc" "Same unary gRPC call over encrypted HTTP/2 with TLS 1.3. Measures gRPC performance with real-world TLS encryption. Benchmarked with <code>h2load</code>. <a href='/docs/test-profiles/grpc/unary/' class='lb-desc-link'>Learn more &rarr;</a>")
+  (dict "id" "unary-grpc" "label" "Unary (h2c)" "conns" (slice 256 1024) "desc" "Unary gRPC call (<code>BenchmarkService/GetSum</code>) over cleartext HTTP/2 (h2c). Measures raw gRPC transport performance without TLS overhead. Benchmarked with <code>h2load</code>. Container pinned to 64 CPU threads (cores 0-31, 64-95). <a href='/docs/test-profiles/grpc/unary/' class='lb-desc-link'>Learn more &rarr;</a>")
+  (dict "id" "unary-grpc-tls" "label" "Unary (TLS)" "conns" (slice 256 1024) "desc" "Same unary gRPC call over encrypted HTTP/2 with TLS 1.3. Measures gRPC performance with real-world TLS encryption. Benchmarked with <code>h2load</code>. Container pinned to 64 CPU threads (cores 0-31, 64-95). <a href='/docs/test-profiles/grpc/unary/' class='lb-desc-link'>Learn more &rarr;</a>")
 }}
 
 {{/* Build JSON data blob for round switching */}}
@@ -258,9 +258,9 @@ function applyFilters_grpc(activePanel) {
   var typeNote = document.querySelector('.lb-type-note-grpc');
   if (typeNote) {
     var defs = [];
-    if (showProduction) defs.push('<span class="lb-type-badge lb-type-badge-production">$ Production</span> Standard framework configuration. Must follow production-specific implementation rules for each test.');
-    if (showTuned) defs.push('<span class="lb-type-badge lb-type-badge-tuned"># Tuned</span> May use experimental flags and non-default optimizations. Not bound by production implementation rules.');
-    if (showEngine) defs.push('<span class="lb-type-badge lb-type-badge-engine">* Engine</span> Bare-metal HTTP servers — not frameworks. A different breed entirely.');
+    if (showProduction) defs.push('<span class="lb-type-badge lb-type-badge-production"><span class="lb-type-square" style="background:#22c55e;"></span> Production</span> Standard framework configuration. Must follow production-specific implementation rules for each test.');
+    if (showTuned) defs.push('<span class="lb-type-badge lb-type-badge-tuned"><span class="lb-type-square" style="background:#eab308;"></span> Tuned</span> May use experimental flags and non-default optimizations. Not bound by production implementation rules.');
+    if (showEngine) defs.push('<span class="lb-type-badge lb-type-badge-engine"><span class="lb-type-square" style="background:#dc2626;"></span> Engine</span> Bare-metal HTTP servers — not frameworks. A different breed entirely.');
     typeNote.innerHTML = defs.join('<br>');
   }
 
