@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'zlib'
+require 'concurrent/utility/processor_counter'
 
 class BenchmarkController < RageController::API
   DATA_DIR = ENV.fetch('DATA_DIR', '/data')
@@ -110,15 +111,11 @@ class BenchmarkController < RageController::API
   end
 
   def db
-    conn = get_db
-    unless conn
-      render json: { items: [], count: 0 }
-      return
-    end
+    min_val = (params[:min] || 10).to_i
+    max_val = (params[:max] || 50).to_i
 
-    min_val = (params[:min] || 10).to_f
-    max_val = (params[:max] || 50).to_f
-    rows = conn.execute(DB_QUERY, [min_val, max_val])
+    rows = get_db&.execute(DB_QUERY, [min_val, max_val]) || []
+
     items = rows.map do |r|
       {
         'id' => r['id'], 'name' => r['name'], 'category' => r['category'],
@@ -131,17 +128,14 @@ class BenchmarkController < RageController::API
   end
 
   def async_db
-    conn = get_pg
-    unless conn
-      render json: { items: [], count: 0 }
-      return
-    end
+    min_val = (params[:min] || 10).to_i
+    max_val = (params[:max] || 50).to_i
 
-    min_val = (params[:min] || 10.0).to_f
-    max_val = (params[:max] || 50.0).to_f
+    rows = self.class.get_async_db&.with do |connection|
+      connection.exec_prepared('select', [min_val, max_val])
+    end || []
 
-    result = conn.exec_params(PG_QUERY, [min_val, max_val])
-    items = result.map do |r|
+    items = rows.map do |r|
       {
         'id' => r['id'].to_i, 'name' => r['name'], 'category' => r['category'],
         'price' => r['price'].to_f, 'quantity' => r['quantity'].to_i,
@@ -151,9 +145,6 @@ class BenchmarkController < RageController::API
       }
     end
     render json: { items: items, count: items.length }
-  rescue PG::Error
-    Thread.current[:rage_pg] = nil
-    render json: { items: [], count: 0 }
   end
 
   def static_file
@@ -192,11 +183,16 @@ class BenchmarkController < RageController::API
     end
   end
 
-  def get_pg
-    Thread.current[:rage_pg] ||= begin
-      PG.connect(ENV['DATABASE_URL'])
-    rescue
-      nil
+  def self.get_async_db
+    @async_db ||= begin
+      return unless ENV['DATABASE_URL']
+      processors = Integer(::Concurrent.available_processor_count)
+      pool_size = (2 * Math.log(256 / processors)).floor
+      ConnectionPool.new(size: pool_size, timeout: 5) do
+        db = PG.connect(ENV['DATABASE_URL'])
+        db.prepare('select', PG_QUERY)
+        db
+      end
     end
   end
 end
