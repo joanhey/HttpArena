@@ -45,6 +45,9 @@ RUN ln -s libssl.so.81.3 /opt/quictls/lib/libssl.so.81 && \
 ARG NGINX_VERSION
 COPY --from=build /tmp/nginx-${NGINX_VERSION}/objs/nginx /usr/sbin/nginx
 RUN mkdir -p /usr/local/nginx/logs
+
 COPY nginx.conf /usr/local/nginx/conf/nginx.conf
+
 EXPOSE 8080 8443/tcp 8443/udp
-CMD ["nginx", "-g", "daemon off;"]
+
+CMD ["nginx"]
