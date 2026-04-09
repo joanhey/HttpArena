@@ -144,7 +144,9 @@ class App < Sinatra::Base
     min_val = (params['min'] || 10).to_i
     max_val = (params['max'] || 50).to_i
 
-    rows = get_db&.execute(DB_QUERY, [min_val, max_val]) || []
+    rows = self.class.get_db_statement&.with do |statement|
+      statement.execute([min_val, max_val])
+    end || []
 
     items = rows.map do |r|
       {
@@ -196,14 +198,16 @@ class App < Sinatra::Base
 
   private
 
-  def get_db
-    Thread.current[:sinatra_db] ||= begin
-      db = SQLite3::Database.new(settings.database_path, readonly: true)
-      db.execute('PRAGMA mmap_size=268435456')
-      db.results_as_hash = true
-      db
-    rescue
-      nil
+  def self.get_db_statement
+    @db_statement ||= begin
+      return unless settings.database_path
+      max_connections = ENV.fetch('MAX_THREADS', 4).to_i
+      ConnectionPool.new(size: max_connections, timeout: 5) do
+        db = SQLite3::Database.new(settings.database_path, readonly: true)
+        db.execute('PRAGMA mmap_size=268435456')
+        db.results_as_hash = true
+        db.prepare(DB_QUERY)
+      end
     end
   end
 
