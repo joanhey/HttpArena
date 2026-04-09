@@ -37,7 +37,7 @@ class App < Roda
   }.freeze
 
   static_dir = File.join DATA_DIR, 'static'
-  opts[:static_files_cache] = {}
+  opts[:static_files] = {}
   if Dir.exist?(static_dir)
     Dir.foreach(static_dir) do |name|
       next if name == '.' || name == '..'
@@ -45,10 +45,10 @@ class App < Roda
       next unless File.file?(path)
       ext = File.extname(name)
       ct = MIME_TYPES.fetch(ext, 'application/octet-stream')
-      opts[:static_files_cache][name] = { data: File.binread(path), content_type: ct }
+      opts[:static_files][name] = { path: path, content_type: ct }
     end
   end
-  opts[:static_files_cache].freeze
+  opts[:static_files].freeze
 
   # SQLite
   opts[:database_path] = File.join(DATA_DIR, 'benchmark.db').freeze
@@ -59,6 +59,7 @@ class App < Roda
   plugin :default_headers, 'Server' => SERVER_NAME
   plugin :halt
   plugin :request_headers
+  plugin :send_file
 
   route do |r|
     r.root { 'ok' }
@@ -156,9 +157,9 @@ class App < Roda
     end
 
     r.on 'static', String do |filename|
-      if entry = opts[:static_files_cache][filename]
-        response[RodaResponseHeaders::CONTENT_TYPE] = entry[:content_type]
-        entry[:data]
+      if static_file = opts[:static_files][filename]
+        response[RodaResponseHeaders::CONTENT_TYPE] = static_file[:content_type]
+        send_file static_file[:path]
       else
         r.halt 404
       end
