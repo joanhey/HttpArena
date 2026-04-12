@@ -77,16 +77,16 @@ function asyncDb()
     );
 }
 
-function files()
-{
-    $path = ngx_request_uri();
-    if (!isset(STATIC_FILES[$path])) {
-        return notFound();
-    }
+// function files()
+// {
+//     $path = ngx_request_uri();
+//     if (!isset(STATIC_FILES[$path])) {
+//         return notFound();
+//     }
 
-    ngx_header_set('Content-Type', STATIC_FILES[$path][1]);
-    echo STATIC_FILES[$path][0];
-}
+//     ngx_header_set('Content-Type', STATIC_FILES[$path][1]);
+//     echo STATIC_FILES[$path][0];
+// }
 
 function notFound()
 {
