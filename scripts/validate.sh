@@ -6,6 +6,7 @@ IMAGE_NAME="httparena-${FRAMEWORK}"
 CONTAINER_NAME="httparena-validate-${FRAMEWORK}"
 PORT=8080
 H2PORT=8443
+H1TLS_PORT=8081
 PASS=0
 FAIL=0
 
@@ -83,8 +84,15 @@ if has_test "baseline-h2" || has_test "static-h2" || has_test "baseline-h3" || h
     needs_h2=true
 fi
 
-if $needs_h2 && [ -d "$CERTS_DIR" ]; then
-    docker_args+=(-p "$H2PORT:8443" -v "$CERTS_DIR:/certs:ro")
+needs_h1tls=false
+if has_test "json-tls"; then
+    needs_h1tls=true
+fi
+
+if ($needs_h2 || $needs_h1tls) && [ -d "$CERTS_DIR" ]; then
+    docker_args+=(-v "$CERTS_DIR:/certs:ro")
+    $needs_h2     && docker_args+=(-p "$H2PORT:8443")
+    $needs_h1tls  && docker_args+=(-p "$H1TLS_PORT:8081")
 fi
 
 if has_test "gateway-64"; then
@@ -385,6 +393,69 @@ print(f'{count} {has_total} {correct_totals}')
         PASS=$((PASS + 1))
     else
         fail_with_link "[json-comp per-request]: got $jc_no_enc without Accept-Encoding" "$JSONCOMP_DOCS"
+    fi
+fi
+
+# ───── JSON TLS (GET /json/{count}?m=X over HTTP/1.1 + TLS on :8081) ─────
+
+if has_test "json-tls"; then
+    JSONTLS_DOCS="$DOCS_BASE/h1/isolated/json-tls/validation"
+    echo "[test] json-tls endpoint"
+
+    # Must negotiate HTTP/1.1 (not h2) via ALPN on :8081
+    jt_proto=$(curl -sk --max-time 30 --http1.1 -o /dev/null -w '%{http_version}' "https://localhost:$H1TLS_PORT/json/1?m=1" 2>/dev/null || echo "0")
+    if [ "$jt_proto" = "1.1" ]; then
+        echo "  PASS [json-tls protocol negotiation] (HTTP/$jt_proto over TLS)"
+        PASS=$((PASS + 1))
+    else
+        fail_with_link "[json-tls protocol negotiation]: expected 1.1, got HTTP/$jt_proto" "$JSONTLS_DOCS"
+    fi
+
+    # Response body correctness across 3 (count, m) pairs (different from json-comp so a caller can't share state)
+    jt_fail=false
+    jt_params=("7:2" "23:11" "50:1")
+    for jtp in "${jt_params[@]}"; do
+        jtcount="${jtp%%:*}"
+        jtm="${jtp##*:}"
+        jt_response=$(curl -sk --max-time 30 "https://localhost:$H1TLS_PORT/json/$jtcount?m=$jtm")
+        jt_result=$(echo "$jt_response" | python3 -c "
+import sys, json
+m = $jtm
+d = json.load(sys.stdin)
+count = d.get('count', 0)
+items = d.get('items', [])
+has_total = all('total' in item for item in items) if items else False
+correct_totals = True
+for item in items:
+    expected = item['price'] * item['quantity'] * m
+    if item.get('total', 0) != expected:
+        correct_totals = False
+        break
+print(f'{count} {has_total} {correct_totals}')
+" 2>/dev/null || echo "0 False False")
+        jt_count=$(echo "$jt_result" | cut -d' ' -f1)
+        jt_total=$(echo "$jt_result" | cut -d' ' -f2)
+        jt_correct=$(echo "$jt_result" | cut -d' ' -f3)
+
+        if [ "$jt_count" = "$jtcount" ] && [ "$jt_total" = "True" ] && [ "$jt_correct" = "True" ]; then
+            :
+        else
+            fail_with_link "[json-tls /json/$jtcount?m=$jtm]: count=$jt_count, has_total=$jt_total, correct=$jt_correct" "$JSONTLS_DOCS"
+            jt_fail=true
+        fi
+    done
+    if [ "$jt_fail" = "false" ]; then
+        echo "  PASS [json-tls response] (3 (count, m) pairs over TLS)"
+        PASS=$((PASS + 1))
+    fi
+
+    # Content-Type must be application/json
+    jt_ct=$(curl -sk --max-time 30 -D- -o /dev/null "https://localhost:$H1TLS_PORT/json/1?m=1" | grep -i "^content-type:" | tr -d '\r' || true)
+    if echo "$jt_ct" | grep -qi 'application/json'; then
+        echo "  PASS [json-tls Content-Type: application/json]"
+        PASS=$((PASS + 1))
+    else
+        fail_with_link "[json-tls Content-Type]: expected application/json, got '$jt_ct'" "$JSONTLS_DOCS"
     fi
 fi
 

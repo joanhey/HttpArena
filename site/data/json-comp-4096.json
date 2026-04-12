@@ -120,6 +120,26 @@
     "status_5xx": 0
   },
   {
+    "framework": "hono-bun",
+    "language": "TS",
+    "rps": 101100,
+    "avg_latency": "40.09ms",
+    "p99_latency": "95.50ms",
+    "cpu": "5862.6%",
+    "memory": "12.4GiB",
+    "connections": 4096,
+    "threads": 64,
+    "duration": "5s",
+    "pipeline": 1,
+    "bandwidth": "99.60MB/s",
+    "input_bw": "7.42MB/s",
+    "reconnects": 18282,
+    "status_2xx": 505502,
+    "status_3xx": 0,
+    "status_4xx": 0,
+    "status_5xx": 0
+  },
+  {
     "framework": "humming-bird",
     "language": "Swift",
     "rps": 69653,

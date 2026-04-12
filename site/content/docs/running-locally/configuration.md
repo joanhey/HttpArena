@@ -42,6 +42,7 @@ Each profile defines: pipeline depth, requests per connection, CPU limit, connec
 | limited-conn | 1 | 10 | 0-31,64-95 | 512, 4096 | `/baseline11` |
 | json | 1 | 0 | 0-31,64-95 | 4096 | `/json/{count}` (7 counts) |
 | json-comp | 1 | 0 | 0-31,64-95 | 512, 4096, 16384 | `/json/{count}?m=N` + `Accept-Encoding: gzip, br` |
+| json-tls | 1 | 0 | 0-31,64-95 | 4096 | `/json/{count}?m=N` over HTTP/1.1 + TLS on port 8081 (wrk) |
 | upload | 1 | 0 | 0-31,64-95 | 32, 256 | `/upload` |
 | api-4 | 1 | 5 | 0-3 | 256 | mixed (baseline, json, async-db) |
 | api-16 | 1 | 5 | 0-7,64-71 | 1024 | mixed (baseline, json, async-db) |

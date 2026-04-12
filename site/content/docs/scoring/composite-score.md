@@ -43,6 +43,7 @@ Not all profiles count toward the composite score. Profiles marked as **scored**
 | Short-lived | Yes | Connections closed after 10 requests |
 | JSON | Yes | Dataset processing and serialization |
 | JSON Compressed | Yes | JSON with `Accept-Encoding: gzip, br` and multiplier `?m=N` |
+| JSON TLS | Yes | JSON workload over HTTP/1.1 + TLS on port 8081 |
 | Upload | Yes | 20 MB body ingestion, return byte count |
 | Static | Yes | 20 static files served over HTTP/1.1 |
 | Async DB | Yes | Async Postgres query with connection pooling |

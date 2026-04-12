@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { compress } from "hono/compress";
 import { Database } from "bun:sqlite";
 import { readFileSync } from "fs";
 
@@ -38,6 +39,11 @@ let pgPool: any = null;
 }
 
 const app = new Hono();
+
+// Runtime compression for /json/* — honors Accept-Encoding on a per-request
+// basis via Hono's built-in middleware (CompressionStream under the hood).
+// Scoped to /json so the other endpoints don't pay the encoder cost.
+app.use("/json/*", compress());
 
 // --- /pipeline ---
 app.get("/pipeline", (c) => {

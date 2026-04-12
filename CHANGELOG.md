@@ -53,6 +53,51 @@ The stale "looks like baseline" `json-comp` result files under `results/json-com
 
 Updated in `scripts/benchmark.sh`, `site/layouts/shortcodes/leaderboard-h1-isolated.html`, `site/layouts/shortcodes/leaderboard-composite.html`, `site/content/docs/running-locally/configuration.md`, and `site/content/docs/test-profiles/h1/isolated/json-compressed/implementation.md`.
 
+### JSON over TLS profile — added (`json-tls`)
+
+New H/1.1 Isolated profile that runs the same `/json/{count}?m=N` workload as the plain `json` profile but transports it over **HTTP/1.1 + TLS** on a dedicated port. Measures how much of a framework's plaintext JSON throughput survives TLS record framing, symmetric cipher work, and ALPN negotiation. No compression — clients send no `Accept-Encoding` so this is pure TLS overhead on top of serialization.
+
+**Shape**:
+
+| Parameter | Value |
+|-----------|-------|
+| Endpoint | `GET /json/{count}?m={multiplier}` |
+| Transport | HTTP/1.1 over TLS |
+| Port | **8081** (distinct from 8080 plaintext and 8443 H2/H3) |
+| ALPN | `http/1.1` only (wrk speaks HTTP/1.1 only) |
+| Load generator | **wrk** + `requests/json-tls-rotate.lua` (gcannon has no TLS support) |
+| Count × multiplier pairs | `(1,3) (5,7) (10,2) (15,5) (25,4) (40,8) (50,6)` (same 7 pairs as the plain `json` profile) |
+| Connections | 4,096 |
+| Pipeline / req-per-conn | 1 / 0 (persistent keep-alive) |
+| CPU pinning | `0-31,64-95` |
+| Certificates | reuses `certs/server.crt` + `certs/server.key` (same as `baseline-h2`) |
+
+**Script plumbing**:
+
+- `scripts/benchmark.sh`: new `H1TLS_PORT=8081`, `[json-tls]` entry in `PROFILES`, added to `PROFILE_ORDER` after `json-comp`, readiness check `https://localhost:$H1TLS_PORT/json/1?m=1`, new wrk dispatch branch
+- `scripts/validate.sh`: `H1TLS_PORT=8081`, `needs_h1tls` path that mounts `/certs` + publishes `-p 8081:8081`, new validation block with three checks:
+  1. ALPN negotiates HTTP/1.1 (`--http1.1` curl reports `http_version = 1.1`)
+  2. Body correctness across `(7,2) / (23,11) / (50,1)` — deliberately different from the `json-comp` pairs `(12,9) / (31,4) / (50,6)` so a framework can't trivially share validation state between profiles
+  3. `Content-Type: application/json`
+- `requests/json-tls-rotate.lua`: new wrk Lua that round-robins the 7 `(count, m)` pairs, no `Accept-Encoding` header
+
+**Site plumbing**:
+
+- New profile dict in `leaderboard-h1-isolated.html` (conns `4096`) and `leaderboard-composite.html` (scored, not engine-scored)
+- Dedicated docs dir `site/content/docs/test-profiles/h1/isolated/json-tls/` with `_index.md`, `implementation.md` (endpoint spec, port, ALPN, certs, parameters table), `validation.md` (the three checks)
+- Landing card in `content/_index.md`, new card in `h1/isolated/_index.md`, new row in `running-locally/configuration.md`, `add-framework/meta-json.md`, and `scoring/composite-score.md`
+
+**Framework implementation requirement**:
+
+Each framework that subscribes to `json-tls` must bind a second HTTPS listener on port **8081** with ALPN `http/1.1` (separate from any existing HTTP/2 listener on 8443). The `/json/{count}?m=N` handler itself is shared with the plain `json` profile — no new route needed, just the listener.
+
+- **Pilot**: `aspnet-minimal` (added a second `Kestrel.ListenAnyIP(8081)` with `Protocols = HttpProtocols.Http1` + `UseHttps(…)` alongside the existing `:8443` H1+H2+H3 listener, and `json-tls` in `meta.json`)
+- Other frameworks need a similar ~5-10 line addition and `"json-tls"` in their `meta.json` tests array to opt in
+
+### JSON Processing docs — fixed `?m=` inconsistency
+
+The `json-processing/implementation.md` page had a self-contradiction: the "How it works" section said `GET /json/{count}` and `total = price × quantity`, while the example URL and rule text referenced `?m=3` and `total = price * quantity * m`. The load generator has always sent `?m=N` with the 7 fixed multipliers. Docs now consistently describe `GET /json/{count}?m={multiplier}` and enumerate the `(count, m)` pairs `(1,3) (5,7) (10,2) (15,5) (25,4) (40,8) (50,6)` in the parameters table.
+
 ## 2026-04-10
 
 ### JSON test — variable item count and multiplier

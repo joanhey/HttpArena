@@ -94,6 +94,11 @@ html.dark .test-card-endpoint { color: #64748b; }
     <div class="test-card-desc">Same JSON workload with <code>Accept-Encoding: gzip, br</code> — measures serialization + compression.</div>
     <div class="test-card-endpoint">GET /json/{count}?m=N</div>
   </a>
+  <a class="test-card" href="docs/test-profiles/h1/isolated/json-tls">
+    <div class="test-card-title">JSON over TLS</div>
+    <div class="test-card-desc">Same JSON workload over HTTP/1.1 + TLS on port 8081 — measures encryption overhead on top of serialization.</div>
+    <div class="test-card-endpoint">GET /json/{count}?m=N (HTTPS :8081)</div>
+  </a>
   <a class="test-card" href="docs/test-profiles/h1/isolated/upload">
     <div class="test-card-title">Upload (20 MB)</div>
     <div class="test-card-desc">Ingest a 20 MB binary payload and return its byte count.</div>

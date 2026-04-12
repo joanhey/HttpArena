@@ -41,6 +41,7 @@ Create a `meta.json` file in your framework directory:
 | `limited-conn` | HTTP/1.1 | `/baseline11` |
 | `json` | HTTP/1.1 | `/json/{count}` |
 | `json-comp` | HTTP/1.1 | `/json/{count}?m=N` (must honor `Accept-Encoding: gzip, br`) |
+| `json-tls` | HTTP/1.1 + TLS | `/json/{count}?m=N` on port 8081 (ALPN `http/1.1`) |
 | `upload` | HTTP/1.1 | `/upload` |
 | `static` | HTTP/1.1 | `/static/*` (port 8080) |
 | `async-db` | HTTP/1.1 | `/async-db?limit=N` (requires `DATABASE_URL` env var) |
