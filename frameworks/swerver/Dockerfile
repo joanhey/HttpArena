@@ -21,10 +21,10 @@ RUN set -eux; \
     ln -s /opt/zig/zig /usr/local/bin/zig; \
     zig version
 
-# Clone swerver source — pinned to specific commit to bust Docker cache
+# Clone swerver source — pinned to tag to insulate from main branch WIP
 WORKDIR /src
 RUN git clone https://github.com/justinGrosvenor/swerver.git . && \
-    git checkout 3ddb613
+    git checkout v0.1.0-alpha.0
 
 # Symlink OpenSSL libs to /usr/lib/ for Zig's linker
 RUN MULTIARCH=$(dpkg-architecture -qDEB_HOST_MULTIARCH); \
