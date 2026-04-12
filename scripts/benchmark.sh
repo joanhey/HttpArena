@@ -20,12 +20,14 @@ DURATION=5s
 RUNS=3
 PORT=8080
 H2PORT=8443
+H1TLS_PORT=8081
 REQUESTS_DIR="$ROOT_DIR/requests"
 RESULTS_DIR="$ROOT_DIR/results"
 CERTS_DIR="$ROOT_DIR/certs"
 
 # Profile definitions: pipeline|req_per_conn|cpu_limit|connections|endpoint
 # endpoint: empty = /baseline11 (raw), "json" = /json (GET), "pipeline" = /pipeline, "upload" = POST /upload (raw),
+#           "json-tls" = /json/{count}?m=N over HTTP/1.1 + TLS on :8081 (wrk+lua),
 #           "h2" = /baseline2 (h2load), "static-h2" = multi-URI h2load, "h3" = /baseline2 (oha HTTP/3), "static-h3" = multi-URI oha,
 #           "grpc" = gRPC unary (h2load h2c), "grpc-tls" = gRPC unary (h2load TLS),
 #           "static" = multi-URI static files (gcannon --raw), "ws-echo" = WebSocket echo (gcannon --ws),
@@ -36,6 +38,7 @@ declare -A PROFILES=(
     [limited-conn]="1|10|0-31,64-95|512,4096|"
     [json]="1|0|0-31,64-95|4096|json"
     [json-comp]="1|0|0-31,64-95|512,4096,16384|json-compressed"
+    [json-tls]="1|0|0-31,64-95|4096|json-tls"
     [upload]="1|0|0-31,64-95|32,256|upload"
     [api-4]="1|5|0-3|256|api-4"
     [api-16]="1|5|0-7,64-71|1024|api-16"
@@ -48,7 +51,7 @@ declare -A PROFILES=(
     [echo-ws]="1|0|0-31,64-95|512,4096,16384|ws-echo"
     [async-db]="1|0|0-31,64-95|1024|async-db"
 )
-PROFILE_ORDER=(baseline pipelined limited-conn json json-comp upload api-4 api-16 static async-db baseline-h2 static-h2 gateway-64 unary-grpc unary-grpc-tls echo-ws)
+PROFILE_ORDER=(baseline pipelined limited-conn json json-comp json-tls upload api-4 api-16 static async-db baseline-h2 static-h2 gateway-64 unary-grpc unary-grpc-tls echo-ws)
 
 # Parse flags
 SAVE_RESULTS=false
@@ -539,6 +542,8 @@ for profile in "${profiles_to_run[@]}"; do
             local_check_url="http://localhost:$PORT/static/reset.css"
         elif [ "$endpoint" = "json" ]; then
             local_check_url="http://localhost:$PORT/json/1"
+        elif [ "$endpoint" = "json-tls" ]; then
+            local_check_url="https://localhost:$H1TLS_PORT/json/1?m=1"
         elif [ "$endpoint" = "ws-echo" ]; then
             local_check_url="http://localhost:$PORT/ws"
         else
@@ -638,6 +643,11 @@ for profile in "${profiles_to_run[@]}"; do
         gc_args=(wrk -t "$THREADS" -c "$CONNS" -d "$DURATION"
             -s "$REQUESTS_DIR/static-rotate.lua"
             "http://localhost:$PORT")
+    elif [ "$endpoint" = "json-tls" ]; then
+        USE_WRK=true
+        gc_args=(wrk -t "$THREADS" -c "$CONNS" -d "$DURATION"
+            -s "$REQUESTS_DIR/json-tls-rotate.lua"
+            "https://localhost:$H1TLS_PORT")
     elif [ "$endpoint" = "json" ]; then
         gc_args=("http://localhost:$PORT"
             --raw "$REQUESTS_DIR/json-1.raw,$REQUESTS_DIR/json-5.raw,$REQUESTS_DIR/json-10.raw,$REQUESTS_DIR/json-15.raw,$REQUESTS_DIR/json-25.raw,$REQUESTS_DIR/json-40.raw,$REQUESTS_DIR/json-50.raw"

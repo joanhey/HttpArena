@@ -6,6 +6,7 @@
   (dict "id" "limited-conn" "label" "Short-lived" "sublabel" "H/1.1 Isolated" "proto" "h1iso" "conns" (slice 512 4096) "scored" true "engineScored" true)
   (dict "id" "json" "label" "JSON" "sublabel" "H/1.1 Isolated" "proto" "h1iso" "conns" (slice 4096) "scored" true "engineScored" false)
   (dict "id" "json-comp" "label" "JSON Compressed" "sublabel" "H/1.1 Isolated" "proto" "h1iso" "conns" (slice 512 4096 16384) "scored" true "engineScored" false)
+  (dict "id" "json-tls" "label" "JSON TLS" "sublabel" "H/1.1 Isolated" "proto" "h1iso" "conns" (slice 4096) "scored" true "engineScored" false)
   (dict "id" "upload" "label" "Upload" "sublabel" "H/1.1 Isolated" "proto" "h1iso" "conns" (slice 32 256) "scored" true "engineScored" false)
   (dict "id" "static" "label" "Static" "sublabel" "H/1.1 Isolated" "proto" "h1iso" "conns" (slice 1024 4096 6800) "scored" true "engineScored" false)
   (dict "id" "async-db" "label" "Async DB" "sublabel" "H/1.1 Isolated" "proto" "h1iso" "conns" (slice 1024) "scored" true "engineScored" false)

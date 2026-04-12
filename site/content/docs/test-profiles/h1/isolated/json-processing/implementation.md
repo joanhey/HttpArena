@@ -9,14 +9,14 @@ The JSON Processing profile measures how efficiently a framework handles a typic
 ## How it works
 
 1. At startup, the server reads `/data/dataset.json` — a file containing 50 items with mixed types (strings, numbers, booleans, arrays, nested objects)
-2. On each `GET /json/{count}` request, the server:
+2. On each `GET /json/{count}?m={multiplier}` request, the server:
    - Takes the first `count` items from the dataset (1–50)
-   - Computes a `total` field (`price × quantity`) for each item
+   - Computes a `total` field (`price × quantity × m`) for each item — `m` is an integer path-query multiplier that varies per request template
    - Builds the response object
    - Serializes everything as JSON
 3. Returns `Content-Type: application/json`
 
-The benchmark round-robins across counts 1, 5, 10, 15, 25, 40, and 50, testing serialization performance across varying response sizes.
+The benchmark round-robins across 7 fixed `(count, m)` pairs: `(1, 3)`, `(5, 7)`, `(10, 2)`, `(15, 5)`, `(25, 4)`, `(40, 8)`, `(50, 6)`. Different multipliers per template mean every response body is unique — a framework that tries to cache `GET /json/5` by path alone will return wrong totals for other requests.
 
 ## What it measures
 
@@ -75,8 +75,8 @@ The `count` field must match the number of items returned and the route paramete
 
 | Parameter | Value |
 |-----------|-------|
-| Endpoint | `GET /json/{count}` |
-| Counts | 1, 5, 10, 15, 25, 40, 50 (round-robin) |
+| Endpoint | `GET /json/{count}?m={multiplier}` |
+| Count × multiplier pairs | `(1,3)`, `(5,7)`, `(10,2)`, `(15,5)`, `(25,4)`, `(40,8)`, `(50,6)` (round-robin) |
 | Connections | 4,096 |
 | Pipeline | 1 |
 | Duration | 5s |

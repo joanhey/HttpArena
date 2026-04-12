@@ -26,7 +26,7 @@
   "ktor": {"dir": "ktor", "description": "JetBrains Ktor 3.x on Netty with Kotlin coroutines, kotlinx.serialization, JDK 21.", "repo": "https://github.com/ktorio/ktor", "type": "tuned", "engine": "netty"},
   "may-minihttp": {"dir": "may-minihttp", "description": "Mini HTTP server built on May stackful coroutines. Uses cooperative scheduling with coroutine-per-connection model for high concurrency.", "repo": "https://github.com/Xudong-Huang/may_minihttp", "type": "engine", "engine": "may-minihttp"},
   "nginx": {"dir": "nginx", "description": "Nginx with a custom C handler module, compiled with -O3 -march=native.", "repo": "https://github.com/nginx/nginx", "type": "engine", "engine": "nginx"},
-  "ngx-php": {"dir": "ngx-php", "description": "Embedded PHP scripting language module for nginx.", "repo": "https://github.com/rryqszq4/ngx-php", "type": "tuned", "engine": "nginx"},
+  "ngx-php": {"dir": "ngx-php", "description": "Embedded PHP scripting language module for nginx.", "repo": "https://github.com/rryqszq4/ngx-php", "type": "production", "engine": "nginx"},
   "node-websocket": {"dir": "node-websocket", "description": "Node.js WebSocket echo server using ws package", "repo": "https://github.com/websockets/ws", "type": "tuned", "engine": "v8"},
   "quarkus-jvm": {"dir": "quarkus-jvm", "description": "Quarkus with RESTEasy Reactive on Vert.x/Netty, JDK 21, optimized JVM tuning.", "repo": "https://github.com/quarkusio/quarkus", "type": "tuned", "engine": "netty"},
   "quarkus-jvm-grpc": {"dir": "quarkus-jvm-grpc", "description": "Quarkus gRPC server using quarkus-grpc on Vert.x with h2c, JDK 21, optimized JVM tuning.", "repo": "https://github.com/quarkusio/quarkus", "type": "tuned", "engine": "vert.x (grpc)"},
@@ -45,6 +45,6 @@
   "Swoole": {"dir": "swoole-websocket", "description": "Swoole is an event-driven, asynchronous, coroutine-based concurrency library with high performance for PHP.", "repo": "https://github.com/swoole/swoole-src", "type": "tuned", "engine": "Swoole"},
   "tonic-grpc": {"dir": "tonic-grpc", "description": "Rust gRPC server using tonic, a native Rust gRPC implementation built on top of hyper and tower.", "repo": "https://github.com/hyperium/tonic", "type": "tuned", "engine": "tonic"},
   "ultimate-express": {"dir": "ultimate-express", "description": "ultimate-express (Express API on uWebSockets.js) with single-process threading.", "repo": "https://github.com/dimdenGD/ultimate-express", "type": "tuned", "engine": "uwebsockets"},
-  "workerman": {"dir": "workerman", "description": "Workerman with PHP content handlers for all benchmark endpoints.", "repo": "https://github.com/walkor/Workerman", "type": "tuned", "engine": "workerman"},
-  "workerman-websocket": {"dir": "workerman-websocket", "description": "Workerman WebSocket echo server", "repo": "https://github.com/walkor/Workerman", "type": "tuned", "engine": "workerman"}
+  "workerman": {"dir": "workerman", "description": "An asynchronous event driven PHP socket framework. Supports HTTP, Websocket, SSL and other custom protocols.", "repo": "https://github.com/walkor/Workerman", "type": "production", "engine": "workerman"},
+  "workerman-websocket": {"dir": "workerman-websocket", "description": "An asynchronous event driven PHP socket framework. Supports HTTP, Websocket, SSL and other custom protocols.", "repo": "https://github.com/walkor/Workerman", "type": "production", "engine": "workerman"}
 }

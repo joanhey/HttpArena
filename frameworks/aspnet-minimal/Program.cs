@@ -28,6 +28,15 @@ builder.WebHost.ConfigureKestrel(options =>
             lo.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
             lo.UseHttps(X509Certificate2.CreateFromPemFile(certPath, keyPath));
         });
+
+        // HTTP/1.1-only TLS listener for the json-tls profile. Kestrel
+        // advertises http/1.1 via ALPN so HTTP/1.1-only clients (wrk) negotiate
+        // correctly and never upgrade to h2.
+        options.ListenAnyIP(8081, lo =>
+        {
+            lo.Protocols = HttpProtocols.Http1;
+            lo.UseHttps(X509Certificate2.CreateFromPemFile(certPath, keyPath));
+        });
     }
 });
 
