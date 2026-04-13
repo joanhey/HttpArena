@@ -28,6 +28,7 @@ RUN ./configure \
     --with-http_v2_module \
     --with-http_v3_module \
     --add-module=/tmp/module \
+    --with-http_gzip_static_module \
     --with-cc-opt="-O3 -march=native -DNDEBUG -I/opt/quictls/include" \
     --with-ld-opt="-lm -L/opt/quictls/lib -Wl,-rpath,/opt/quictls/lib" && \
     make -j$(nproc)
