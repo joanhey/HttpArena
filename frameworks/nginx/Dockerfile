@@ -28,6 +28,7 @@ RUN ./configure \
     --with-http_v2_module \
     --with-http_v3_module \
     --add-module=/tmp/module \
+    --with-http_gzip_static_module \
     --with-cc-opt="-O3 -march=native -DNDEBUG -I/opt/quictls/include" \
     --with-ld-opt="-lm -L/opt/quictls/lib -Wl,-rpath,/opt/quictls/lib" && \
     make -j$(nproc)
@@ -45,6 +46,9 @@ RUN ln -s libssl.so.81.3 /opt/quictls/lib/libssl.so.81 && \
 ARG NGINX_VERSION
 COPY --from=build /tmp/nginx-${NGINX_VERSION}/objs/nginx /usr/sbin/nginx
 RUN mkdir -p /usr/local/nginx/logs
+
 COPY nginx.conf /usr/local/nginx/conf/nginx.conf
+
 EXPOSE 8080 8443/tcp 8443/udp
-CMD ["nginx", "-g", "daemon off;"]
+
+CMD ["nginx"]
