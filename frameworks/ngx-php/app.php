@@ -1,12 +1,10 @@
 <?php
 
-require 'Db.php';
 require 'Pgsql.php';
-require 'data.php';
 
 // Init
-Db::init();
 Pgsql::init();
+define('JSON_DATA', json_decode(file_get_contents('/data/dataset.json'), true));
 
 function guard()
 {
@@ -30,14 +28,18 @@ function baseline()
 
 function json()
 {
+    $count = explode('/', ngx_request_document_uri())[2];
+    $m = ngx_query_args()['m'] ?? 1;
     $total = [];
-    foreach (JSON_DATA as $item) {
-        $item['total'] = $item['price'] * $item['quantity'];
+    $i = 0;
+    while ($i < $count) {
+        $item = JSON_DATA[$i++];
+        $item['total'] = $item['price'] * $item['quantity'] * $m;
         $total[] = $item;
     }
 
     ngx_header_set('Content-Type', 'application/json');
-    echo json_encode(['items' => $total, 'count' => count($total)],
+    echo json_encode(['items' => $total, 'count' => $count],
                     JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 }
 
@@ -47,25 +49,10 @@ function upload()
     echo strlen(ngx_request_body());
 }
 
-function compression()
-{
-    ngx_header_set('Content-Type', 'application/json');
-    echo LARGE_JSON;
-}
-
 function pipeline()
 {
     ngx_header_set('Content-Type', 'text/plain');
     echo 'ok';
-}
-
-function db()
-{
-    ngx_header_set('Content-Type', 'application/json');
-    echo Db::query(
-        ngx::query_args()['min'] ?? 10,
-        ngx::query_args()['max'] ?? 50
-    );
 }
 
 function asyncDb()
@@ -73,20 +60,10 @@ function asyncDb()
     ngx_header_set('Content-Type', 'application/json');
     echo Pgsql::query(
         ngx::query_args()['min'] ?? 10,
-        ngx::query_args()['max'] ?? 50
+        ngx::query_args()['max'] ?? 50,
+        ngx::query_args()['limit'] ?? 50
     );
 }
-
-// function files()
-// {
-//     $path = ngx_request_uri();
-//     if (!isset(STATIC_FILES[$path])) {
-//         return notFound();
-//     }
-
-//     ngx_header_set('Content-Type', STATIC_FILES[$path][1]);
-//     echo STATIC_FILES[$path][0];
-// }
 
 function notFound()
 {

@@ -33,9 +33,6 @@ RUN echo "opcache.jit=tracing" >> /etc/php/8.4/embed/conf.d/90-override.ini
 
 COPY . .
 
-RUN chmod +x /compress.sh
-RUN /compress.sh
-
 EXPOSE 8080 8443/tcp 8443/udp
 
 ENTRYPOINT ["/nginx/sbin/nginx", "-c", "/nginx.conf"]

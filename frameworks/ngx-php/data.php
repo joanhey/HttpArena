@@ -2,7 +2,7 @@
 
 // benchmark data
 define('JSON_DATA', json_decode(file_get_contents('/data/dataset.json'), true));
-define('LARGE_JSON', largeJson());
+//define('LARGE_JSON', largeJson());
 
 //createGzFiles();
 
@@ -17,15 +17,15 @@ define('LARGE_JSON', largeJson());
 // ];
 //define('STATIC_FILES', loadStaticFiles());
 
-function largeJson()
-{
-    $data = json_decode(file_get_contents('/data/dataset-large.json'), true);
-    foreach ($data as &$item) {
-        $item['total'] = $item['price'] * $item['quantity'];
-    }
+// function largeJson()
+// {
+//     $data = json_decode(file_get_contents('/data/dataset-large.json'), true);
+//     foreach ($data as &$item) {
+//         $item['total'] = $item['price'] * $item['quantity'];
+//     }
 
-    return json_encode(['items' => $data, 'count' => count($data)], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-}
+//     return json_encode(['items' => $data, 'count' => count($data)], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+// }
 
 // function loadStaticFiles() 
 // {
