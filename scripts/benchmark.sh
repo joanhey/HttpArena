@@ -57,11 +57,13 @@ declare -A PROFILES=(
     [static-h3]="1|0|0-31,64-95|64|static-h3"
     [unary-grpc]="1|0|0-31,64-95|256,1024|grpc"
     [unary-grpc-tls]="1|0|0-31,64-95|256,1024|grpc-tls"
+    [stream-grpc]="1|0|0-31,64-95|64|grpc-stream"
+    [stream-grpc-tls]="1|0|0-31,64-95|64|grpc-stream-tls"
     [gateway-64]="1|0|0-31,64-95|256,1024|gateway-64"
     [echo-ws]="1|0|0-31,64-95|512,4096,16384|ws-echo"
     [async-db]="1|0|0-31,64-95|1024|async-db"
 )
-PROFILE_ORDER=(baseline pipelined limited-conn json json-comp json-tls upload api-4 api-16 static async-db baseline-h2 static-h2 baseline-h3 static-h3 gateway-64 unary-grpc unary-grpc-tls echo-ws)
+PROFILE_ORDER=(baseline pipelined limited-conn json json-comp json-tls upload api-4 api-16 static async-db baseline-h2 static-h2 baseline-h3 static-h3 gateway-64 unary-grpc unary-grpc-tls stream-grpc stream-grpc-tls echo-ws)
 
 # Parse flags
 SAVE_RESULTS=false
@@ -564,15 +566,19 @@ for profile in "${profiles_to_run[@]}"; do
 
     # Wait for server
     echo "[wait] Waiting for server..."
-    if [ "$endpoint" = "grpc" ] || [ "$endpoint" = "grpc-tls" ]; then
-        PROTO_FILE=$(find "$ROOT_DIR/frameworks/$FRAMEWORK" -name 'benchmark.proto' -type f | head -1)
-        if [ "$endpoint" = "grpc-tls" ]; then
+    if [ "$endpoint" = "grpc" ] || [ "$endpoint" = "grpc-tls" ] || \
+       [ "$endpoint" = "grpc-stream" ] || [ "$endpoint" = "grpc-stream-tls" ]; then
+        PROTO_FILE="$REQUESTS_DIR/benchmark.proto"
+        [ -f "$PROTO_FILE" ] || PROTO_FILE=$(find "$ROOT_DIR/frameworks/$FRAMEWORK" -name 'benchmark.proto' -type f | head -1)
+        if [[ "$endpoint" == *-tls ]]; then
             local_grpc_check="localhost:$H2PORT"
+            local_grpc_flag="--skipTLS"
         else
             local_grpc_check="localhost:$PORT"
+            local_grpc_flag="--insecure"
         fi
         for i in $(seq 1 30); do
-            if $GHZ --insecure --proto "$PROTO_FILE" \
+            if $GHZ $local_grpc_flag --proto "$PROTO_FILE" \
                 --call benchmark.BenchmarkService/GetSum \
                 -d '{"a":1,"b":2}' -c 1 -n 1 \
                 "$local_grpc_check" >/dev/null 2>&1; then
@@ -626,6 +632,7 @@ for profile in "${profiles_to_run[@]}"; do
     USE_H2LOAD=false
     USE_OHA=false
     USE_WRK=false
+    USE_GHZ=false
     if [ "$endpoint" = "ws-echo" ]; then
         gc_args=("http://localhost:$PORT/ws"
             --ws
@@ -646,6 +653,28 @@ for profile in "${profiles_to_run[@]}"; do
             -H 'content-type: application/grpc'
             -H 'te: trailers'
             -c "$CONNS" -m 100 -t "$H2THREADS" -D "$DURATION")
+    elif [ "$endpoint" = "grpc-stream" ] || [ "$endpoint" = "grpc-stream-tls" ]; then
+        USE_GHZ=true
+        # 4 streams multiplexed per TCP connection with count=5000. Empirically
+        # the optimal clean shape under TLS: ~8.6M msgs/sec with <2% error rate
+        # and ~145ms average latency. Denser ratios (8:1) push the error rate
+        # to 10% under TLS without meaningfully raising throughput.
+        ghz_workers=$((CONNS * 4))
+        ghz_msgs_per_call=5000
+        if [ "$endpoint" = "grpc-stream-tls" ]; then
+            ghz_target="localhost:$H2PORT"
+            ghz_tls_flag=--skipTLS
+        else
+            ghz_target="localhost:$PORT"
+            ghz_tls_flag=--insecure
+        fi
+        gc_args=("$GHZ" "$ghz_tls_flag"
+            --proto "$REQUESTS_DIR/benchmark.proto"
+            --call benchmark.BenchmarkService/StreamSum
+            -d "{\"a\":1,\"b\":2,\"count\":$ghz_msgs_per_call}"
+            --connections "$CONNS" -c "$ghz_workers"
+            -z "$DURATION"
+            "$ghz_target")
     elif [ "$endpoint" = "static-h3" ]; then
         USE_H2LOAD=true
         gc_args=("${H2LOAD_H3_CMD[@]}" --alpn-list=h3
@@ -717,8 +746,22 @@ for profile in "${profiles_to_run[@]}"; do
             --recv-buf 512
             -c "$CONNS" -t "$THREADS" -d "$DURATION" -p "$pipeline")
     fi
-    if [ "$USE_H2LOAD" = "false" ] && [ "$USE_WRK" = "false" ] && [ "$req_per_conn" -gt 0 ] 2>/dev/null; then
+    if [ "$USE_H2LOAD" = "false" ] && [ "$USE_WRK" = "false" ] && [ "$USE_GHZ" = "false" ] && [ "$req_per_conn" -gt 0 ] 2>/dev/null; then
         gc_args+=(-r "$req_per_conn")
+    fi
+
+    # Warm-up for ghz: Kestrel (and most gRPC servers) need a few seconds of
+    # traffic before their thread pool and accept loop are fully hot. Without
+    # this, the first measured run can burst 128 connections into a cold
+    # accept backlog and see "connection refused" errors on most of them.
+    if [ "$USE_GHZ" = "true" ]; then
+        echo "[warmup] ghz 2s"
+        taskset -c "$GCANNON_CPUS" "$GHZ" "$ghz_tls_flag" \
+            --proto "$REQUESTS_DIR/benchmark.proto" \
+            --call benchmark.BenchmarkService/StreamSum \
+            -d "{\"a\":1,\"b\":2,\"count\":$ghz_msgs_per_call}" \
+            --connections "$CONNS" -c "$ghz_workers" \
+            -z 2s "$ghz_target" >/dev/null 2>&1 || true
     fi
 
     # Best-of-N runs
@@ -759,6 +802,8 @@ for profile in "${profiles_to_run[@]}"; do
             rm -f "$oha_out"
         elif [ "$USE_H2LOAD" = "true" ]; then
             output=$(timeout 45 taskset -c "$GCANNON_CPUS" "${gc_args[@]}" 2>&1) || true
+        elif [ "$USE_GHZ" = "true" ]; then
+            output=$(timeout 45 taskset -c "$GCANNON_CPUS" "${gc_args[@]}" 2>&1) || true
         elif [ "$GCANNON_MODE" = "native" ]; then
             output=$(timeout 45 taskset -c "$GCANNON_CPUS" \
                 env LD_LIBRARY_PATH=/usr/lib "$GCANNON" "${gc_args[@]}" 2>&1) || true
@@ -792,6 +837,20 @@ for profile in "${profiles_to_run[@]}"; do
         elif [ "$USE_H2LOAD" = "true" ]; then
             # h2load: "finished in 5.00s, 123456.78 req/s, 45.67MB/s"
             rps_int=$(echo "$output" | grep -oP 'finished in [\d.]+s, \K[\d.]+' | cut -d. -f1 || echo "0")
+            rps_int=${rps_int:-0}
+        elif [ "$USE_GHZ" = "true" ]; then
+            # ghz's "Requests/sec" counts *all* attempts including errors, so
+            # runs where the server rejected connections (connect refused during
+            # ramp-up) get a misleadingly high headline number. Use only OK
+            # responses divided by the configured duration, then multiply by
+            # msgs_per_call to get real successful messages/sec.
+            ok_count=$(echo "$output" | grep -oP '\[OK\]\s+\K\d+' | head -1 || echo "0")
+            dur_s=${DURATION%s}
+            if [ -z "$ok_count" ] || [ -z "$dur_s" ] || [ "$dur_s" = "0" ]; then
+                rps_int=0
+            else
+                rps_int=$(python3 -c "print(int(($ok_count / $dur_s) * ${ghz_msgs_per_call:-1}))" 2>/dev/null || echo "0")
+            fi
             rps_int=${rps_int:-0}
         else
             duration_secs=$(echo "$output" | grep -oP '(?:requests|frames sent) in ([\d.]+)s' | grep -oP '[\d.]+' || echo "1")
@@ -847,6 +906,12 @@ for profile in "${profiles_to_run[@]}"; do
         fi
         reconnects="0"
         bandwidth=$(echo "$best_output" | grep -oP 'finished in [\d.]+s, [\d.]+ req/s, \K[\d.]+[KMGT]?B/s' || echo "0")
+    elif [ "$USE_GHZ" = "true" ]; then
+        # ghz: "Average: 12.34 ms", "Slowest: 56.78 ms" — per-call latency (not per-message).
+        avg_lat=$(echo "$best_output" | awk '/^\s*Average:/{print $2 $3; exit}')
+        p99_lat=$(echo "$best_output" | awk '/^\s*Slowest:/{print $2 $3; exit}')
+        reconnects="0"
+        bandwidth="0"
     else
         avg_lat=$(echo "$best_output" | grep "Latency" | head -1 | awk '{print $2}')
         p99_lat=$(echo "$best_output" | grep "Latency" | head -1 | awk '{print $5}')
@@ -870,6 +935,12 @@ for profile in "${profiles_to_run[@]}"; do
         status_3xx=$(echo "$best_output" | grep -oP '\d+(?= 3xx)' || echo "0")
         status_4xx=$(echo "$best_output" | grep -oP '\d+(?= 4xx)' || echo "0")
         status_5xx=$(echo "$best_output" | grep -oP '\d+(?= 5xx)' || echo "0")
+    elif [ "$USE_GHZ" = "true" ]; then
+        # ghz prints "[OK]   N responses" for successful RPC calls. We surface this
+        # as status_2xx so it feeds into the same run_ok bookkeeping as other tools.
+        status_2xx=$(echo "$best_output" | grep -oP '\[OK\]\s+\K\d+' | head -1 || echo "0")
+        status_3xx=0; status_4xx=0
+        status_5xx=$(echo "$best_output" | grep -oP '\[Unavailable\]\s+\K\d+' | head -1 || echo "0")
     else
         if [ "$endpoint" = "ws-echo" ]; then
             status_2xx=$(echo "$best_output" | grep -oP 'WS frames:\s+\K\d+' || echo "0")
@@ -884,7 +955,7 @@ for profile in "${profiles_to_run[@]}"; do
 
     # Compute input bandwidth from raw template sizes × RPS
     input_bw=""
-    if [ "$USE_H2LOAD" = "false" ] && [ "$USE_OHA" = "false" ] && [ "$USE_WRK" = "false" ]; then
+    if [ "$USE_H2LOAD" = "false" ] && [ "$USE_OHA" = "false" ] && [ "$USE_WRK" = "false" ] && [ "$USE_GHZ" = "false" ]; then
         raw_arg=""
         prev_was_raw=false
         for arg in "${gc_args[@]}"; do
@@ -912,7 +983,7 @@ else: print(f'{bps}B/s')
 
     # Parse per-template response counts (gcannon mixed/multi-template output)
     tpl_json=""
-    if [ "$USE_H2LOAD" = "false" ] && [ "$USE_OHA" = "false" ]; then
+    if [ "$USE_H2LOAD" = "false" ] && [ "$USE_OHA" = "false" ] && [ "$USE_GHZ" = "false" ]; then
         tpl_line=$(echo "$best_output" | grep -oP 'Per-template-ok: \K.*' || echo "")
         if [ -n "$tpl_line" ] && ([ "$endpoint" = "api-4" ] || [ "$endpoint" = "api-16" ]); then
             # API-4 templates: get×3, json-get×3, async-db×2

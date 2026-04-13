@@ -8,7 +8,9 @@
   "enabled": true,
   "tests": [
     "unary-grpc",
-    "unary-grpc-tls"
+    "unary-grpc-tls",
+    "stream-grpc",
+    "stream-grpc-tls"
   ],
   "maintainers": []
 }
