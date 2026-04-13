@@ -8,7 +8,7 @@ RUN LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php >/dev/null && \
     apt-get update -yqq > /dev/null && apt-get upgrade -yqq >/dev/null && \
     apt-get install -yqq wget git libxml2-dev systemtap-sdt-dev \
                     zlib1g-dev libpcre3-dev libargon2-dev libsodium-dev libkrb5-dev \
-                    php8.4-cli php8.4-dev libphp8.4-embed php8.4-sqlite3 php8.4-pgsql >/dev/null
+                    php8.4-cli php8.4-dev libphp8.4-embed php8.4-pgsql >/dev/null
 
 ARG NGINX_VERSION=1.28.3
 
