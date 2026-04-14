@@ -9,15 +9,14 @@
   "tests": [
     "baseline",
     "pipelined",
-    "noisy",
     "limited-conn",
     "json",
     "json-comp",
     "upload",
     "api-4",
     "api-16",
-    "async-db",
-    "static"
+    "static",
+    "async-db"
   ],
-  "maintainers": []
+  "maintainers": [ "remittor" ]
 }

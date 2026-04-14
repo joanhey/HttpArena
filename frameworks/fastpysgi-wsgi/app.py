@@ -1,7 +1,6 @@
 import os
 import sys
 import json
-import threading
 import multiprocessing
 import zlib
 import sqlite3
@@ -18,19 +17,22 @@ CPU_COUNT = int(multiprocessing.cpu_count())
 WRK_COUNT = min(len(os.sched_getaffinity(0)), 128)
 WRK_COUNT = max(WRK_COUNT, 4)
 
-MIME_TYPES = {
-    '.css'  : 'text/css',
-    '.js'   : 'application/javascript',
-    '.html' : 'text/html',
-    '.woff2': 'font/woff2',
-    '.svg'  : 'image/svg+xml',
-    '.webp' : 'image/webp',
-    '.json' : 'application/json',
-}
+DATASET_LARGE_PATH = "/data/dataset-large.json"
+DATASET_PATH = os.environ.get("DATASET_PATH", "/data/dataset.json")
+DATASET_ITEMS = None
+try:
+    with open(DATASET_PATH) as file:
+        DATASET_ITEMS = json.load(file)
+except Exception:
+    pass
+
 STATIC_DIR = '/data/static/'
 STATIC_FILES = { }
+
 def load_static_files():
-    global STATIC_FILES, STATIC_DIR, MIME_TYPES
+    global STATIC_FILES, STATIC_DIR
+    mimetypes.add_type('.woff2' , 'font/woff2')
+    mimetypes.add_type('.webp'  , 'image/webp')
     for root, dirs, files in os.walk(STATIC_DIR):
         for filename in files:
             full_path = os.path.join(root, filename)
@@ -41,71 +43,32 @@ def load_static_files():
             except Exception as e:
                 continue
             ext = os.path.splitext(filename)[1]
-            content_type = MIME_TYPES.get(ext)
+            content_type, encoding = mimetypes.guess_type(key)
             if content_type is None:
-                content_type, encoding = mimetypes.guess_type(full_path)
-                if content_type is None:
-                    content_type = 'application/octet-stream'
-            STATIC_FILES[key] = (data, content_type)
+                content_type = 'application/octet-stream'
+                encoding = None
+            STATIC_FILES[key] = { "data": data, "type": content_type, "enc": encoding, "ENC": { } }
+            pass
+    for key, row in STATIC_FILES.items():
+        if row['enc'] is None:
+            if key+'.gz' in STATIC_FILES and STATIC_FILES[key+'.gz']['enc'] == 'gzip':
+                STATIC_FILES[key]['ENC']['gzip'] = key+'.gz'
+            if key+'.br' in STATIC_FILES and STATIC_FILES[key+'.br']['enc'] == 'br':
+                STATIC_FILES[key]['ENC']['br'] = key+'.br'
 
 load_static_files()
 
-DB_PATH = "/data/benchmark.db"
-DB_AVAILABLE = os.path.exists(DB_PATH)
-DB_QUERY = (
-    "SELECT id, name, category, price, quantity, active, tags, rating_score, rating_count"
-    "  FROM items"
-    " WHERE price BETWEEN ? AND ? LIMIT 50"
-)
+# -- Postgres DB ------------------------------------------------------------
 
 DATABASE_URL = os.environ.get("DATABASE_URL", '')
 DATABASE_POOL = None
 DATABASE_QUERY = (
     "SELECT id, name, category, price, quantity, active, tags, rating_score, rating_count"
     "  FROM items"
-    " WHERE price BETWEEN %s AND %s LIMIT 50"
+    " WHERE price BETWEEN %s AND %s LIMIT %s"
 )
 if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = "postgresql://" + DATABASE_URL[len("postgres://"):]
-
-DATASET_LARGE_PATH = "/data/dataset-large.json"
-DATASET_PATH = os.environ.get("DATASET_PATH", "/data/dataset.json")
-DATASET_ITEMS = None
-try:
-    with open(DATASET_PATH) as file:
-        DATASET_ITEMS = json.load(file)
-except Exception:
-    pass
-
-# Large dataset for compression (pre-serialised)
-LARGE_JSON_BUF: bytes | None = None
-try:
-    with open(DATASET_LARGE_PATH) as file:
-        raw = json.load(file)
-    items = [ ]
-    for d in raw:
-        item = dict(d)
-        item["total"] = round(d["price"] * d["quantity"] * 100) / 100
-        items.append(item)
-    LARGE_JSON_BUF = orjson.dumps( { "items": items, "count": len(items) } )
-except Exception:
-    pass
-
-# -- SQLite (thread-local) --------------------------------------------------
-
-_local = threading.local()
-
-def _get_db() -> sqlite3.Connection:
-    global _local
-    conn = getattr(_local, "conn", None)
-    if conn is None:
-        conn = sqlite3.connect(DB_PATH, uri = True, check_same_thread = False)
-        conn.execute("PRAGMA mmap_size=268435456")
-        conn.row_factory = sqlite3.Row
-        _local.conn = conn
-    return conn
-
-# -- Postgres DB ------------------------------------------------------------
 
 PG_POOL_MIN_SIZE = 1
 PG_POOL_MAX_SIZE = 2
@@ -142,28 +105,40 @@ def db_setup():
 
 # -- Helpers ----------------------------------------------------------
 
-DEF_TEXT_HEADERS = [ ( 'Content-Type', 'text/plain; charset=utf-8' ) ]
+def get_path_tail(env):
+    path = env["PATH_INFO"]
+    xpos = path.rfind('/')
+    return path[xpos+1:] if xpos > 0 else ""
 
-def text_resp(body: str | bytes, status: int = 200):
+def check_accept_encoding(env, substr):
+    aenc = env.get('HTTP_ACCEPT_ENCODING', '')
+    if aenc and substr == "*":
+        return True
+    if aenc and substr in aenc:
+        return True
+    return False
+
+def make_resp(status: int, headers: list, body: str | bytes, contenc: str | None = None):
     if isinstance(body, str):
         body = body.encode('utf-8')
-    return status, DEF_TEXT_HEADERS, body
+    if contenc and contenc != 'BR':
+        if contenc == 'GZIP':
+            body = zlib.compress(body, level = 1, wbits = 31)
+        headers.append( ('Content-Encoding', contenc.lower()) )
+    return status, headers, body
 
-def json_resp(body, status: int = 200, gzip: bool = False):
-    if gzip:
-        headers = [ ('Content-Type', 'application/json'), ('Content-Encoding', 'gzip') ]
-    else:
-        headers = [ ('Content-Type', 'application/json') ]
+def text_resp(body: str | bytes, status: int = 200, contenc: str | None = None):
+    return make_resp(status, [ ( 'Content-Type', 'text/plain; charset=utf-8' ) ], body, contenc)
+
+def json_resp(body: dict, status: int = 200, contenc: str | None = None):
     if isinstance(body, dict):
         body = orjson.dumps(body)
-    if isinstance(body, str):
-        body = body.encode('utf-8')
-    return status, headers, body
+    return make_resp(status, [ ('Content-Type', 'application/json') ], body, contenc)
 
 # -- Routes -----------------------------------------------------------
 
 def pipeline(env):
-    return text_resp(b'ok')
+    return 200, [ ( 'Content-Type', 'text/plain; charset=utf-8' ) ], b'ok'
 
 def baseline11(env):
     req_method = env.get('REQUEST_METHOD', '')
@@ -200,50 +175,21 @@ def json_endpoint(env):
     global DATASET_ITEMS
     if not DATASET_ITEMS:
         return text_resp("No dataset", 500)
-    items = [ ]
-    for d in DATASET_ITEMS:
-        item = dict(d)
-        item["total"] = round(d["price"] * d["quantity"] * 100) / 100
-        items.append(item)
-    return json_resp( { "items": items, "count": len(items) } )
-
-def compression_endpoint(env):
-    global LARGE_JSON_BUF
-    if not LARGE_JSON_BUF:
-        return text_resp("No dataset", 500)
-    accept_encoding = env.get('HTTP_ACCEPT_ENCODING', '')
-    if accept_encoding and 'gzip' in accept_encoding:
-        compressed = zlib.compress(LARGE_JSON_BUF, level = 1, wbits = 31)
-        return json_resp(compressed, gzip = True)
-    return json_resp(LARGE_JSON_BUF)
-
-def db_endpoint(env):
-    global DB_AVAILABLE, DB_QUERY
-    if not DB_AVAILABLE:
-        return json_resp( { "items": [ ], "count": 0 } )
+    contenc = 'GZIP' if check_accept_encoding(env, 'gzip') else ''
     try:
+        count = int(get_path_tail(env))
         query_params = parse_qs(env.get('QUERY_STRING', ''))
-        min_val = float(query_params.get("min")[0])
-        max_val = float(query_params.get("max")[0])
-        conn = _get_db()
-        rows = conn.execute(DB_QUERY, (min_val, max_val)).fetchall()
+        m_val = float(query_params.get("m")[0])
         items = [ ]
-        for row in rows:
-            items.append(
-                {
-                    "id"      : row["id"],
-                    "name"    : row["name"],
-                    "category": row["category"],
-                    "price"   : row["price"],
-                    "quantity": row["quantity"],
-                    "active"  : bool(row["active"]),
-                    "tags"    : json.loads(row["tags"]),
-                    "rating"  : { "score": row["rating_score"], "count": row["rating_count"] },
-                }
-            )
-        return json_resp( { "items": items, "count": len(items) } )
+        for idx, dsitem in enumerate(DATASET_ITEMS):
+            if idx >= count:
+                break
+            item = dict(dsitem)
+            item["total"] = dsitem["price"] * dsitem["quantity"] * m_val
+            items.append(item)
+        return json_resp( { "items": items, "count": len(items) }, contenc = contenc)
     except Exception:
-        return json_resp( { "items": [ ], "count": 0 } )
+        return json_resp( { "items": [ ], "count": 0 }, contenc = contenc)
 
 def async_db_endpoint(env):
     global DATABASE_POOL, DATABASE_QUERY
@@ -255,8 +201,9 @@ def async_db_endpoint(env):
         query_params = parse_qs(env.get('QUERY_STRING', ''))
         min_val = float(query_params.get("min")[0])
         max_val = float(query_params.get("max")[0])
+        lim_val = int(query_params.get("limit")[0])
         with DATABASE_POOL.connection() as conn:
-            rows = conn.execute(DATABASE_QUERY, (min_val, max_val)).fetchall()
+            rows = conn.execute(DATABASE_QUERY, (min_val, max_val, lim_val)).fetchall()
         items = [
             {
                 'id'      : row['id'],
@@ -284,8 +231,11 @@ def static_file_endpoint(env):
     entry = STATIC_FILES.get(filename)
     if entry is None:
         return text_resp(b'Not found', status = 404)
-    data, ct = entry
-    return 200, [ ('Content-Type', ct) ], data
+    if check_accept_encoding(env, 'br') and 'br' in entry['ENC']:
+        entry = STATIC_FILES[entry['ENC']['br']]
+    elif check_accept_encoding(env, 'gzip') and 'gzip' in entry['ENC']:
+        entry = STATIC_FILES[entry['ENC']['gzip']]
+    return make_resp(200, [ ('Content-Type', entry['type']) ], entry['data'], contenc = entry['enc'])
 
 
 READ_BUF_SIZE = 256*1024
@@ -305,15 +255,16 @@ def upload_endpoint(env):
                 break
     return text_resp(str(size))
 
+
 ROUTES = {
     '/pipeline': pipeline,
     '/baseline11': baseline11,
     '/baseline2': baseline2,
-    '/json': json_endpoint,
-    '/compression': compression_endpoint,
-    '/db': db_endpoint,
-    '/async-db': async_db_endpoint,
+    '/json/': json_endpoint,
+    '/json-comp/': json_endpoint,
     '/upload': upload_endpoint,
+    '/static/': static_file_endpoint,
+    '/async-db': async_db_endpoint,
 }
 
 def handle_404(env):
@@ -338,10 +289,9 @@ def app(env, start_response):
         status, headers, body = handle_405(env)
     else:
         path = env["PATH_INFO"]
-        if path.startswith('/static/'):
-            app_handler = static_file_endpoint
-        else:
-            app_handler = ROUTES.get(path, handle_404)
+        xpos = path.rfind('/')
+        xpath = path if xpos <= 0 else path[0:xpos+1]
+        app_handler = ROUTES.get(xpath, handle_404)
         status, headers, body = app_handler(env)
     start_response(HTTP_STATUS.get(status, str(status)), headers)
     return [ body ]
