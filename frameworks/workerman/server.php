@@ -6,7 +6,6 @@ use Workerman\Connection\TcpConnection;
 use Workerman\Protocols\Http\Http;   
 
 require_once __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . '/Db.php';
 require_once __DIR__ . '/Pgsql.php';
 
 // #### http worker ####
