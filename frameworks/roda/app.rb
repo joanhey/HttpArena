@@ -15,30 +15,9 @@ class App < Roda
     opts[:dataset_items] = JSON.parse(File.read(dataset_path))
   end
 
-  # Load static files into memory
-  MIME_TYPES = {
-    '.css'   => 'text/css',
-    '.js'    => 'application/javascript',
-    '.html'  => 'text/html',
-    '.woff2' => 'font/woff2',
-    '.svg'   => 'image/svg+xml',
-    '.webp'  => 'image/webp',
-    '.json'  => 'application/json'
-  }.freeze
-
-  static_dir = File.join DATA_DIR, 'static'
-  opts[:static_files] = {}
-  if Dir.exist?(static_dir)
-    Dir.foreach(static_dir) do |name|
-      next if name == '.' || name == '..'
-      path = File.join(static_dir, name)
-      next unless File.file?(path)
-      ext = File.extname(name)
-      ct = MIME_TYPES.fetch(ext, 'application/octet-stream')
-      opts[:static_files][name] = { path: path, content_type: ct }
-    end
-  end
-  opts[:static_files].freeze
+  root = File.expand_path(__dir__)
+  FileUtils.cp_r(File.join(DATA_DIR, 'static'), File.join(root, 'public', 'static'))
+  plugin :static, ['/static']
 
   PG_QUERY = 'SELECT id, name, category, price, quantity, active, tags, rating_score, rating_count FROM items WHERE price BETWEEN $1 AND $2 LIMIT $3'.freeze
 
@@ -128,15 +107,6 @@ class App < Roda
         }
       end
       render_json JSON.generate({ 'items' => items, 'count' => items.length })
-    end
-
-    r.on 'static', String do |filename|
-      if static_file = opts[:static_files][filename]
-        response[RodaResponseHeaders::CONTENT_TYPE] = static_file[:content_type]
-        send_file static_file[:path]
-      else
-        r.halt 404
-      end
     end
   end
 
