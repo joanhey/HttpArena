@@ -1,0 +1,5 @@
+fastapi==0.135.3
+uvicorn[standard]==0.40.0
+uvloop==0.22.1
+orjson==3.11.8
+asyncpg==0.30.0
