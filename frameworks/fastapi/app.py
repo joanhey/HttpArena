@@ -1,18 +1,21 @@
 import os
 import sys
 import multiprocessing
-import zlib
 import json
 from contextlib import asynccontextmanager
 
 import asyncpg
 import orjson
 from fastapi import FastAPI, Request, Response, Path, Query, HTTPException
+from fastapi.responses import PlainTextResponse, JSONResponse
+from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.applications import BaseHTTPMiddleware
+from fastapi.staticfiles import StaticFiles
 
 # -- Dataset and constants --------------------------------------------------------
 
 CPU_COUNT = int(multiprocessing.cpu_count())
-WRK_COUNT = min(len(os.sched_getaffinity(0)), 128)
+WRK_COUNT = 4 # min(len(os.sched_getaffinity(0)), 128)
 WRK_COUNT = max(WRK_COUNT, 4)
 
 DATASET_LARGE_PATH = "/data/dataset-large.json"
@@ -26,7 +29,7 @@ except Exception:
 
 # -- Postgres DB ------------------------------------------------------------
 
-pg_pool: asyncpg.Pool | None = None
+PG_POOL: asyncpg.Pool | None = None
 
 PG_QUERY = (
     "SELECT id, name, category, price, quantity, active, tags, rating_score, rating_count "
@@ -40,7 +43,7 @@ class NoResetConnection(asyncpg.Connection):
 
 @asynccontextmanager
 async def lifespan(application: FastAPI):
-    global pg_pool, NoResetConnection
+    global PG_POOL, NoResetConnection
     DATABASE_URL = os.environ.get("DATABASE_URL")
     if DATABASE_URL:
         try:
@@ -51,49 +54,38 @@ async def lifespan(application: FastAPI):
             if DATABASE_MAX_CONN:
                 pool_size = int(DATABASE_MAX_CONN) * 0.92 / WRK_COUNT
                 PG_POOL_MAX_SIZE = int(pool_size + 0.95)
-            pg_pool = await asyncpg.create_pool(
+            PG_POOL = await asyncpg.create_pool(
                 dsn = DATABASE_URL,
                 min_size = 1,
                 max_size = max(PG_POOL_MAX_SIZE, 2),
                 connection_class = NoResetConnection
             )
         except Exception:
-            pg_pool = None
+            PG_POOL = None
     yield
-    if pg_pool:
-        await pg_pool.close()
-    pg_pool = None
+    if PG_POOL:
+        await PG_POOL.close()
+    PG_POOL = None
 
 
 app = FastAPI(lifespan=lifespan)
 
-# -- Helpers ----------------------------------------------------------------
+app.add_middleware(GZipMiddleware, minimum_size=1, compresslevel=5)
 
-def make_resp(status: int, media_type: str, body: str | bytes, contenc: str | None = None) -> Response:
-    headers = { "Server": "fastapi" }
-    if isinstance(body, str):
-        body = body.encode('utf-8')
-    if contenc and contenc != 'BR':
-        if contenc == 'GZIP':
-            body = zlib.compress(body, level = 1, wbits = 31)
-        headers['Content-Encoding'] = contenc.lower()
-    return Response(content = body, status_code = status, media_type = media_type, headers = headers)
+class ServerHeaderMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        response = await call_next(request)
+        response.headers["Server"] = "FastAPI"
+        return response 
 
-
-def text_resp(body: str | bytes, status: int = 200, contenc: str | None = None) -> Response:
-    return make_resp(status, body, "text/plain", contenc)
-
-
-def json_resp(body: bytes, status: int = 200, contenc: str | None = None) -> Response:
-    if isinstance(body, dict):
-        body = orjson.dumps(body)
-    return make_resp(status, body, "application/json", contenc)
+app.add_middleware(ServerHeaderMiddleware)
 
 
 # -- Routes ------------------------------------------------------------------
+
 @app.get("/pipeline")
 async def pipeline():
-    return text_resp(b"ok")
+    return PlainTextResponse(b"ok")
 
 
 @app.api_route("/baseline11", methods=["GET", "POST"])
@@ -111,26 +103,13 @@ async def baseline11(request: Request):
                 total += int(body.strip())
             except ValueError:
                 pass
-    return _text(str(total))
+    return PlainTextResponse(str(total))
 
 
-@app.get("/baseline2")
-async def baseline2(request: Request):
-    total = 0
-    for v in request.query_params.values():
-        try:
-            total += int(v)
-        except ValueError:
-            pass
-    return _text(str(total))
-
-
-async def json_common(request: Request, count: int, m_val: float):
+def json_common(request: Request, count: int, m_val: float):
     global DATASET_ITEMS
-    if DATASET_ITEMS is None:
-        return text_resp("No dataset", 500)
-    accept_encoding = request.headers.get("accept-encoding", "")
-    contenc = 'GZIP' if 'gzip' in accept_encoding else ''
+    if not DATASET_ITEMS:
+        return PlainTextResponse("No dataset", 500)
     try:
         items = [ ]
         for idx, dsitem in enumerate(DATASET_ITEMS):
@@ -139,31 +118,32 @@ async def json_common(request: Request, count: int, m_val: float):
             item = dict(dsitem)
             item["total"] = dsitem["price"] * dsitem["quantity"] * m_val
             items.append(item)
-        return json_resp( { "items": items, "count": len(items) }, contenc = contenc)
+        return JSONResponse( { "items": items, "count": len(items) } )
     except Exception:
-        return json_resp( { "items": [ ], "count": 0 }, contenc = contenc)
+        return JSONResponse( { "items": [ ], "count": 0 } )
 
 
 @app.get("/json/{count}")
 async def json_endpoint(request: Request, count: int = Path(...), m: float = Query(...)):
-    return await json_common(request, count, m)
+    return json_common(request, count, m)
 
 
 @app.get("/json-comp/{count}")
 async def json_comp_endpoint(request: Request, count: int = Path(...), m: float = Query(...)):
-    return await json_common(request, count, m)
+    return json_common(request, count, m)
 
 
 @app.get("/async-db")
 async def async_db_endpoint(request: Request, min_val: float = Query(..., alias="min"), max_val: float = Query(..., alias="max"), limit: int = Query(...)):
-    if pg_pool is None:
-        return json_resp( { "items": [ ], "count": 0 } )
+    global PG_POOL
+    if not PG_POOL:
+        return JSONResponse( { "items": [ ], "count": 0 } )
     try:
-        db_conn = await pg_pool.acquire()
+        db_conn = await PG_POOL.acquire()
         try:
             rows = await db_conn.fetch(PG_QUERY, min_val, max_val, limit)
         finally:
-            await pg_pool.release(db_conn)
+            await PG_POOL.release(db_conn)
         items = [
             {
                 'id'      : row['id'],
@@ -180,9 +160,9 @@ async def async_db_endpoint(request: Request, min_val: float = Query(..., alias=
             }
             for row in rows
         ]
-        return json_resp( { "items": items, "count": len(items) } )
+        return JSONResponse( { "items": items, "count": len(items) } )
     except Exception:
-        return json_resp( { "items": [ ], "count": 0 } )
+        return JSONResponse( { "items": [ ], "count": 0 } )
 
 
 @app.post("/upload")
@@ -190,4 +170,9 @@ async def upload_endpoint(request: Request):
     size = 0
     async for chunk in request.stream():
         size += len(chunk)
-    return text_resp(str(size))
+    return PlainTextResponse(str(size))
+
+try:
+    app.mount("/static", StaticFiles(directory="/data/static/"), name="static")
+except Exception:
+    pass
