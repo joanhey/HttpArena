@@ -15,7 +15,7 @@ from fastapi.staticfiles import StaticFiles
 # -- Dataset and constants --------------------------------------------------------
 
 CPU_COUNT = int(multiprocessing.cpu_count())
-WRK_COUNT = 4 # min(len(os.sched_getaffinity(0)), 128)
+WRK_COUNT = min(len(os.sched_getaffinity(0)), 128)
 WRK_COUNT = max(WRK_COUNT, 4)
 
 DATASET_LARGE_PATH = "/data/dataset-large.json"
@@ -171,6 +171,7 @@ async def upload_endpoint(request: Request):
     async for chunk in request.stream():
         size += len(chunk)
     return PlainTextResponse(str(size))
+
 
 try:
     app.mount("/static", StaticFiles(directory="/data/static/"), name="static")
