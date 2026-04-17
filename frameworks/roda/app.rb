@@ -5,6 +5,12 @@ Bundler.require(:default)
 
 require 'zlib'
 
+class Hash
+  def symbolize_keys!
+    transform_keys! { |key| key.to_sym }
+  end
+end
+
 class App < Roda
   SERVER_NAME = 'roda'.freeze
 
@@ -12,7 +18,12 @@ class App < Roda
   # Load dataset
   dataset_path = File.join DATA_DIR, 'dataset.json'
   if File.exist?(dataset_path)
-    opts[:dataset_items] = JSON.parse(File.read(dataset_path))
+    items = JSON.parse(File.read(dataset_path)).map do |item|
+      item.symbolize_keys!
+      item[:rating].symbolize_keys!
+      item
+    end
+    opts[:dataset_items] = items
   end
 
   root = File.expand_path(__dir__)
@@ -57,7 +68,7 @@ class App < Roda
       r.halt 500, 'No dataset' unless dataset
       m = (request.params['m'] || 1).to_i
       items = dataset.slice(0, count).map do |d|
-        d.merge('total' => (d['price'] * d['quantity'] * m))
+        d.merge(total: (d[:price] * d[:quantity] * m))
       end
 
       result = JSON.generate({ 'items' => items, 'count' => count })
@@ -96,17 +107,17 @@ class App < Roda
 
       items = rows.map do |row|
         {
-          'id' => row['id'],
-          'name' => row['name'],
-          'category' => row['category'],
-          'price' => row['price'],
-          'quantity' => row['quantity'],
-          'active' => row['active'] == 1,
-          'tags' => JSON.parse(row['tags']),
-          'rating' => { 'score' => row['rating_score'], 'count' => row['rating_count'] }
+          id: row['id'],
+          name: row['name'],
+          category: row['category'],
+          price: row['price'],
+          quantity: row['quantity'],
+          active: row['active'] == 1,
+          tags: JSON.parse(row['tags']),
+          rating: { score: row['rating_score'], count: row['rating_count'] }
         }
       end
-      render_json JSON.generate({ 'items' => items, 'count' => items.length })
+      render_json JSON.generate({ items: items, count: items.length })
     end
   end
 
