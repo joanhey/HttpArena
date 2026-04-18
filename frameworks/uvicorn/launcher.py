@@ -12,7 +12,7 @@ if len(sys.argv) < 2:
     print("Usage: launcher.py <program> [args...]", file=sys.stderr)
     sys.exit(1)
 
-args = sys.argv[1:]     # [ "uvicorn", "app:main", "--port", "8080" ]
+args = sys.argv[1:]     # [ "uvicorn", "app:app", "--port", "8080" ]
 
 prog = args[0]
 
