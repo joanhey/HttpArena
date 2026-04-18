@@ -20,6 +20,7 @@ source "$SOURCE_DIR/common.sh"
 source "$SOURCE_DIR/system.sh"
 source "$SOURCE_DIR/stats.sh"
 source "$SOURCE_DIR/postgres.sh"
+source "$SOURCE_DIR/redis.sh"
 source "$SOURCE_DIR/gateway.sh"
 source "$SOURCE_DIR/framework.sh"
 source "$SOURCE_DIR/profiles.sh"
@@ -47,6 +48,27 @@ PROFILE_FILTER="${POSITIONAL[1]:-}"
 
 [ -n "$FRAMEWORK_ARG" ] || fail "usage: benchmark.sh <framework> [profile] [--save]"
 
+# crud-only experiment: carve 16 physical cores out of gcannon's cpuset and
+# hand them to postgres. Leaves gcannon with 16 phys (still plenty — gcannon
+# was using ~10 cores at 300K+ rps) and bounds PG's CPU so its consumption
+# is explicit and attributable. SMT pairs preserved: N and N+64 always go
+# to the same consumer. Applied only when the user filtered to crud exactly,
+# and BEFORE the LOADGEN_DOCKER block below so docker-mode DOCKER_FLAGS
+# captures the narrowed GCANNON_CPUS if it's the active mode.
+if [ "$PROFILE_FILTER" = "crud" ]; then
+    # Reshape the server's cpuset inside the PROFILES dict so run_one's
+    # parse_profile picks up the widened range; pair with the pinned
+    # redis/gcannon cpusets below. Postgres left unpinned — the kernel
+    # scheduler naturally co-locates PG backends with the server on the
+    # same socket's L3, and forcing a cpuset hurt rps in earlier runs.
+    # SMT pairs preserved (N, N+64) for all pinned consumers.
+    PROFILES[crud]="1|200|1-31,65-95|4096|crud"             # server:  31 phys / 62 threads
+    export GCANNON_CPUS="32-63,96-127"                      # gcannon: 32 phys / 64 threads
+    export REDIS_CPUSET="0,64"                              # redis:    1 phys /  2 threads
+    unset PG_CPUSET                                         # postgres unpinned (kernel-scheduled)
+    info "crud experiment CPU layout: redis=$REDIS_CPUSET | server=1-31,65-95 | gcannon=$GCANNON_CPUS | postgres=unpinned"
+fi
+
 # ── Cleanup + tuning ────────────────────────────────────────────────────────
 
 cleanup_all() {
@@ -55,6 +77,7 @@ cleanup_all() {
     # so it works correctly regardless of which gateway profile was last.
     gateway_down
     postgres_stop
+    redis_stop
 
     # Reclaim anything the compose / framework / postgres stop steps missed.
     # Specifically:
@@ -111,7 +134,7 @@ if [ "$LOADGEN_DOCKER" = "true" ]; then
         df="${_loadgen_files[$i]}"
         if ! docker image inspect "$img" >/dev/null 2>&1; then
             info "building $img from docker/$df"
-            local _build_args=""
+            _build_args=""
             # gcannon: bust the git-clone cache so we always get the
             # latest source from the repo. Other images are version-
             # pinned and don't need this.
@@ -155,6 +178,17 @@ for t in async-db crud api-4 api-16 gateway-64 gateway-h3 production-stack; do
     if framework_subscribes_to "$t"; then need_pg=true; break; fi
 done
 $need_pg && postgres_start
+
+# Redis sidecar — started whenever crud is in play so multi-process
+# frameworks can use it as a shared cache. Single-heap frameworks
+# (aspnet-minimal, Go, etc.) just ignore REDIS_URL and keep using their
+# in-process IMemoryCache/sync.Map equivalents. The sidecar is cheap to
+# leave running if unused.
+need_redis=false
+for t in crud; do
+    if framework_subscribes_to "$t"; then need_redis=true; break; fi
+done
+$need_redis && redis_start
 
 # ── Main benchmark loop ─────────────────────────────────────────────────────
 

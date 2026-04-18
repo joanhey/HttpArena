@@ -147,7 +147,7 @@ if has_test "async-db" || has_test "crud" || has_test "api-4" || has_test "api-1
         sleep 1
     done
     docker_args+=(-e "DATABASE_URL=postgres://bench:bench@localhost:5432/benchmark")
-    docker_args+=(-e "DATABASE_MAX_CONN=512")
+    docker_args+=(-e "DATABASE_MAX_CONN=256")
 fi
 
 # Start container (skip for gateway-only — compose handles it later)

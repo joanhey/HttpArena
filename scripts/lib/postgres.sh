@@ -1,9 +1,6 @@
-# scripts/lib/postgres.sh — Postgres sidecar lifecycle for async-db and
-# api-{4,16} tests. Single well-known container name, host networking,
+# scripts/lib/postgres.sh — Postgres sidecar lifecycle for async-db, crud,
+# and api-{4,16} tests. Single well-known container name, host networking,
 # persistent init from data/pgdb-seed.sql.
-#
-# Matches the original benchmark.sh setup exactly — `-c max_connections=256`
-# passed on the command line rather than mounting a custom config file.
 
 postgres_start() {
     info "starting postgres sidecar"
@@ -18,13 +15,26 @@ postgres_start() {
     # --rm so the container self-cleans on stop. Also pass --tmpfs for
     # the data dir so postgres writes the seed + WAL to RAM instead of
     # an anonymous volume — faster startup AND no storage leak path.
+    #
+    # PG 18+ stores data in a version-specific subdirectory under
+    # /var/lib/postgresql (e.g. /var/lib/postgresql/18/docker) to support
+    # pg_upgrade --link cleanly, so the tmpfs must mount at the parent
+    # rather than /var/lib/postgresql/data as in PG 17 and below.
+    # See docker-library/postgres#1259 for the layout rationale.
+    local -a pg_cpu_args=()
+    if [ -n "${PG_CPUSET:-}" ]; then
+        pg_cpu_args+=(--cpuset-cpus="$PG_CPUSET")
+        info "postgres pinned to cpuset=$PG_CPUSET"
+    fi
+
     docker run -d --rm --name "$PG_CONTAINER" --network host \
-        --tmpfs /var/lib/postgresql/data:rw,size=2g \
+        "${pg_cpu_args[@]}" \
+        --tmpfs /var/lib/postgresql:rw,size=2g \
         -e POSTGRES_USER=bench \
         -e POSTGRES_PASSWORD=bench \
         -e POSTGRES_DB=benchmark \
         -v "$DATA_DIR/pgdb-seed.sql:/docker-entrypoint-initdb.d/seed.sql:ro" \
-        postgres:17-alpine \
+        postgres:18 \
         -c max_connections=256 >/dev/null
 
     # Wait for postgres to accept queries AND for the seed script to finish.

@@ -80,6 +80,12 @@ framework_start() {
             ;;
     esac
 
+    # crud also gets REDIS_URL so multi-process frameworks can use Redis as
+    # their shared cross-process cache. Single-heap frameworks ignore it.
+    case "$endpoint" in
+        crud) args+=(-e "REDIS_URL=$REDIS_URL") ;;
+    esac
+
     # api-4 / api-16 additionally cap memory.
     case "$endpoint" in
         api-4)  args+=(--memory=16g --memory-swap=16g) ;;

@@ -9,7 +9,7 @@ The following checks are executed by `validate.sh` for every framework subscribe
 Sends `GET /crud/items?category=electronics&page=1&limit=5` and verifies:
 
 - Exactly 5 items returned
-- `total` is greater than 0
+- `total` field is present and greater than 0 (with load-more semantics, `total` equals the returned item count, so a successful response with 5 items satisfies this)
 - `page` equals 1
 - Every item has a nested `rating` object
 

@@ -6,7 +6,7 @@ ARG GCANNON_REF=main
 # are invisible until the user manually runs --no-cache.
 ARG CACHE_BUST=0
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        gcc make git ca-certificates && rm -rf /var/lib/apt/lists/*
+        gcc libc6-dev make git ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /deps
 RUN git clone --branch liburing-2.9 --depth 1 https://github.com/axboe/liburing.git && \
     cd liburing && ./configure --prefix=/usr && make -j"$(nproc)" -C src && make install -C src

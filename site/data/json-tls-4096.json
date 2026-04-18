@@ -19,6 +19,25 @@
     "status_5xx": 0
   },
   {
+    "framework": "aspnet-minimal-iouring",
+    "language": "C#",
+    "rps": 523894,
+    "avg_latency": "8.33ms",
+    "p99_latency": "8.33ms",
+    "cpu": "5917.2%",
+    "memory": "896MiB",
+    "connections": 4096,
+    "threads": 64,
+    "duration": "5s",
+    "pipeline": 1,
+    "bandwidth": "1.80GB",
+    "reconnects": 0,
+    "status_2xx": 2672486,
+    "status_3xx": 0,
+    "status_4xx": 0,
+    "status_5xx": 0
+  },
+  {
     "framework": "Fletch",
     "language": "Dart",
     "rps": 232457,

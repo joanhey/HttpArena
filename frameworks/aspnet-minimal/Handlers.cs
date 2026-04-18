@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Caching.Memory;
+using StackExchange.Redis;
 
 
 [JsonSerializable(typeof(ResponseDto<ProcessedItem>))]
@@ -11,6 +12,8 @@ using Microsoft.Extensions.Caching.Memory;
 [JsonSerializable(typeof(ProcessedItem))]
 [JsonSerializable(typeof(RatingInfo))]
 [JsonSerializable(typeof(List<string>))]
+[JsonSerializable(typeof(CrudListResponse))]
+[JsonSerializable(typeof(CrudWriteResponse))]
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
 partial class AppJsonContext : JsonSerializerContext { }
 
@@ -125,12 +128,11 @@ static class Handlers
     // ── CRUD handlers ──────────────────────────────────────────────────
     //
     // Realistic REST API with paginated list, cached single-item read,
-    // create, and update. In-process IMemoryCache with 1s TTL on single-
-    // item reads, invalidated on PUT. List queries always hit Postgres
-    // (two queries: data + count).
+    // create, and update. Cache-aside on single-item reads with 200ms TTL,
+    // invalidated on PUT. List queries always hit Postgres.
 
     private static readonly MemoryCacheEntryOptions _crudCacheOpts =
-        new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(1) };
+        new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromMilliseconds(200) };
 
     private static readonly JsonSerializerOptions _crudJsonOpts =
         new(JsonSerializerDefaults.Web);
@@ -150,7 +152,11 @@ static class Handlers
         if (limit < 1 || limit > 50) limit = 10;
         var offset = (page - 1) * limit;
 
-        // Query 1: data
+        // Single data query. The previous COUNT(*) pass was 90%+ of PG CPU
+        // because concurrent writes kept the visibility map dirty, forcing
+        // heap fetches on every index-only scan. "Load more" pagination
+        // (return page size, no total) is a realistic alternative that
+        // removes that dominant cost.
         await using var cmd = AppData.PgDataSource.CreateCommand(
             "SELECT id, name, category, price, quantity, active, tags, rating_score, rating_count " +
             "FROM items WHERE category = $1 ORDER BY id LIMIT $2 OFFSET $3");
@@ -159,69 +165,90 @@ static class Handlers
         cmd.Parameters.AddWithValue(offset);
 
         await using var reader = await cmd.ExecuteReaderAsync();
-        var items = new List<object>();
+        var items = new List<DbResponseItemDto>();
         while (await reader.ReadAsync())
         {
-            items.Add(new
+            items.Add(new DbResponseItemDto
             {
-                id       = reader.GetInt32(0),
-                name     = reader.GetString(1),
-                category = reader.GetString(2),
-                price    = reader.GetInt32(3),
-                quantity = reader.GetInt32(4),
-                active   = reader.GetBoolean(5),
-                tags     = JsonSerializer.Deserialize<List<string>>(reader.GetString(6), AppJsonContext.Default.ListString)!,
-                rating   = new RatingInfo { Score = (int)reader.GetDouble(7), Count = reader.GetInt32(8) }
+                Id       = reader.GetInt32(0),
+                Name     = reader.GetString(1),
+                Category = reader.GetString(2),
+                Price    = reader.GetInt32(3),
+                Quantity = reader.GetInt32(4),
+                Active   = reader.GetBoolean(5),
+                Tags     = JsonSerializer.Deserialize(reader.GetString(6), AppJsonContext.Default.ListString)!,
+                Rating   = new RatingInfo { Score = (int)reader.GetDouble(7), Count = reader.GetInt32(8) }
             });
         }
-        await reader.CloseAsync();
 
-        // Query 2: total count
-        await using var countCmd = AppData.PgDataSource.CreateCommand(
-            "SELECT COUNT(*) FROM items WHERE category = $1");
-        countCmd.Parameters.AddWithValue(category);
-        var total = (long)(await countCmd.ExecuteScalarAsync())!;
-
-        return TypedResults.Ok(new { items, total, page, limit });
+        return TypedResults.Json(new CrudListResponse { Items = items, Total = items.Count, Page = page, Limit = limit },
+            AppJsonContext.Default.CrudListResponse);
     }
 
-    // GET /crud/items/{id} — single item, cached with 1s TTL
+    // GET /crud/items/{id} — single item, cached with 200ms TTL.
+    // Redis when REDIS_URL is set (cache stores pre-serialized JSON string so
+    // HIT path skips a Serialize+Deserialize round trip); else in-process
+    // IMemoryCache (caches the typed DTO).
     public static async Task<IResult> CrudRead(int id, IMemoryCache cache, HttpContext ctx)
     {
         if (AppData.PgDataSource is null)
             return TypedResults.Problem("DB not available");
 
         var cacheKey = $"crud:{id}";
-        if (cache.TryGetValue(cacheKey, out object? cached))
+
+        if (AppData.RedisDb is not null)
         {
-            ctx.Response.Headers["X-Cache"] = "HIT";
-            return TypedResults.Ok(cached);
+            var cachedJson = await AppData.RedisDb.StringGetAsync(cacheKey);
+            if (cachedJson.HasValue)
+            {
+                ctx.Response.Headers["X-Cache"] = "HIT";
+                return Results.Content((string)cachedJson!, "application/json");
+            }
+
+            var item = await FetchItemByIdAsync(id);
+            if (item is null) return TypedResults.NotFound();
+
+            var json = JsonSerializer.Serialize(item, AppJsonContext.Default.DbResponseItemDto);
+            await AppData.RedisDb.StringSetAsync(cacheKey, json, TimeSpan.FromMilliseconds(200));
+            ctx.Response.Headers["X-Cache"] = "MISS";
+            return Results.Content(json, "application/json");
         }
 
-        await using var cmd = AppData.PgDataSource.CreateCommand(
+        if (cache.TryGetValue(cacheKey, out DbResponseItemDto? cached))
+        {
+            ctx.Response.Headers["X-Cache"] = "HIT";
+            return TypedResults.Json(cached, AppJsonContext.Default.DbResponseItemDto);
+        }
+
+        var dto = await FetchItemByIdAsync(id);
+        if (dto is null) return TypedResults.NotFound();
+
+        cache.Set(cacheKey, dto, _crudCacheOpts);
+        ctx.Response.Headers["X-Cache"] = "MISS";
+        return TypedResults.Json(dto, AppJsonContext.Default.DbResponseItemDto);
+    }
+
+    private static async Task<DbResponseItemDto?> FetchItemByIdAsync(int id)
+    {
+        await using var cmd = AppData.PgDataSource!.CreateCommand(
             "SELECT id, name, category, price, quantity, active, tags, rating_score, rating_count " +
             "FROM items WHERE id = $1 LIMIT 1");
         cmd.Parameters.AddWithValue(id);
 
         await using var reader = await cmd.ExecuteReaderAsync();
-        if (!await reader.ReadAsync())
-            return TypedResults.NotFound();
+        if (!await reader.ReadAsync()) return null;
 
-        var item = new
+        return new DbResponseItemDto
         {
-            id       = reader.GetInt32(0),
-            name     = reader.GetString(1),
-            category = reader.GetString(2),
-            price    = reader.GetInt32(3),
-            quantity = reader.GetInt32(4),
-            active   = reader.GetBoolean(5),
-            tags     = JsonSerializer.Deserialize<List<string>>(reader.GetString(6), AppJsonContext.Default.ListString)!,
-            rating   = new RatingInfo { Score = (int)reader.GetDouble(7), Count = reader.GetInt32(8) }
+            Id       = reader.GetInt32(0),
+            Name     = reader.GetString(1),
+            Category = reader.GetString(2),
+            Price    = reader.GetInt32(3),
+            Quantity = reader.GetInt32(4),
+            Active   = reader.GetBoolean(5),
+            Tags     = JsonSerializer.Deserialize(reader.GetString(6), AppJsonContext.Default.ListString)!,
+            Rating   = new RatingInfo { Score = (int)reader.GetDouble(7), Count = reader.GetInt32(8) }
         };
-
-        cache.Set(cacheKey, item, _crudCacheOpts);
-        ctx.Response.Headers["X-Cache"] = "MISS";
-        return TypedResults.Ok(item);
     }
 
     // POST /crud/items — create item, return 201
@@ -248,7 +275,9 @@ static class Handlers
         cmd.Parameters.AddWithValue(input.Quantity);
 
         var newId = (int)(await cmd.ExecuteScalarAsync())!;
-        return TypedResults.Created($"/crud/items/{newId}", new { id = newId, name = input.Name, category = input.Category, price = input.Price, quantity = input.Quantity });
+        return TypedResults.Json(
+            new CrudWriteResponse { Id = newId, Name = input.Name, Category = input.Category, Price = input.Price, Quantity = input.Quantity },
+            AppJsonContext.Default.CrudWriteResponse, statusCode: 201);
     }
 
     // PUT /crud/items/{id} — update item, invalidate cache
@@ -273,8 +302,14 @@ static class Handlers
         var affected = await cmd.ExecuteNonQueryAsync();
         if (affected == 0) return TypedResults.NotFound();
 
-        cache.Remove($"crud:{id}");
-        return TypedResults.Ok(new { id, name = input.Name, price = input.Price, quantity = input.Quantity });
+        var cacheKey = $"crud:{id}";
+        if (AppData.RedisDb is not null)
+            await AppData.RedisDb.KeyDeleteAsync(cacheKey);
+        else
+            cache.Remove(cacheKey);
+        return TypedResults.Json(
+            new CrudWriteResponse { Id = id, Name = input.Name, Price = input.Price, Quantity = input.Quantity },
+            AppJsonContext.Default.CrudWriteResponse);
     }
 }
 

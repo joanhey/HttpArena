@@ -209,6 +209,16 @@ html.dark .test-card-endpoint { color: #64748b; }
     <div class="test-card-desc">Same unary gRPC call over encrypted HTTP/2 with TLS 1.3.</div>
     <div class="test-card-endpoint">BenchmarkService/GetSum (TLS)</div>
   </a>
+  <a class="test-card" href="docs/test-profiles/grpc/stream">
+    <div class="test-card-title">Stream (h2c)</div>
+    <div class="test-card-desc">Server-streaming gRPC over cleartext HTTP/2 — sustained message throughput over a single long-lived call.</div>
+    <div class="test-card-endpoint">BenchmarkService/StreamSums (h2c)</div>
+  </a>
+  <a class="test-card" href="docs/test-profiles/grpc/stream">
+    <div class="test-card-title">Stream (TLS)</div>
+    <div class="test-card-desc">Same server-streaming gRPC call over encrypted HTTP/2 with TLS 1.3.</div>
+    <div class="test-card-endpoint">BenchmarkService/StreamSums (TLS)</div>
+  </a>
 </div>
 </div>
 
