@@ -1,0 +1,25 @@
+{
+  "display_name": "webman",
+  "language": "PHP",
+  "type": "production",
+  "engine": "workerman",
+  "description": "Webman is a high-performance service framework built on Workerman, integrating HTTP, WebSocket, TCP, UDP, and other modules.",
+  "repo": "https://github.com/walkor/Workerman",
+  "enabled": true,
+  "tests": [
+    "baseline",
+    "pipelined",
+    "limited-conn",
+    "json",
+    "json-tls",
+    "noisy",
+    "static",
+    "api-4",
+    "api-16",
+    "async-db",
+    "upload"
+  ],
+  "maintainers": [
+    "joanhey"
+  ]
+}
