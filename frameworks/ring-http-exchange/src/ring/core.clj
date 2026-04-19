@@ -138,7 +138,8 @@
                                          (.setJdbcUrl (str "jdbc:postgresql://" host ":" port "/" db))
                                          (.setUsername user)
                                          (.setPassword (or pass ""))
-                                         (.setMaximumPoolSize (.availableProcessors (Runtime/getRuntime)))
+                                         (.setMaximumPoolSize (try (Integer/parseInt (System/getenv "DATABASE_MAX_CONN"))
+                                                          (catch Exception _ 256)))
                                          (.setReadOnly true))]
                                 (HikariDataSource. cfg))]
                        {:ds    ds

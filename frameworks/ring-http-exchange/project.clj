@@ -6,7 +6,7 @@
 
   :dependencies [[org.clojure/clojure "1.12.0"]
                  [org.clojars.jj/ring-http-exchange "1.4.4"]
-                 [org.clojars.jj/tassu "1.0.3"]
+                 [org.clojars.jj/tassu "1.0.4"]
                  [org.clojars.jj/boa-sql "1.0.10"]
                  [org.clojars.jj/next-jdbc-adapter "1.0.10"]
                  [org.xerial/sqlite-jdbc "3.49.1.0"]
