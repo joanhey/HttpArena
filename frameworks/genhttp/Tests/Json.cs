@@ -41,8 +41,10 @@ public class Json
 
         var processed = new List<ProcessedItem>(count);
 
-        foreach (var d in DatasetItems)
+        for (var i = 0; i < count; i++)
         {
+            var d = DatasetItems[i];
+
             processed.Add(new ProcessedItem
             {
                 Id = d.Id, Name = d.Name, Category = d.Category,
